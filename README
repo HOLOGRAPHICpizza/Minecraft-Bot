@@ -1,4 +1,4 @@
-This is a project to update the code I forked to 1.8.1 and probably to 1.9 by the time I finish and to make and AI for it.
+This is a project to create a bot for minecraft using nevercast's code for a simple bot as a basis for the protocol management and adding an AI. This will require adding many capabilities to the original code, such as movement, pathfinding, block breaking, crafting and a prioritising AI as an end goal.
 TODO
 1) update to 1.8.1 protocol
 2) add movement system
@@ -6,4 +6,8 @@ TODO
 4) add block breaking
 5) make simple bot that chops down trees and plants saplings in their place
 6) ability to craft tools
-7) add more advanced AI with weighting of options and ideas of effects, eg having tools making chopping down trees faster
+7) add ability to accept commands over chat
+8) add simple weighting of options and ideas of effects based upon time, eg having tools making chopping down trees faster
+9) prioritisation of tasks based upon more sophisticated criteria such as availability of materials, safety of areas based upon time etc.
+
+This tool is not intended for greifing, it is intended as an amusement and a curiosity.
