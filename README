@@ -1,0 +1,9 @@
+This is a project to update the code I forked to 1.8.1 and probably to 1.9 by the time I finish and to make and AI for it.
+TODO
+1) update to 1.8.1 protocol
+2) add movement system
+3) add movement pathfinding
+4) add block breaking
+5) make simple bot that chops down trees and plants saplings in their place
+6) ability to craft tools
+7) add more advanced AI with weighting of options and ideas of effects, eg having tools making chopping down trees faster
