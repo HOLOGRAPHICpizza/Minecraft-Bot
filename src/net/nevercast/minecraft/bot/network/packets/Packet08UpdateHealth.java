@@ -14,6 +14,16 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class Packet08UpdateHealth implements IPacket{
+    private float foodSaturation;
+
+    public short getFood() {
+        return food;
+    }
+
+    public float getFoodSaturation() {
+        return foodSaturation;
+    }
+    private short food;
     public byte getPacketId() {
         return 0x08;
     }
@@ -29,5 +39,7 @@ public class Packet08UpdateHealth implements IPacket{
 
     public void readExternal(DataInputStream objectInput) throws IOException {
         health = objectInput.readShort();
+        food = objectInput.readShort();
+        foodSaturation = objectInput.readFloat();
     }
 }

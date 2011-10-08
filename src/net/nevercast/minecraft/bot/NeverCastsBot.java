@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class NeverCastsBot {
     public static void main(String[] args) {
-        String loginName = "Bot";
+        String loginName = "Marvin";
         if(args.length > 0){
             loginName = args[0];
         }

@@ -16,19 +16,39 @@ import java.io.DataOutputStream;
  * To change this template use File | Settings | File Templates.
  */
 public class Packet01LoginRequest implements IPacket{
+    private int mode;
+    private byte difficulty;
+    private int worldHeight;
+    private int maxPlayers;
+
+    public byte getDifficulty() {
+        return difficulty;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public int getWorldHeight() {
+        return worldHeight;
+    }
 
     public Packet01LoginRequest(){}
 
     public Packet01LoginRequest(String username){
         this.versionAndEntity = MinecraftLogin.CLIENT_VERSION;
         this.username = username;
-        this.mapSeed = 0;
+        this.seed = 0;
         this.dimension = 0;
     }
 
     public Packet01LoginRequest(int entID, long mapSeed, byte dimension){
         this.versionAndEntity = entID;
-        this.mapSeed = mapSeed;
+        this.seed = mapSeed;
         this.dimension = dimension;
         this.username = "";
     }
@@ -53,12 +73,12 @@ public class Packet01LoginRequest implements IPacket{
         this.username = username;
     }
 
-    public long getMapSeed() {
-        return mapSeed;
+    public long getSeed() {
+        return seed;
     }
 
-    public void setMapSeed(long mapSeed) {
-        this.mapSeed = mapSeed;
+    public void setSeed(long seed) {
+        this.seed = seed;
     }
 
     public byte getDimension() {
@@ -71,23 +91,31 @@ public class Packet01LoginRequest implements IPacket{
 
     private int versionAndEntity;
     private String username;
-    private long mapSeed;
+    private long seed;
     private byte dimension;
 
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
         objectOutput.writeInt(versionAndEntity);
         objectOutput.writeShort(username.length());
         objectOutput.write(username.getBytes("UTF-16BE"));
-        objectOutput.writeLong(mapSeed);
-        objectOutput.writeByte(dimension);
+        objectOutput.writeLong(seed);
+        objectOutput.writeInt(0);
+        objectOutput.writeByte(0);
+        objectOutput.writeByte(0);
+        objectOutput.writeByte(0);//unsigned for some reason in prtocol definition
+        objectOutput.writeByte(0);//unsigned for some reason in prtocol definition
     }
 
     public void readExternal(DataInputStream objectInput) throws IOException {
         versionAndEntity = objectInput.readInt();
         byte[] bytes = new byte[objectInput.readShort() * 2];
         objectInput.read(bytes);
-        username = new String(bytes, "UTF-16BE");
-        mapSeed = objectInput.readLong();
+        username = new String(bytes, "UTF-16BE");//always empty string, not actually used
+        seed = objectInput.readLong();
+        mode = objectInput.readInt();//0 for survival, 1 for creative
         dimension = objectInput.readByte();
+        difficulty = objectInput.readByte();
+        worldHeight = (int)objectInput.readByte();
+        maxPlayers = (int)objectInput.readByte();
     }
 }

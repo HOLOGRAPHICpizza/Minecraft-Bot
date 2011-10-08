@@ -1,7 +1,5 @@
 package net.nevercast.minecraft.bot;
 
-import java.nio.channels.ClosedByInterruptException;
-
 /**
  * Created by IntelliJ IDEA.
  * User: Josh
@@ -25,11 +23,11 @@ public class GamePulser extends Thread {
         long split = (long)delay / 5;
         while(!isInterrupted()){
             try{
-                long elapsed = System.currentTimeMillis() - time;
+                long elapsed = System.nanoTime()/1000000 - time;
                 if(elapsed >= ( delay + offset )){
-                    time = System.currentTimeMillis();
+                    time = System.nanoTime()/1000000;
                     receptor.tick(elapsed);
-                    long timeTaken = System.currentTimeMillis() - time;
+                    long timeTaken = System.nanoTime()/1000000 - time;
                     if(timeTaken > 4){
                         offset -= 2;
                     }else if(offset < 0){
@@ -51,7 +49,7 @@ public class GamePulser extends Thread {
                 if(exceptionCounter < 3){
                     continue;
                 }else{
-                    System.out.println("Too many errors! Bugger this shit homie.");
+                    System.out.println("Too many errors!");
                     return;
                 }
             }

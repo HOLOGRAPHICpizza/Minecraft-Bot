@@ -43,6 +43,14 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     private World world;
 
     private int myEntId;
+    private int worldHeight;
+    private byte mode;//0 for survival, 1 for creative
+    private byte difficulty;
+    private int maxPlayers;
+    private short food;
+    private float foodSaturation;
+    private long seed;
+    private IPacket previousPacket;
 
     public MinecraftClient(MinecraftLogin loginInformation){
         this.login = loginInformation;
@@ -77,7 +85,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         socket.setTcpNoDelay(true);
         packetInputStream = new PacketInputStream(socket.getInputStream());
         packetOutputStream = new PacketOutputStream(socket.getOutputStream());
-        start(); //Start ye thread
+        start(); //Start the thread
     }
 
     // Receiver
@@ -104,11 +112,12 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         switch (mcPacket.getPacketId()){
             case 0x02: handlerBeginLogin((Packet02Handshake)mcPacket); break;
             case 0x01: handlerFinishLogin((Packet01LoginRequest)mcPacket); break;
-            case 0x00: handleAnnoyingKeepAlive(); break;
+            case 0x00: handleAnnoyingKeepAlive((Packet00KeepAlive)mcPacket); break;
             case 0x0D: handlePositionAndLook((Packet0DPlayerPositionAndLook)mcPacket); break;
             case 0x06: handleSpawn((Packet06SpawnLocation)mcPacket); break;
             case 0x04: handleTime((Packet04TimeUpdate)mcPacket); break;
             case 0x08: handleHealthUpdate((Packet08UpdateHealth)mcPacket); break;
+            case 0x09: handleRespawn((Packet09Respawn)mcPacket);
             case 0x68: handleWindowItems((Packet68WindowItems)mcPacket);break;
             case 0x03: handleChatMessage((Packet03ChatMessage)mcPacket); break;
             case 0x18: handleMobSpawned((Packet18MobSpawned)mcPacket); break;
@@ -118,7 +127,12 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
             case 0x28: handleEntMeta((Packet28EntityMetadata)mcPacket); break;
             case 0x33: handleMapChunk((Packet33MapChunk)mcPacket); break;
             case (byte)0xFF: handleDisconnect((PacketFFDisconnect)mcPacket); break;
+            default:
+                System.out.println("unknown packet, probably messed up byte count in previous packet");
+                System.out.println("previous packet id = " + previousPacket.getPacketId());
+                System.out.println("current packet id = " + mcPacket.getPacketId()); break;
         }
+        previousPacket = mcPacket;
     }
 
     private void handleMapChunk(Packet33MapChunk packet) throws IOException{
@@ -215,16 +229,30 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 
     private void handleHealthUpdate(Packet08UpdateHealth packet) {
         health = packet.getHealth();
+        food = packet.getFood();
+        foodSaturation = packet.getFoodSaturation();
         if(health < 1){
-            System.out.println("z0mg I'm dead! Respawn pl0x");
+            System.out.println("have died, attempting Respawn");
             try{
-                packetOutputStream.writePacket(new Packet09Respawn(dimension));
+                Packet09Respawn respawn = new Packet09Respawn();
+                respawn.setDifficulty(difficulty);
+                respawn.setDimension(dimension);
+                respawn.setMode(mode);
+                packetOutputStream.writePacket(respawn);
             }catch(IOException e){
                 e.printStackTrace();
             }
         }else{
             System.out.println("Health: " + health);
         }
+    }
+
+    private void handleRespawn(Packet09Respawn packet) {
+        dimension = packet.getDimension();
+        difficulty = packet.getDifficulty();
+        mode = packet.getMode();
+        worldHeight = packet.getWorldHeight();
+        seed = packet.getSeed();
     }
 
     private void handleDisconnect(PacketFFDisconnect packet) {
@@ -260,15 +288,20 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         location = packet.getLocation();
     }
 
-    private void handleAnnoyingKeepAlive() throws IOException {
+    private void handleAnnoyingKeepAlive(Packet00KeepAlive packet) throws IOException {
         // Marco, Polo
-        packetOutputStream.writePacket(new Packet00KeepAlive());
+        packetOutputStream.writePacket(packet);
     }
 
     private void handlerFinishLogin(Packet01LoginRequest packet) {
         myEntId = packet.getVersionAndEntity();
         System.out.println("Oh cool! I'm Mr." + myEntId + ". Kinda unsocial really!");
         dimension = packet.getDimension();
+        worldHeight = packet.getWorldHeight();
+        mode = (byte) packet.getMode();
+        difficulty = packet.getDifficulty();
+        maxPlayers = packet.getMaxPlayers();
+        seed = packet.getSeed();
     }
 
     private void handlerBeginLogin(Packet02Handshake packet) throws IOException {

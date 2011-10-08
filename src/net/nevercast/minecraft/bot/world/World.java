@@ -1,6 +1,5 @@
 package net.nevercast.minecraft.bot.world;
 
-import net.nevercast.minecraft.bot.structs.Location;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 import java.io.IOException;
