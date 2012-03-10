@@ -24,7 +24,6 @@ import java.util.zip.DataFormatException;
  * User: Josh
  * Date: 8/14/11
  * Time: 9:48 PM
- * To change this template use File | Settings | File Templates.
  */
 public class MinecraftClient extends Thread implements GamePulser.IGamePulserReceptor{
 
@@ -38,7 +37,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     private ItemStack[] inventory;
     private GamePulser tickSource;
     private short health;
-    private byte dimension;
+    private int dimension;
     private EntityPool entityPool;
     private World world;
 
@@ -46,12 +45,14 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     private int worldHeight;
     private byte mode;//0 for survival, 1 for creative
     private byte difficulty;
-    private int maxPlayers;
+    private int maxPlayers = 0;
     private short food;
     private float foodSaturation;
     private long seed;
     private IPacket previousPacket;
 
+    public boolean first0Dpacket = true;
+    
     public MinecraftClient(MinecraftLogin loginInformation){
         this.login = loginInformation;
         tickSource = new GamePulser(this, 50);
@@ -92,7 +93,8 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     public void run(){
         try {
             packetOutputStream.writePacket(
-                    new Packet02Handshake(login.getUsername())
+//            		new Packet02Handshake(login.getUsername())
+                    new Packet02Handshake(login.getUsername()) //Hack for protocol update
             );
             while(socket.isConnected() && !isInterrupted()){
                 IPacket mcPacket = packetInputStream.readPacket();
@@ -104,37 +106,45 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
             e.printStackTrace();
             try { socket.shutdownInput(); } catch (Exception ex){}
             try { socket.close(); } catch(Exception ex){}
-        }
+        } catch (Exception e) {
+			e.printStackTrace();
+			try { socket.shutdownInput(); } catch (Exception ex){}
+            try { socket.close(); } catch(Exception ex){}
+		}
     }
 
-    private void handlePacket(IPacket mcPacket) throws IOException{
+    private void handlePacket(IPacket mcPacket) throws Exception{
         //System.out.println("Handling packet " + mcPacket.getPacketId());
         switch (mcPacket.getPacketId()){
-            case 0x02: handlerBeginLogin((Packet02Handshake)mcPacket); break;
-            case 0x01: handlerFinishLogin((Packet01LoginRequest)mcPacket); break;
-            case 0x00: handleAnnoyingKeepAlive((Packet00KeepAlive)mcPacket); break;
-            case 0x0D: handlePositionAndLook((Packet0DPlayerPositionAndLook)mcPacket); break;
-            case 0x06: handleSpawn((Packet06SpawnLocation)mcPacket); break;
-            case 0x04: handleTime((Packet04TimeUpdate)mcPacket); break;
-            case 0x08: handleHealthUpdate((Packet08UpdateHealth)mcPacket); break;
-            case 0x09: handleRespawn((Packet09Respawn)mcPacket);
-            case 0x68: handleWindowItems((Packet68WindowItems)mcPacket);break;
-            case 0x03: handleChatMessage((Packet03ChatMessage)mcPacket); break;
-            case 0x18: handleMobSpawned((Packet18MobSpawned)mcPacket); break;
-            case 0x1D: handleEntDestroy((Packet1DEntityDestroyed)mcPacket); break;
-            case 0x14: handlePlayerSpawned((Packet14NamedEntitySpawn)mcPacket); break;
-            case 0x15: handleItemSpawn((Packet15ItemSpawned)mcPacket); break;
-            case 0x28: handleEntMeta((Packet28EntityMetadata)mcPacket); break;
-            case 0x33: handleMapChunk((Packet33MapChunk)mcPacket); break;
-            case (byte)0xFF: handleDisconnect((PacketFFDisconnect)mcPacket); break;
+        	case 0x00: handleAnnoyingKeepAlive((Packet00KeepAlive)mcPacket); 			break;
+        	case 0x01: handlerFinishLogin((Packet01LoginRequest)mcPacket); 				break;
+        	case 0x02: handlerBeginLogin((Packet02Handshake)mcPacket); 					break;
+            case 0x03: handleChatMessage((Packet03ChatMessage)mcPacket); 				break;
+            case 0x04: handleTime((Packet04TimeUpdate)mcPacket); 						break;
+            case 0x06: handleSpawn((Packet06SpawnLocation)mcPacket); 					break;
+            case 0x08: handleHealthUpdate((Packet08UpdateHealth)mcPacket); 				break;
+            case 0x09: handleRespawn((Packet09Respawn)mcPacket);						break;
+//            case 0x0C: handlePositionAndLook((Packet0DPlayerPositionAndLook)mcPacket); 	break;
+            case 0x0D: handlePositionAndLook((Packet0DPlayerPositionAndLook)mcPacket); 	break;
+            case 0x14: handlePlayerSpawned((Packet14NamedEntitySpawn)mcPacket); 		break;
+            case 0x15: handleItemSpawn((Packet15ItemSpawned)mcPacket); 					break;
+            case 0x18: handleMobSpawned((Packet18MobSpawned)mcPacket); 					break;
+            case 0x1D: handleEntDestroy((Packet1DEntityDestroyed)mcPacket); 			break;
+            case 0x28: handleEntMeta((Packet28EntityMetadata)mcPacket); 				break;
+            case 0x33: handleMapChunk((Packet33MapChunk)mcPacket); 						break;
+            case 0x68: handleWindowItems((Packet68WindowItems)mcPacket);				break;
+            case (byte)0xFF: handleDisconnect((PacketFFDisconnect)mcPacket); 			break;
             default:
-                System.out.println("unknown packet, probably messed up byte count in previous packet");
-                System.out.println("previous packet id = " + previousPacket.getPacketId());
-                System.out.println("current packet id = " + mcPacket.getPacketId()); break;
+//                byte oP = previousPacket.getPacketId();
+//                byte cP = mcPacket.getPacketId();
+//                String foP = String.format("%x", oP).toUpperCase();
+//                String fcP = String.format("%x", cP).toUpperCase();
+//                System.out.println("Unknown Packet | Prev: 0x"+foP+" | Cur: 0x" + fcP);
+                break;
         }
         previousPacket = mcPacket;
     }
-
+//Unsupported packet
     private void handleMapChunk(Packet33MapChunk packet) throws IOException{
         try {
             world.updateChunk(packet.getLocation(), packet.getSize(), packet.getCompressedData());
@@ -173,6 +183,8 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                 issueCommand(messageContent.substring(1));
             }
         }
+        System.out.println("Chat: "+packet.getMessage());
+//        sendMessage("It's Alive!");
     }
 
     private void issueCommand(String message) {
@@ -284,29 +296,38 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         spawn.Z = packet.getZ();
     }
 
-    private void handlePositionAndLook(Packet0DPlayerPositionAndLook packet) {
+    private void handlePositionAndLook(Packet0DPlayerPositionAndLook packet) throws IOException {
         location = packet.getLocation();
+        if(first0Dpacket==true){
+        	packetOutputStream.writePacket(packet);
+        	first0Dpacket = false;
+        }
     }
 
     private void handleAnnoyingKeepAlive(Packet00KeepAlive packet) throws IOException {
         // Marco, Polo
         packetOutputStream.writePacket(packet);
+        System.out.println("Marco-Polo!");
     }
-
-    private void handlerFinishLogin(Packet01LoginRequest packet) {
+//99
+    private void handlerFinishLogin(Packet01LoginRequest packet) throws Exception {
         myEntId = packet.getVersionAndEntity();
-        System.out.println("Oh cool! I'm Mr." + myEntId + ". Kinda unsocial really!");
+        
         dimension = packet.getDimension();
         worldHeight = packet.getWorldHeight();
         mode = (byte) packet.getMode();
         difficulty = packet.getDifficulty();
         maxPlayers = packet.getMaxPlayers();
         seed = packet.getSeed();
+        System.out.println("Oh cool! I'm Mr." + myEntId + ". Kinda unsocial really!");
+        System.out.println("World: "+dimension+"\tHeight: "+worldHeight+"\tSeed: "+seed);
+        System.out.println("Difficulty: "+difficulty+"\tSlots: "+maxPlayers+"\tMode: "+mode);
     }
 
     private void handlerBeginLogin(Packet02Handshake packet) throws IOException {
         System.out.println("Handling handshake!");
         String hash = packet.getConnectionHash();
+        System.out.println("Hash: "+hash);
         if(hash.equalsIgnoreCase("-")){
             // Open server, login without check
             Packet01LoginRequest loginRequest = new Packet01LoginRequest(login.getUsername());
@@ -320,10 +341,11 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 
 
     public void tick(long elapsedTime) throws Exception{
-        //System.out.println("Tick: " + elapsedTime + "ms");
-        if(location != null){
-            Packet0DPlayerPositionAndLook position = new Packet0DPlayerPositionAndLook(location);
-            packetOutputStream.writePacket(position);
+        System.out.println("Tick: " + elapsedTime + "ms");
+        if(maxPlayers != 0){
+        	Packet0APlayer pman = new Packet0APlayer(true);
+//            Packet0DPlayerPositionAndLook position = new Packet0DPlayerPositionAndLook(location);
+            packetOutputStream.writePacket(pman);
         }
     }
 }

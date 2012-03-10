@@ -30,5 +30,6 @@ public class Packet04TimeUpdate implements IPacket {
 
     public void readExternal(DataInputStream objectInput) throws IOException {
         time = objectInput.readLong();
+        System.out.println("Packet04-ReadExternal | TickTime: "+time);
     }
 }

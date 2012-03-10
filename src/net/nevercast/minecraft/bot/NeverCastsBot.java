@@ -3,6 +3,10 @@ package net.nevercast.minecraft.bot;
 import net.nevercast.minecraft.bot.web.MinecraftLogin;
 
 import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,13 +15,18 @@ import java.io.IOException;
  * Time: 9:52 PM
  * To change this template use File | Settings | File Templates.
  */
-public class NeverCastsBot {
+public class NeverCastsBot {  
+    
     public static void main(String[] args) {
-        String loginName = "Marvin";
+    	MyLogger.main(null);
+    	MyLogger.logger.info("Test from NCB");
+        String loginName = "coodgenducta";
+//        String loginPass =  "EW7Mym49BdNT";
         if(args.length > 0){
             loginName = args[0];
         }
         MinecraftLogin login = new MinecraftLogin(loginName);
+//        MinecraftLogin login = new MinecraftLogin(loginName,loginPass); UNSUPPORTED HANDSHAKE
         /*if(!login.getLoggedIn()){
             System.out.println("Login failed!");
             if(login.getErrorMessage() != null){
@@ -27,7 +36,8 @@ public class NeverCastsBot {
         }*/
         MinecraftClient client = new MinecraftClient(login);
         try {
-            client.connect("localhost");
+//            client.connect("localhost");
+            client.connect("192.168.1.66");
             while(client.isAlive()){
                 Thread.sleep(1000);
             }

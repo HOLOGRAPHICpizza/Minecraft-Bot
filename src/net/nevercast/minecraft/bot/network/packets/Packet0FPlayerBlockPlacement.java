@@ -21,6 +21,10 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
         return 0x0F;
     }
 
+    private Vector blockPosition;
+    private BlockFace direction;
+    private ItemStack item;
+    
     public Vector getBlockPosition() {
         return blockPosition;
     }
@@ -45,10 +49,6 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
         this.item = item;
     }
 
-    private Vector blockPosition;
-    private BlockFace direction;
-    private ItemStack item;
-
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
 
     }
@@ -67,5 +67,22 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
             byte amount = objectInput.readByte();
             item = new ItemStack(id, amount, objectInput.readShort());
         }
+        //NEW, For Enchantable Crap.
+        if(enchantable(id)){
+        	short enchantData = objectInput.readShort();
+        	if(enchantData != -1){
+        		byte[] bytes = new byte[enchantData * 2];
+                objectInput.read(bytes);	
+        	}
+        }
+    }
+    
+    public boolean enchantable(short id){
+    	if(id<0x100) return false;
+    	else if (id>=0x100 && id<=0x102) return true;
+    	else if (id>=0x108 && id<=0x117) return true;
+    	else if (id>=0x11B && id<=0x11E) return true;
+    	else if (id>=0x12A && id<=0x13D) return true;
+    	else return false;
     }
 }

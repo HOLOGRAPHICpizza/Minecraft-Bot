@@ -43,5 +43,7 @@ public class Packet14NamedEntitySpawn implements IPacket {
         );
         entity.getLocation().setRotationPacked(objectInput.readByte(), objectInput.readByte());
         entity.setHoldingItem(objectInput.readShort());
+        System.out.println("Packet14-ReadExternal");
+        System.out.println("Packet14-Spawned: "+entity.getName());
     }
 }

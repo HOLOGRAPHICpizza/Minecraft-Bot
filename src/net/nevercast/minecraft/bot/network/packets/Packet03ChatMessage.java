@@ -15,16 +15,16 @@ import java.io.DataOutputStream;
  */
 public class Packet03ChatMessage implements IPacket{
 
-    public Packet03ChatMessage(){}
+	public byte getPacketId() {
+        return 0x03;
+    }
+	
+	private String message;
+    
+	public Packet03ChatMessage(){}
     public Packet03ChatMessage(String message){
         this.message = message;
     }
-
-    public byte getPacketId() {
-        return 0x03;
-    }
-
-    private String message;
 
     public String getMessage(){
         return message;

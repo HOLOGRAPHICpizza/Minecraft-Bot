@@ -41,6 +41,7 @@ public class Packet68WindowItems implements IPacket{
     }
 
     public void readExternal(DataInputStream objectInput) throws IOException {
+    	String report = "Packet68-ReadExternal\n";
         wid = objectInput.readByte();
         count = objectInput.readShort();
         itemStack = new ItemStack[count];
@@ -48,9 +49,12 @@ public class Packet68WindowItems implements IPacket{
             short id = objectInput.readShort();
             if(id == -1){
                 itemStack[i] = ItemStack.EMPTY;
+                report = report + "\n  Slot "+i+" Empty";
             }else{
                 itemStack[i] = new ItemStack(id, objectInput.readByte(), objectInput.readShort());
+                report = report + "\n  Slot "+i+" ID: "+itemStack[i].id+" Count: "+itemStack[i].count;
             }
         }
+        System.out.println(report);
     }
 }

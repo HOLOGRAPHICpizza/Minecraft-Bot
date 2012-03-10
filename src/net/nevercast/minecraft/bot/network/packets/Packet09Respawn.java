@@ -13,10 +13,17 @@ import java.io.IOException;
  * Time: 11:39 AM
  * To change this template use File | Settings | File Templates.
  */
+
+/*
+ * This is going to need some updating, yep.
+ */
+
 public class Packet09Respawn implements IPacket {
     private byte difficulty;
     private byte mode;
-
+    private short worldHeight;
+    private long seed;
+    
     public void setDifficulty(byte difficulty) {
         this.difficulty = difficulty;
     }
@@ -32,8 +39,6 @@ public class Packet09Respawn implements IPacket {
     public void setWorldHeight(short worldHeight) {
         this.worldHeight = worldHeight;
     }
-    private short worldHeight;
-    private long seed;
 
     public Packet09Respawn(){}
 
@@ -45,12 +50,12 @@ public class Packet09Respawn implements IPacket {
         return 0x09;
     }
 
-    private byte dimension;
-    public byte getDimension(){
+    private int dimension;
+    public int getDimension(){
         return dimension;
     }
 
-    public void setDimension(byte dimension){
+    public void setDimension(int dimension){
         this.dimension = dimension;
     }
 

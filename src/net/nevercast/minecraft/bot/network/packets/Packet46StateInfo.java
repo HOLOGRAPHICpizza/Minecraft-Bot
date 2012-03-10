@@ -21,7 +21,9 @@ public class Packet46StateInfo implements IPacket{
     public enum State {
         InvalidBed,
         Raining,
-        Sunny
+        Sunny,
+        GameMode,
+        Credits
     }
 
     private State state;
@@ -35,6 +37,9 @@ public class Packet46StateInfo implements IPacket{
     }
 
     public void readExternal(DataInputStream objectInput) throws IOException {
-        state = State.values()[objectInput.readByte()];
+        byte reason = objectInput.readByte();
+        state = State.values()[reason];
+        if(reason == 3)
+        	objectInput.readByte();
     }
 }

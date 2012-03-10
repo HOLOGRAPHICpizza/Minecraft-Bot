@@ -16,7 +16,11 @@ public class MobGameEntity extends MovingEntity {
 
     private byte type;
     private Vector position;
-
+    private byte yaw;
+    private byte pitch;
+    private byte headYaw;
+    private Metadata data;
+    
     public byte getType() {
         return type;
     }
@@ -37,10 +41,18 @@ public class MobGameEntity extends MovingEntity {
         return yaw;
     }
 
+    public byte getHeadYaw() {
+        return headYaw;
+    }
+    
     public void setYaw(byte yaw) {
         this.yaw = yaw;
     }
 
+    public void setHeadYaw(byte headYaw) {
+        this.headYaw = headYaw;
+    }
+    
     public byte getPitch() {
         return pitch;
     }
@@ -56,8 +68,4 @@ public class MobGameEntity extends MovingEntity {
     public void setData(Metadata data) {
         this.data = data;
     }
-
-    private byte yaw;
-    private byte pitch;
-    private Metadata data;
 }

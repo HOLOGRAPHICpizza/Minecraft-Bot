@@ -44,6 +44,7 @@ public class Packet01LoginRequest implements IPacket{
         this.username = username;
         this.seed = 0;
         this.dimension = 0;
+        System.out.println("Login One");
     }
 
     public Packet01LoginRequest(int entID, long mapSeed, byte dimension){
@@ -51,6 +52,7 @@ public class Packet01LoginRequest implements IPacket{
         this.seed = mapSeed;
         this.dimension = dimension;
         this.username = "";
+        System.out.println("Login Two");
     }
 
     public byte getPacketId() {
@@ -81,7 +83,7 @@ public class Packet01LoginRequest implements IPacket{
         this.seed = seed;
     }
 
-    public byte getDimension() {
+    public int getDimension() {
         return dimension;
     }
 
@@ -91,8 +93,9 @@ public class Packet01LoginRequest implements IPacket{
 
     private int versionAndEntity;
     private String username;
+    private String levelType;
     private long seed;
-    private byte dimension;
+    private int dimension;
 
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
         objectOutput.writeInt(versionAndEntity);
@@ -102,20 +105,26 @@ public class Packet01LoginRequest implements IPacket{
         objectOutput.writeInt(0);
         objectOutput.writeByte(0);
         objectOutput.writeByte(0);
+        objectOutput.writeByte(0);//unsigned for some reason in protocol definition
         objectOutput.writeByte(0);//unsigned for some reason in prtocol definition
-        objectOutput.writeByte(0);//unsigned for some reason in prtocol definition
+        System.out.println("Packet01-WriteExternal");
     }
-
+//localhost
     public void readExternal(DataInputStream objectInput) throws IOException {
         versionAndEntity = objectInput.readInt();
         byte[] bytes = new byte[objectInput.readShort() * 2];
         objectInput.read(bytes);
         username = new String(bytes, "UTF-16BE");//always empty string, not actually used
-        seed = objectInput.readLong();
+        byte[] levelTypeLen = new byte[objectInput.readShort() * 2];
+        objectInput.read(levelTypeLen);
+        levelType = new String(levelTypeLen, "UTF-16BE");
+        System.out.println("Level Type: "+levelType);
+//        seed = objectInput.readLong();
         mode = objectInput.readInt();//0 for survival, 1 for creative
-        dimension = objectInput.readByte();
+        dimension = objectInput.readInt();
         difficulty = objectInput.readByte();
         worldHeight = (int)objectInput.readByte();
         maxPlayers = (int)objectInput.readByte();
+        System.out.println("Packet01-ReadExternal");
     }
 }

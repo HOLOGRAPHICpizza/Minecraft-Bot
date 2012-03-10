@@ -22,6 +22,29 @@ import javax.net.ssl.HttpsURLConnection;
  * To change this template use File | Settings | File Templates.
  */
 public class WebUtil {
+	
+	public static String executeGet(String targetURL, String Params){
+		
+		HttpsURLConnection connection = null;
+	       try
+	       {
+	         URL url = new URL(targetURL);
+	         connection = (HttpsURLConnection)url.openConnection();
+	         connection.setRequestMethod("POST");
+	         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+	         connection.setRequestProperty("Content-Length", Integer.toString(Params.getBytes().length));
+	         connection.setRequestProperty("Content-Language", "en-US");
+	       } catch (Exception e) {
+	           e.printStackTrace();
+	           return null;
+           } finally {
+	           if (connection != null)
+	             connection.disconnect();
+	       }
+		return "";
+	}
+	
     public static String excutePost(String targetURL, String urlParameters)
      {
        HttpsURLConnection connection = null;

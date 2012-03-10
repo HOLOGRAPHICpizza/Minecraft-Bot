@@ -18,7 +18,7 @@ public class MinecraftLogin {
     private boolean isLoggedIn;
     private String errorMessage = null;
 
-    public static final int CLIENT_VERSION = 17;
+    public static final int CLIENT_VERSION = 28; //28
 
     // Offline mode
     public MinecraftLogin(String username){
@@ -30,6 +30,7 @@ public class MinecraftLogin {
         try {
             String parameters = "user=" + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&version=" + CLIENT_VERSION;
             String result = WebUtil.excutePost("https://login.minecraft.net/", parameters);
+            System.out.println("AUTH: "+result);
             if (result == null) {
                 setErrorMessage("Can't connect to minecraft.net");
                 return;

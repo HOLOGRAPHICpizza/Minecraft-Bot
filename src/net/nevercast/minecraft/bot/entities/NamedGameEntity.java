@@ -11,13 +11,15 @@ import net.nevercast.minecraft.bot.structs.ItemStack;
  */
 public class NamedGameEntity extends MovingEntity {
 
+	private ItemStack[] equipment;
+    private String name;
+    private short holdingItem;
+    
     public NamedGameEntity(int eid, String name) {
         super(eid);
         this.name = name;
         this.equipment = new ItemStack[5];
     }
-
-    private ItemStack[] equipment;
 
     public void setEquipment(int slot, ItemStack item){
         equipment[slot] = item;
@@ -39,13 +41,9 @@ public class NamedGameEntity extends MovingEntity {
         equipment[0] = item;
     }
 
-    private String name;
-
-    private String getName(){
+    public String getName(){
         return name;
     }
-
-    private short holdingItem;
 
     public short getHoldingItem(){
         return holdingItem;

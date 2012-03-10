@@ -19,7 +19,7 @@ public class EntityPool {
         int id = entity.getEid();
         if(!entities.containsKey(id)){
             entities.put(id, entity);
-            System.out.println("Added ent " + entity);
+//            System.out.println("Added ent " + entity);
         }
     }
 

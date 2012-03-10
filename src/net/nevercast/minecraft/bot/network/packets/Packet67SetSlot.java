@@ -41,7 +41,8 @@ public class Packet67SetSlot implements IPacket {
     }
 
     public void readExternal(DataInputStream objectInput) throws IOException {
-        wid = objectInput.readByte();
+    	String report = "Packet67-ReadExternal\n  ";
+    	wid = objectInput.readByte();
         slot = objectInput.readShort();
         short id = objectInput.readShort();
         if(id == -1){
@@ -49,5 +50,7 @@ public class Packet67SetSlot implements IPacket {
         }else{
             item = new ItemStack(id, objectInput.readByte(), objectInput.readShort());
         }
+        report = report + "Window: "+wid+" Slot: "+slot+" ID: "+item.id+" Count: "+item.count;
+        System.out.println(report);
     }
 }

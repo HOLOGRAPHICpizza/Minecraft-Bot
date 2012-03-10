@@ -24,7 +24,10 @@ public class Metadata {
         Metadata metadata = new Metadata();
         byte x = 0;
         while ((x = dataInputStream.readByte()) != 127){
-            switch (x){
+        	int index = x & 0x1F;
+    		int type  = x >>> 5;
+//            switch (x){
+    		switch (type){
                 case 0: metadata.appendField(dataInputStream.readByte()); break;
                 case 1: metadata.appendField(dataInputStream.readShort()); break;
                 case 2: metadata.appendField(dataInputStream.readInt()); break;

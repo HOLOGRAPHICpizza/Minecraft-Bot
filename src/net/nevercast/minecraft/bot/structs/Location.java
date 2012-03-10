@@ -21,6 +21,10 @@ public class Location {
         this.Z = Z;
     }
 
+    public double X, Y, Stance, Z;
+    public float Yaw,Pitch, Roll;
+    public boolean OnGround;
+    
     public void setPosition(double x, double y, double z){
         this.X = x; this.Y = y; this.Z = z;
     }
@@ -46,10 +50,6 @@ public class Location {
         this.Pitch = (float)(pitch*2*Math.PI/256);
         this.Roll = (float)(roll*2*Math.PI/256);
     }
-
-    public double X, Y, Stance, Z;
-    public float Yaw,Pitch, Roll;
-    public boolean OnGround;
 
     public static Location fromAbsoluteInteger(Vector vector){
         return fromAbsoluteInteger(vector.X,  vector.Y, vector.Z);

@@ -18,12 +18,13 @@ public class Packet0APlayer implements IPacket {
         return 0x0A;
     }
 
+    private boolean onGround;
+    
     public Packet0APlayer(){}
     public Packet0APlayer(boolean onGround){
         this.onGround = onGround;
     }
-
-    private boolean onGround;
+    
     public boolean getOnGround(){
         return onGround;
     }

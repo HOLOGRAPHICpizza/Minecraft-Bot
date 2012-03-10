@@ -20,7 +20,8 @@ public class Packet0CPlayerLook implements IPacket {
     }
 
     private float yaw, pitch;
-
+    private boolean onGround;
+    
     public float getYaw() {
         return yaw;
     }
@@ -44,8 +45,6 @@ public class Packet0CPlayerLook implements IPacket {
     public void setOnGround(boolean onGround) {
         this.onGround = onGround;
     }
-
-    private boolean onGround;
 
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
         objectOutput.writeFloat(yaw);

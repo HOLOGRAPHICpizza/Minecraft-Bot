@@ -2,6 +2,8 @@ package net.nevercast.minecraft.bot.network;
 
 import java.io.*;
 
+import net.nevercast.minecraft.bot.MyLogger;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Josh
@@ -33,6 +35,8 @@ public class PacketInputStream {
     public IPacket readPacket() throws IOException {
         try{
             byte id = inputStream.readByte();
+            String hexed = String.format("%x", id).toUpperCase();
+            System.out.println("---Packet: "+hexed);
             if(id == -1){
                 throw new IOException("This shit died!");
             }
@@ -42,8 +46,10 @@ public class PacketInputStream {
                 packet.readExternal(inputStream);
                 return packet;
             }
-            //Packet isn't supported
-            //System.out.println("Unsupported packet " + id);
+            //Packet isn't supported Added ent
+            System.out.println("Unsupported packet " + id);
+//            String hex = java.lang.Integer.toHexString( id );
+//            MyLogger.logger.info("Unknown Packet\n    Int: "+id+"\n    Hex: "+hex);
             // Is this packet a static length?
             if(!PacketFactory.getCanEatPacket(id)) throw new IOException("Couldn't eat unknown packet " + id + ", I'm bailing!");
             inputStream.skipBytes(PacketFactory.getPacketLength(id));
