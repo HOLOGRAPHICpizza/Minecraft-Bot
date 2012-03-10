@@ -21,7 +21,6 @@ public class NeverCastsBot {
     	MyLogger.main(null);
     	MyLogger.logger.info("Test from NCB");
         String loginName = "coodgenducta";
-//        String loginPass =  "EW7Mym49BdNT";
         if(args.length > 0){
             loginName = args[0];
         }
