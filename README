@@ -1,13 +1,4 @@
-This is a project to create a bot for minecraft using nevercast's code for a simple bot as a basis for the protocol management and adding an AI. This will require adding many capabilities to the original code, such as movement, pathfinding, block breaking, crafting and a prioritising AI as an end goal.
+This is a fork of a twice stalled project. I don't have an idea of long term goals. Nor near term, for that matter. It's mainly a distraction from more formal work.
 TODO
-1) update to 1.8.1 protocol
-2) add movement system
-3) add movement pathfinding
-4) add block breaking
-5) make simple bot that chops down trees and plants saplings in their place
-6) ability to craft tools
-7) add ability to accept commands over chat
-8) add simple weighting of options and ideas of effects based upon time, eg having tools making chopping down trees faster
-9) prioritisation of tasks based upon more sophisticated criteria such as availability of materials, safety of areas based upon time etc.
-
-This tool is not intended for greifing, it is intended as an amusement and a curiosity.
+1) finish updating to 1.2.3
+2) fix everything I broke or disabled
