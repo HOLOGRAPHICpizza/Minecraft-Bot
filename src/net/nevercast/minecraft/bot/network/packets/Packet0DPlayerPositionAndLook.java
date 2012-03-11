@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.structs.Location;
@@ -47,8 +52,8 @@ public class Packet0DPlayerPositionAndLook implements IPacket {
         objectOutput.writeFloat(location.Yaw);
         objectOutput.writeFloat(location.Pitch);
         objectOutput.writeBoolean(location.OnGround);
-        System.out.println("Packet0D-WriteExternal\n  X:"+location.X+" Y:"+location.Y+" Z:"+location.Z);
-        System.out.println("  Ground="+location.OnGround+" Pitch="+location.Pitch+" Yaw="+location.Yaw+" Stance="+location.Stance);
+//        System.out.println("Packet0D-WriteExternal\n  X:"+location.X+" Y:"+location.Y+" Z:"+location.Z);
+//        System.out.println("  Ground="+location.OnGround+" Pitch="+location.Pitch+" Yaw="+location.Yaw+" Stance="+location.Stance);
     }
 
     //Received from Server
@@ -64,7 +69,12 @@ public class Packet0DPlayerPositionAndLook implements IPacket {
         location.Pitch 		= objectInput.readFloat();
         location.OnGround 	= objectInput.readBoolean();
         location.Stance = location.Y + 1;
-        System.out.println("Packet0D-ReadExternal\n  X:"+location.X+" Y:"+location.Y+" Z:"+location.Z);
-        System.out.println("  Ground="+location.OnGround+" Pitch="+location.Pitch+" Yaw="+location.Yaw+" Stance="+location.Stance);
+//        System.out.println("Packet0D-ReadExternal\n  X:"+location.X+" Y:"+location.Y+" Z:"+location.Z);
+//        System.out.println("  Ground="+location.OnGround+" Pitch="+location.Pitch+" Yaw="+location.Yaw+" Stance="+location.Stance);
+    }
+    
+    public String log(){
+    	return "@ 0x0D X="+location.X+" Y="+location.Y+" Z="+location.Z+" Yaw="+location.Yaw+"\n       "+
+    			"Pitch="+location.Pitch+" Stance="+location.Stance+" Grounded="+location.OnGround;
     }
 }

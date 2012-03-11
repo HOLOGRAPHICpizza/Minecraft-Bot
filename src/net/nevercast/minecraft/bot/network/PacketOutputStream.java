@@ -1,11 +1,14 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-
-import net.nevercast.minecraft.bot.MyLogger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,9 +33,7 @@ public class PacketOutputStream {
     }
 
     public void writePacket(IPacket packet) throws IOException {
-    	System.out.println("+++[OUT: "+packet.getPacketId()+"]+++");
-//    	String hex = java.lang.Integer.toHexString( packet.getPacketId() );
-//        MyLogger.logger.info("Sending Packet\n    Int: "+packet.getPacketId()+"\n    Hex: "+hex);
+    	System.out.println("+++ Out: "+packet.getPacketId());
         this.outputStream.writeByte(packet.getPacketId());
         packet.writeExternal(outputStream);
         outputStream.flush();

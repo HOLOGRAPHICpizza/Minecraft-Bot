@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.MinecraftClient;
@@ -44,7 +49,6 @@ public class Packet01LoginRequest implements IPacket{
         this.username = username;
         this.seed = 0;
         this.dimension = 0;
-        System.out.println("Login One");
     }
 
     public Packet01LoginRequest(int entID, long mapSeed, byte dimension){
@@ -52,7 +56,6 @@ public class Packet01LoginRequest implements IPacket{
         this.seed = mapSeed;
         this.dimension = dimension;
         this.username = "";
-        System.out.println("Login Two");
     }
 
     public byte getPacketId() {
@@ -107,9 +110,9 @@ public class Packet01LoginRequest implements IPacket{
         objectOutput.writeByte(0);
         objectOutput.writeByte(0);//unsigned for some reason in protocol definition
         objectOutput.writeByte(0);//unsigned for some reason in prtocol definition
-        System.out.println("Packet01-WriteExternal");
+//        System.out.println("Packet01-WriteExternal");
     }
-//localhost
+
     public void readExternal(DataInputStream objectInput) throws IOException {
         versionAndEntity = objectInput.readInt();
         byte[] bytes = new byte[objectInput.readShort() * 2];
@@ -125,6 +128,11 @@ public class Packet01LoginRequest implements IPacket{
         difficulty = objectInput.readByte();
         worldHeight = (int)objectInput.readByte();
         maxPlayers = (int)objectInput.readByte();
-        System.out.println("Packet01-ReadExternal");
+//        System.out.println("Packet01-ReadExternal");
+    }
+    
+    public String log(){
+    	return "@ 0x01 Username="+username+" V&E="+versionAndEntity+" LvlType="+levelType+" Mode="+mode+"\n       "+
+    		   "Dimension="+dimension+" Difficulty="+difficulty+" Height="+worldHeight+" Slots="+maxPlayers;
     }
 }

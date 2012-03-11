@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -36,10 +41,14 @@ public class Packet46StateInfo implements IPacket{
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    byte reason;
     public void readExternal(DataInputStream objectInput) throws IOException {
-        byte reason = objectInput.readByte();
+        reason = objectInput.readByte();
         state = State.values()[reason];
         if(reason == 3)
         	objectInput.readByte();
+    }
+    public String log(){
+    	return "@ 0x46 Reason="+reason+" State="+state;
     }
 }

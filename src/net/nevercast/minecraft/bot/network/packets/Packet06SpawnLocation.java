@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -41,5 +46,9 @@ public class Packet06SpawnLocation implements IPacket{
         x = objectInput.readInt();
         y = objectInput.readInt();
         z = objectInput.readInt();
+    }
+    
+    public String log(){
+    	return "@ 0x06 X="+x+" Y="+y+" Z="+z;
     }
 }

@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -44,5 +49,9 @@ public class Packet35BlockChange implements IPacket {
         blockInfo = new BlockInfo();
         blockInfo.blockType = objectInput.readByte();
         blockInfo.blockData = objectInput.readByte();
+    }
+    
+    public String log(){
+    	return "@ 0x35 X="+position.X+" Y="+position.Y+" Z="+position.Z+" BlockType="+blockInfo.blockType;
     }
 }

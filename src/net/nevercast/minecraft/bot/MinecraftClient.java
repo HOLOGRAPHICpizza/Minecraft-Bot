@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot;
 
 import net.nevercast.minecraft.bot.entities.EntityPool;
@@ -27,6 +32,7 @@ import java.util.zip.DataFormatException;
  */
 public class MinecraftClient extends Thread implements GamePulser.IGamePulserReceptor{
 
+	private boolean enableLogging = false;
     private MinecraftLogin login;
     private Socket socket = null;
     private PacketInputStream packetInputStream;
@@ -93,13 +99,15 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     public void run(){
         try {
             packetOutputStream.writePacket(
-//            		new Packet02Handshake(login.getUsername())
-                    new Packet02Handshake(login.getUsername()) //Hack for protocol update
+                    new Packet02Handshake(login.getUsername())
             );
             while(socket.isConnected() && !isInterrupted()){
                 IPacket mcPacket = packetInputStream.readPacket();
                 if(mcPacket != null){
                     handlePacket(mcPacket);
+                    if(enableLogging==true || mcPacket.getPacketId()==0xFF){
+                    	System.out.println(mcPacket.log());
+                    }
                 }
             }
         } catch (IOException e) {
@@ -146,17 +154,22 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     }
 //Unsupported packet
     private void handleMapChunk(Packet33MapChunk packet) throws IOException{
-        try {
-            world.updateChunk(packet.getLocation(), packet.getSize(), packet.getCompressedData());
-        } catch (IOException e) {
-            throw e;
-        } catch (DataFormatException e) {
-            throw new IOException(e);
-        }
+//        try {
+//            world.updateChunk(packet.getLocation(), packet.getSize(), packet.getCompressedData());
+//        } catch (IOException e) {
+//            throw e;
+//        } catch (DataFormatException e) {
+//            throw new IOException(e);
+//        }
     }
 
     private void handleEntMeta(Packet28EntityMetadata packet) {
-        ((MobGameEntity)entityPool.getEntity(packet.getEid())).setData(packet.getData());
+    	try{
+    		((MobGameEntity)entityPool.getEntity(packet.getEid())).setData(packet.getData());
+    	} catch(Exception e){
+    		System.out.println("FFFUUUUUUUU");
+    		e.printStackTrace();
+    	}
     }
 
     private void handleItemSpawn(Packet15ItemSpawned packet) {
@@ -319,9 +332,9 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         difficulty = packet.getDifficulty();
         maxPlayers = packet.getMaxPlayers();
         seed = packet.getSeed();
-        System.out.println("Oh cool! I'm Mr." + myEntId + ". Kinda unsocial really!");
-        System.out.println("World: "+dimension+"\tHeight: "+worldHeight+"\tSeed: "+seed);
-        System.out.println("Difficulty: "+difficulty+"\tSlots: "+maxPlayers+"\tMode: "+mode);
+//        System.out.println("Oh cool! I'm Mr." + myEntId + ". Kinda unsocial really!");
+//        System.out.println("World: "+dimension+"\tHeight: "+worldHeight+"\tSeed: "+seed);
+//        System.out.println("Difficulty: "+difficulty+"\tSlots: "+maxPlayers+"\tMode: "+mode);
     }
 
     private void handlerBeginLogin(Packet02Handshake packet) throws IOException {

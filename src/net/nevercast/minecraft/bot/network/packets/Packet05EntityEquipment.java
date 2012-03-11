@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -49,5 +54,9 @@ public class Packet05EntityEquipment implements IPacket{
         else
             this.item = new ItemStack(item, (byte)1, info);
 
+    }
+    
+    public String log(){
+    	return "@ 0x05 EID="+eid+" Slot="+slot+" Item="+item;
     }
 }

@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.entities.Metadata;
@@ -29,7 +34,7 @@ public class Packet18MobSpawned implements IPacket{
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
 
     }
-
+    String name;
     public void readExternal(DataInputStream objectInput) throws IOException {
         entity = new MobGameEntity(objectInput.readInt());
         entity.setType(objectInput.readByte());
@@ -44,8 +49,12 @@ public class Packet18MobSpawned implements IPacket{
         entity.setPitch(objectInput.readByte());
         entity.setHeadYaw(objectInput.readByte());
         entity.setData(Metadata.createFromStream(objectInput));
-        String name = sayType(entity.getType());
-        System.out.println("Packet18-ReadExternal | Name: " + name + " EID: " + entity.getEid());
+        name = sayType(entity.getType());
+//        System.out.println("Packet18-ReadExternal | );
+    }
+    
+    public String log(){
+    	return "@ 0x18 Name: " + name + " EID: " + entity.getEid();
     }
     
     public String sayType(byte type){

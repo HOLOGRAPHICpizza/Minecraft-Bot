@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.entities.Metadata;
@@ -37,5 +42,8 @@ public class Packet28EntityMetadata implements IPacket {
     public void readExternal(DataInputStream objectInput) throws IOException {
         eid = objectInput.readInt();
         data = Metadata.createFromStream(objectInput);
+    }
+    public String log(){
+    	return "@ 0x28 EID="+eid;
     }
 }

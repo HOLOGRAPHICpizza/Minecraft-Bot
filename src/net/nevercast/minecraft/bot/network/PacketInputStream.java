@@ -1,8 +1,11 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network;
 
 import java.io.*;
-
-import net.nevercast.minecraft.bot.MyLogger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,11 +49,6 @@ public class PacketInputStream {
                 packet.readExternal(inputStream);
                 return packet;
             }
-            //Packet isn't supported Added ent
-            System.out.println("Unsupported packet " + id);
-//            String hex = java.lang.Integer.toHexString( id );
-//            MyLogger.logger.info("Unknown Packet\n    Int: "+id+"\n    Hex: "+hex);
-            // Is this packet a static length?
             if(!PacketFactory.getCanEatPacket(id)) throw new IOException("Couldn't eat unknown packet " + id + ", I'm bailing!");
             inputStream.skipBytes(PacketFactory.getPacketLength(id));
         }catch (IOException ioe){

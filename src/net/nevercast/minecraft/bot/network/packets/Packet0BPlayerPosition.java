@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -87,5 +92,9 @@ public class Packet0BPlayerPosition implements IPacket {
 
     public void readExternal(DataInputStream objectInput) throws IOException {
 
+    }
+    
+    public String log(){
+    	return "@ 0x0B X="+x+" Y="+y+" Z="+z+" Stance="+stance+" Grounded="+onGround;
     }
 }

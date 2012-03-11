@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -40,21 +45,29 @@ public class Packet68WindowItems implements IPacket{
 
     }
 
+    String report = "";
+    
     public void readExternal(DataInputStream objectInput) throws IOException {
-    	String report = "Packet68-ReadExternal\n";
+//    	report = "Packet68-ReadExternal\n";
         wid = objectInput.readByte();
         count = objectInput.readShort();
         itemStack = new ItemStack[count];
+        report+="Window="+wid+"\n";
         for(int i = 0; i < count; i++){
             short id = objectInput.readShort();
             if(id == -1){
                 itemStack[i] = ItemStack.EMPTY;
-                report = report + "\n  Slot "+i+" Empty";
+                report += "    Slot="+i+" Empty"+"\n";
             }else{
                 itemStack[i] = new ItemStack(id, objectInput.readByte(), objectInput.readShort());
-                report = report + "\n  Slot "+i+" ID: "+itemStack[i].id+" Count: "+itemStack[i].count;
+                report += "    Slot="+i+" ID="+itemStack[i].id+" Count="+itemStack[i].count+"\n";
             }
         }
-        System.out.println(report);
+//        System.out.println(report);
     }
+    
+    public String log(){
+    	return "@ 0x68 "+report;
+    }
+    
 }

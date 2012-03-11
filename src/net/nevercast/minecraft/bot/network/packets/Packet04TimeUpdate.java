@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -30,6 +35,10 @@ public class Packet04TimeUpdate implements IPacket {
 
     public void readExternal(DataInputStream objectInput) throws IOException {
         time = objectInput.readLong();
-        System.out.println("Packet04-ReadExternal | TickTime: "+time);
+//        System.out.println("Packet04-ReadExternal | TickTime: "+time);
+    }
+    
+    public String log(){
+    	return "@ 0x04 ticks="+time;
     }
 }

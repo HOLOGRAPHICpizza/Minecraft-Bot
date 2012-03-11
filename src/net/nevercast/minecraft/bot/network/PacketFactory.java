@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network;
 
 import net.nevercast.minecraft.bot.network.packets.*;
@@ -89,6 +94,7 @@ public class PacketFactory {
         unsupportedPackets.put((byte)0x65, 1); 		// Close window
         unsupportedPackets.put((byte)0x69, 5); 		// Update Window Property
         unsupportedPackets.put((byte)0x6A, 4); 		// Confirm Transaction
+        unsupportedPackets.put((byte)0x84, 23); 	// Update Tile Entity
 //        unsupportedPackets.put((byte)0x6B, X); 		// Creative Inventory Action
 //        unsupportedPackets.put((byte)0x6B, 3);//+slot 		// Enchant Item
         unsupportedPackets.put((byte)0xC8, 5); 		// Increment stats

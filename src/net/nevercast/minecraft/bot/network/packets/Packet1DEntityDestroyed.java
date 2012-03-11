@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -34,5 +39,9 @@ public class Packet1DEntityDestroyed implements IPacket{
 
     public void readExternal(DataInputStream objectInput) throws IOException {
         eid = objectInput.readInt();
+    }
+    
+    public String log(){
+    	return "@ 0x1D EID="+eid;
     }
 }

@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -52,7 +57,9 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
 
     }
-
+    
+    short id;
+    
     public void readExternal(DataInputStream objectInput) throws IOException {
         blockPosition = new Vector(
                 objectInput.readInt(),
@@ -60,7 +67,7 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
                 objectInput.readInt()
         );
         direction = BlockFace.values()[objectInput.readByte()];
-        short id = objectInput.readByte();
+        id = objectInput.readByte();
         if(id == -1){
             item = ItemStack.EMPTY;
         }else{
@@ -76,6 +83,10 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
         	}
         }
     }
+    
+    public String log(){
+    	return "@ 0x0F X="+blockPosition.X+" Y="+blockPosition.Y+" Z="+blockPosition.Z+" Face="+direction+" ID="+id;
+    }    
     
     public boolean enchantable(short id){
     	if(id<0x100) return false;

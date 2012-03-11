@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -89,5 +94,9 @@ public class Packet09Respawn implements IPacket {
         mode = objectInput.readByte();
         worldHeight = objectInput.readShort();
         seed = objectInput.readLong();
+    }
+    
+    public String log(){
+    	return "@ 0x09 Mode="+mode+" Dimension="+dimension+" Difficulty="+difficulty+" Height="+worldHeight;
     }
 }

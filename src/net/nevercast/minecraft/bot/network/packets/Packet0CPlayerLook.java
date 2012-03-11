@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -54,5 +59,9 @@ public class Packet0CPlayerLook implements IPacket {
 
     public void readExternal(DataInputStream objectInput) throws IOException {
 
+    }
+    
+    public String log(){
+    	return "@ 0x0C Yaw="+yaw+" Pitch="+pitch+" Grounded="+onGround;
     }
 }

@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network;
 
 import java.io.*;
@@ -13,4 +18,5 @@ public interface IPacket {
     byte getPacketId();
     void writeExternal(DataOutputStream objectOutput) throws IOException;
     void readExternal(DataInputStream objectInput) throws IOException;
+    String log();
 }

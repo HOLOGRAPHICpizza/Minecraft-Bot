@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -39,5 +44,9 @@ public class PacketFFDisconnect implements IPacket{
         byte[] data = new byte[length*2];
         objectInput.readFully(data);
         reason = new String(data, "UTF16-BE");
+    }
+    
+    public String log(){
+    	return "@ 0xFF Reason="+reason;
     }
 }

@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 	package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -50,5 +55,9 @@ public class Packet02Handshake implements IPacket{
         byte[] bytes = new byte[objectInput.readShort() * 2];
         objectInput.read(bytes);
         usernameOrHash = new String(bytes, "UTF-16BE");
+    }
+    
+    public String log(){
+    	return "@ 0x02 U || H="+usernameOrHash;
     }
 }

@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot;
 
 import net.nevercast.minecraft.bot.web.MinecraftLogin;
@@ -18,9 +23,7 @@ import java.util.logging.SimpleFormatter;
 public class NeverCastsBot {  
     
     public static void main(String[] args) {
-    	MyLogger.main(null);
-    	MyLogger.logger.info("Test from NCB");
-        String loginName = "coodgenducta";
+        String loginName = "iLiveForaMinute";
         if(args.length > 0){
             loginName = args[0];
         }

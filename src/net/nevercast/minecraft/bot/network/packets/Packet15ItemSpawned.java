@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.entities.ItemEntity;
@@ -52,5 +57,8 @@ public class Packet15ItemSpawned implements IPacket{
         pitch = objectInput.readByte();
         roll = objectInput.readByte();
         entity.getLocation().setRotationPacked(yaw,pitch,roll);
+    }
+    public String log(){
+    	return "@ 0x15 EID="+entity.getEid();
     }
 }

@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.entities.NamedGameEntity;
@@ -33,8 +38,10 @@ public class Packet14NamedEntitySpawn implements IPacket {
 
     }
 
+    int id;
+    
     public void readExternal(DataInputStream objectInput) throws IOException {
-        int id = objectInput.readInt();
+        id = objectInput.readInt();
         entity = new NamedGameEntity(id, PacketInputStream.readString16(objectInput));
         entity.setLocation(
                 Location.fromAbsoluteInteger(
@@ -43,7 +50,10 @@ public class Packet14NamedEntitySpawn implements IPacket {
         );
         entity.getLocation().setRotationPacked(objectInput.readByte(), objectInput.readByte());
         entity.setHoldingItem(objectInput.readShort());
-        System.out.println("Packet14-ReadExternal");
-        System.out.println("Packet14-Spawned: "+entity.getName());
+//        System.out.println("Packet14-ReadExternal");
+//        System.out.println("Packet14-Spawned: "+entity.getName());
+    }
+    public String log(){
+    	return "@ 0x14 EID="+entity.getEid()+" Name="+entity.getName();
     }
 }

@@ -1,3 +1,8 @@
+/*
+ * Updated March 10, 2012
+ * By: mikecyber 
+ * For: Protocol 1.2.3 Compliance
+ */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -19,17 +24,22 @@ public class Packet33MapChunk implements IPacket{
     }
 
     private int X;
-    private short Y;
+//    private int Y;
     private int Z;
-    private int Size_X, Size_Y, Size_Z;
+    private boolean groundUp;
+    private int pBm;
+    private int aBm;
+    private int size;
+//    private int Size_X, Size_Y, Size_Z;
     private byte[] compressedData;
 
     public Vector getLocation(){
-        return new Vector(X,Y,Z);
+        return new Vector(X,0,Z);
     }
 
-    public Vector getSize(){
-        return new Vector(Size_X, Size_Y, Size_Z);
+    public int getSize(){
+//        return new Vector(Size_X, Size_Y, Size_Z);
+    	return size;
     }
 
     public byte[] getCompressedData(){
@@ -40,13 +50,26 @@ public class Packet33MapChunk implements IPacket{
     }
 
     public void readExternal(DataInputStream objectInput) throws IOException {
-        X = objectInput.readInt();
-        Y = objectInput.readShort();
-        Z = objectInput.readInt();
-        Size_X = (objectInput.readUnsignedByte() + 1);
-        Size_Y = (objectInput.readUnsignedByte() + 1);
-        Size_Z = (objectInput.readUnsignedByte() + 1);
-        compressedData = new byte[objectInput.readInt()];
-        objectInput.readFully(compressedData);
+    	X = objectInput.readInt();
+    	Z = objectInput.readInt();
+    	groundUp = objectInput.readBoolean();
+    	pBm = objectInput.readUnsignedShort();
+    	aBm = objectInput.readUnsignedShort();
+    	size = objectInput.readInt();
+    	int unused = objectInput.readInt();
+    	compressedData = new byte[size];
+    	objectInput.readFully(compressedData);
+//        X = objectInput.readInt();
+//        Y = objectInput.readShort();
+//        Z = objectInput.readInt();
+//        Size_X = (objectInput.readUnsignedByte() + 1);
+//        Size_Y = (objectInput.readUnsignedByte() + 1);
+//        Size_Z = (objectInput.readUnsignedByte() + 1);
+//        compressedData = new byte[objectInput.readInt()];
+//        objectInput.readFully(compressedData);
+    }
+    
+    public String log(){
+    	return "@ 0x33 X="+X+" Z="+Z+" groundUp="+groundUp;
     }
 }
