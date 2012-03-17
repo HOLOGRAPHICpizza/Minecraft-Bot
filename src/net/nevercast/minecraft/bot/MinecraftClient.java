@@ -21,7 +21,11 @@ import net.nevercast.minecraft.bot.world.Chunk;
 import net.nevercast.minecraft.bot.world.World;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.Socket;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.zip.DataFormatException;
 
 /**
@@ -58,6 +62,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     private IPacket previousPacket;
 
     public boolean first0Dpacket = true;
+    public boolean posbs = false;
     
     public MinecraftClient(MinecraftLogin loginInformation){
         this.login = loginInformation;
@@ -106,7 +111,9 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                 if(mcPacket != null){
                     handlePacket(mcPacket);
                     if(enableLogging==true || mcPacket.getPacketId()==0xFF){
-                    	System.out.println(mcPacket.log());
+                    	try { handleLogging(mcPacket); } catch(Exception ex){
+                    		System.out.println("@ "+String.format("%x", mcPacket.getPacketId()).toUpperCase());
+                    	}
                     }
                 }
             }
@@ -121,6 +128,24 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 		}
     }
 
+    private void handleLogging(IPacket packet) throws IllegalArgumentException, IllegalAccessException{
+    	Calendar cal = Calendar.getInstance();
+    	SimpleDateFormat date_format = new SimpleDateFormat("HH:mm:ss");
+    	Date resultdate = new Date(cal.getTimeInMillis());
+    	String packetName = String.format("%x", packet.getPacketId()).toUpperCase();
+		Field[] packetFields = packet.getClass().getDeclaredFields();
+		String pName = "";
+		String pValue = "";
+		String toLog = date_format.format(resultdate)+" @ 0x"+packetName+" ";
+		for(Field pField : packetFields){
+			pName = pField.getName();
+			pField.setAccessible(true);
+			pValue = (String)pField.get(packet).toString();
+			toLog += pName+"="+pValue+" ";
+		}
+		System.out.println(toLog);
+    }
+    
     private void handlePacket(IPacket mcPacket) throws Exception{
         //System.out.println("Handling packet " + mcPacket.getPacketId());
         switch (mcPacket.getPacketId()){
@@ -133,6 +158,9 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
             case 0x08: handleHealthUpdate((Packet08UpdateHealth)mcPacket); 				break;
             case 0x09: handleRespawn((Packet09Respawn)mcPacket);						break;
 //            case 0x0C: handlePositionAndLook((Packet0DPlayerPositionAndLook)mcPacket); 	break;
+            case 0x0A: handleOnGround((Packet0APlayer)mcPacket);						break;
+            case 0x0B: handlePosition((Packet0BPlayerPosition)mcPacket);				break;
+            case 0x0C: handleLook((Packet0CPlayerLook)mcPacket);						break;
             case 0x0D: handlePositionAndLook((Packet0DPlayerPositionAndLook)mcPacket); 	break;
             case 0x14: handlePlayerSpawned((Packet14NamedEntitySpawn)mcPacket); 		break;
             case 0x15: handleItemSpawn((Packet15ItemSpawned)mcPacket); 					break;
@@ -152,7 +180,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         }
         previousPacket = mcPacket;
     }
-//Unsupported packet
+
     private void handleMapChunk(Packet33MapChunk packet) throws IOException{
 //        try {
 //            world.updateChunk(packet.getLocation(), packet.getSize(), packet.getCompressedData());
@@ -161,6 +189,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 //        } catch (DataFormatException e) {
 //            throw new IOException(e);
 //        }
+    	System.out.println("Chunk");
     }
 
     private void handleEntMeta(Packet28EntityMetadata packet) {
@@ -240,6 +269,22 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                 }
                 sendMessage("Failed to find surface!");
             }
+        }else if(message.equalsIgnoreCase("a")){
+//        	location.Y -= 0.25;
+//        	location.Stance -= 0.25;
+//        	location.X = location.X - (double)1;
+//        	Packet0DPlayerPositionAndLook packet = new Packet0DPlayerPositionAndLook(location);
+//        	try {
+//				packetOutputStream.writePacket(packet);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+        	String out = "posbs="+posbs+" onGround="+location.OnGround; 
+        	posbs=false;
+        	location.OnGround=false;
+        	out += " posbs="+posbs+" onGround="+location.OnGround;
+        	sendMessage(out);
         }
     }
 
@@ -263,7 +308,10 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                 respawn.setDifficulty(difficulty);
                 respawn.setDimension(dimension);
                 respawn.setMode(mode);
+                respawn.setWorldHeight((short) worldHeight);
+                respawn.setLevel(levelType);
                 packetOutputStream.writePacket(respawn);
+                System.out.println("DEBUG= Respawn Packet Sent posbs="+posbs+" respawned="+respawned);
             }catch(IOException e){
                 e.printStackTrace();
             }
@@ -272,12 +320,18 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         }
     }
 
+    public boolean respawned=false;
     private void handleRespawn(Packet09Respawn packet) {
         dimension = packet.getDimension();
         difficulty = packet.getDifficulty();
         mode = packet.getMode();
         worldHeight = packet.getWorldHeight();
-        seed = packet.getSeed();
+        levelType = packet.getLevel();
+//        seed = packet.getSeed();
+        System.out.println("DEBUG= Respawn Packet Recv posbs="+posbs+" respawned="+respawned);
+        posbs=false;
+        respawned=true;
+        System.out.println("DEBUG= Respawn Packet Recv posbs="+posbs+" respawned="+respawned);
     }
 
     private void handleDisconnect(PacketFFDisconnect packet) {
@@ -293,9 +347,9 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         }else{
             System.out.println("Receiving inventory!");
         }
-        for(int i = 0; i < packet.getCount(); i++){
-            setInventoryItem(i, packet.getItemStack()[i]);
-        }
+//        for(int i = 0; i < packet.getCount(); i++){
+//            setInventoryItem(i, packet.getItemStack()[i]);
+//        }
     }
 
     private void handleTime(Packet04TimeUpdate packet) {
@@ -303,18 +357,75 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     }
 
     private void handleSpawn(Packet06SpawnLocation packet) {
-        spawn = new Vector();
-        spawn.X = packet.getX();
-        spawn.Y = packet.getY();
-        spawn.Z = packet.getZ();
+//        spawn = new Vector();
+//        spawn.X = packet.getX();
+//        spawn.Y = packet.getY();
+//        spawn.Z = packet.getZ();
+//        location.fromAbsoluteInteger(spawn);
+    	if(location==null)
+    		location = new Location();
+    	location.X = packet.getX();
+    	location.Y = packet.getY();
+    	location.Z = packet.getZ();
+    	System.out.println("HandleSpawn x="+location.X+
+    								  " y="+location.Y+
+    								  " z="+location.Z);
     }
 
+    private void handleOnGround(Packet0APlayer packet){
+    	location.OnGround = packet.getOnGround();
+    	System.out.println("HandleGround g="+location.OnGround);
+    }	
+    
+    private void handlePosition(Packet0BPlayerPosition packet){
+    	location.X = packet.getX();
+    	location.Y = packet.getY();
+    	location.Z = packet.getZ();
+    	location.Stance = packet.getStance();
+    	location.OnGround = packet.getOnGround();
+    	System.out.println("HandlePosition x="+location.X+
+									  " y="+location.Y+
+									  " z="+location.Z+
+									  " s="+location.Stance+
+									  " g="+location.OnGround);
+    }
+    
+    private void handleLook(Packet0CPlayerLook packet){
+    	location.Yaw = packet.getYaw();
+    	location.Pitch = packet.getPitch();
+    	location.OnGround = packet.getOnGround();
+    	System.out.println("HandleLook y="+location.Yaw+
+									  " p="+location.Pitch+
+									  " g="+location.OnGround);
+    }
+    
     private void handlePositionAndLook(Packet0DPlayerPositionAndLook packet) throws IOException {
-        location = packet.getLocation();
-        if(first0Dpacket==true){
-        	packetOutputStream.writePacket(packet);
-        	first0Dpacket = false;
+        if(location==null){
+        	location = new Location();
         }
+    	location = packet.getLocation();
+    	packetOutputStream.writePacket(packet);
+        if(first0Dpacket==true){
+        	first0Dpacket = false;
+        	System.out.println("DEBUG= Position Packet - First - posbs="+posbs+" respawned="+respawned);
+        } else {
+        	System.out.println("DEBUG= Position Packet - Else - posbs="+posbs+" respawned="+respawned);
+        	if(respawned!=true){
+        		posbs=true;
+        		System.out.println("DEBUG= Position Packet - A - posbs="+posbs+" respawned="+respawned);
+        	} else {
+        		posbs=false;
+        		respawned=false;
+        		System.out.println("DEBUG= Position Packet - B - posbs="+posbs+" respawned="+respawned);
+        	}
+        }
+        System.out.println("HandleLocation x="+location.X+
+										  " y="+location.Y+
+										  " z="+location.Z+
+										  " s="+location.Stance+
+										  " y="+location.Yaw+
+										  " p="+location.Pitch+
+										  " g="+location.OnGround);
     }
 
     private void handleAnnoyingKeepAlive(Packet00KeepAlive packet) throws IOException {
@@ -322,7 +433,8 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         packetOutputStream.writePacket(packet);
         System.out.println("Marco-Polo!");
     }
-//99
+    
+    private String levelType = "";
     private void handlerFinishLogin(Packet01LoginRequest packet) throws Exception {
         myEntId = packet.getVersionAndEntity();
         
@@ -331,7 +443,8 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         mode = (byte) packet.getMode();
         difficulty = packet.getDifficulty();
         maxPlayers = packet.getMaxPlayers();
-        seed = packet.getSeed();
+        levelType = packet.getLevelType();
+//        seed = packet.getSeed();
 //        System.out.println("Oh cool! I'm Mr." + myEntId + ". Kinda unsocial really!");
 //        System.out.println("World: "+dimension+"\tHeight: "+worldHeight+"\tSeed: "+seed);
 //        System.out.println("Difficulty: "+difficulty+"\tSlots: "+maxPlayers+"\tMode: "+mode);
@@ -354,11 +467,44 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 
 
     public void tick(long elapsedTime) throws Exception{
-        System.out.println("Tick: " + elapsedTime + "ms");
+//        System.out.println("Tick: " + elapsedTime + "ms");
         if(maxPlayers != 0){
-        	Packet0APlayer pman = new Packet0APlayer(true);
-//            Packet0DPlayerPositionAndLook position = new Packet0DPlayerPositionAndLook(location);
-            packetOutputStream.writePacket(pman);
+	        if(first0Dpacket == false){
+	        	modifyPosition();
+	            Packet0DPlayerPositionAndLook packet0D = new Packet0DPlayerPositionAndLook(location);
+	            packetOutputStream.writePacket(packet0D);
+	        }else{
+	        	Packet0APlayer packet0A = new Packet0APlayer(false);
+	        	packetOutputStream.writePacket(packet0A);
+	        }
         }
     }
+    private int danceBitch = 0;
+	private void modifyPosition() {		
+		if(posbs==true){ 
+			location.OnGround = true; 
+			} 
+		else { 
+			location.OnGround = false; 
+		}
+		if(location.OnGround==false){
+			System.out.println("ModifyPosition(): y="+location.Y);
+			location.Y -= 0.15;
+			location.Stance -= 0.15;
+		}
+		switch(danceBitch){
+		case 0: location.Yaw -= 15; break;
+//		case 1: location.Yaw -= 5; break;
+		case 2: location.Yaw += 15; break;
+//		case 3: location.Yaw -= 5; break;
+		case 4: location.Yaw += 15; break;
+//		case 5: location.Yaw += 5; break;
+		case 6: location.Yaw -= 15; break;
+//		case 7: location.Yaw += 5; break;
+//		case 8: location.Yaw += 5; break;
+//		case 9: location.Yaw += 5; break;
+		}
+		if(danceBitch<10) danceBitch++;
+		else danceBitch=0;
+	}
 }

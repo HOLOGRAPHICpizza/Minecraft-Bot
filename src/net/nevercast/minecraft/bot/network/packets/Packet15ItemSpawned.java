@@ -22,12 +22,16 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class Packet15ItemSpawned implements IPacket{
-    public byte getPacketId() {
+
+	public byte getPacketId() {
         return 0x15;
     }
 
     ItemEntity entity;
-
+    short id, data;
+    byte count,yaw,pitch,roll;
+    int x, y, z;
+    
     public ItemEntity getItem(){
         return entity;
     }
@@ -38,27 +42,17 @@ public class Packet15ItemSpawned implements IPacket{
 
     public void readExternal(DataInputStream objectInput) throws IOException {
         entity = new ItemEntity(objectInput.readInt());
-        short id;
-        byte count;
-        short data;
         id = objectInput.readShort();
         count = objectInput.readByte();
         data = objectInput.readShort();
-        entity.setItem(
-                new ItemStack(id,count,data)
-        );
-        int x, y, z;
+        entity.setItem(new ItemStack(id,count,data));
         x = objectInput.readInt();
         y = objectInput.readInt();
         z = objectInput.readInt();
         entity.setLocation(Location.fromAbsoluteInteger(x,y,z));
-        byte yaw,pitch,roll;
         yaw = objectInput.readByte();
         pitch = objectInput.readByte();
         roll = objectInput.readByte();
         entity.getLocation().setRotationPacked(yaw,pitch,roll);
-    }
-    public String log(){
-    	return "@ 0x15 EID="+entity.getEid();
     }
 }

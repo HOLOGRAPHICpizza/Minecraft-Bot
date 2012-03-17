@@ -6,6 +6,7 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.structs.Location;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -20,12 +21,21 @@ import java.security.PublicKey;
  * To change this template use File | Settings | File Templates.
  */
 public class Packet0CPlayerLook implements IPacket {
-    public byte getPacketId() {
+    
+	public byte getPacketId() {
         return 0x0C;
     }
 
     private float yaw, pitch;
     private boolean onGround;
+    
+    public Packet0CPlayerLook(){}
+    
+    public Packet0CPlayerLook(Location location){
+    	yaw = location.Yaw;
+    	pitch = location.Pitch;
+    	onGround = location.OnGround;
+    }
     
     public float getYaw() {
         return yaw;
@@ -43,7 +53,7 @@ public class Packet0CPlayerLook implements IPacket {
         this.pitch = pitch;
     }
 
-    public boolean isOnGround() {
+    public boolean getOnGround() {
         return onGround;
     }
 
@@ -58,10 +68,8 @@ public class Packet0CPlayerLook implements IPacket {
     }
 
     public void readExternal(DataInputStream objectInput) throws IOException {
-
-    }
-    
-    public String log(){
-    	return "@ 0x0C Yaw="+yaw+" Pitch="+pitch+" Grounded="+onGround;
+    	yaw = objectInput.readFloat();
+    	pitch = objectInput.readFloat();
+    	onGround = objectInput.readBoolean();
     }
 }

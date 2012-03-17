@@ -21,7 +21,15 @@ import java.io.IOException;
  */
 public class Packet0BPlayerPosition implements IPacket {
 
+	public byte getPacketId() {
+        return 0x0B;
+    }
+	
+	private double x, y, z, stance;
+	private boolean onGround;
+    
     public Packet0BPlayerPosition(){}
+    
     public Packet0BPlayerPosition(Location location){
         x = location.X;
         y = location.Y;
@@ -30,57 +38,45 @@ public class Packet0BPlayerPosition implements IPacket {
         onGround = location.OnGround;
     }
 
-    public byte getPacketId() {
-        return 0x0B;
-    }
-
-    private double  x;
-    private double y;
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public void setStance(double stance) {
-        this.stance = stance;
-    }
-
-    public void setZ(double z) {
-        this.z = z;
-    }
-
-    public void setOnGround(boolean onGround) {
-        this.onGround = onGround;
-    }
-
-    private double stance;
-    private double z;
-
     public double getX() {
         return x;
+    }
+    
+    public void setX(double x) {
+        this.x = x;
     }
 
     public double getY() {
         return y;
     }
-
+    
+    public void setY(double y) {
+        this.y = y;
+    }
+    
     public double getStance() {
         return stance;
     }
-
+    
+    public void setStance(double stance) {
+        this.stance = stance;
+    }
+    
     public double getZ() {
         return z;
     }
-
-    public boolean isOnGround() {
-        return onGround;
+    
+    public void setZ(double z) {
+        this.z = z;
     }
 
-    public boolean onGround;
+    public boolean getOnGround() {
+        return onGround;
+    }
+    
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
+    }
 
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
         objectOutput.writeDouble(x);
@@ -91,10 +87,10 @@ public class Packet0BPlayerPosition implements IPacket {
     }
 
     public void readExternal(DataInputStream objectInput) throws IOException {
-
-    }
-    
-    public String log(){
-    	return "@ 0x0B X="+x+" Y="+y+" Z="+z+" Stance="+stance+" Grounded="+onGround;
+    	x = objectInput.readDouble();
+    	y = objectInput.readDouble();
+    	stance = objectInput.readDouble();
+    	z = objectInput.readDouble();
+    	onGround = objectInput.readBoolean();
     }
 }

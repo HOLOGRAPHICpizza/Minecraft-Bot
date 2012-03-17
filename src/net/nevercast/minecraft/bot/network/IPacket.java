@@ -18,5 +18,5 @@ public interface IPacket {
     byte getPacketId();
     void writeExternal(DataOutputStream objectOutput) throws IOException;
     void readExternal(DataInputStream objectInput) throws IOException;
-    String log();
+//    String log();
 }

@@ -5,6 +5,7 @@
  */
 package net.nevercast.minecraft.bot.network;
 
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -19,12 +20,20 @@ import java.io.OutputStream;
  */
 public class PacketOutputStream {
     private DataOutputStream outputStream;
+    private ByteArrayOutputStream outBuffer;
+    private OutputStream rootStream;
 
     public PacketOutputStream(OutputStream outputStream) throws IOException {
-        if(!(outputStream instanceof DataOutputStream)){
-            this.outputStream = new DataOutputStream(outputStream);
-        }else{
-            this.outputStream = (DataOutputStream)outputStream;
+//    	if(!(outputStream instanceof DataOutputStream)){
+//            this.outputStream = new DataOutputStream(outputStream);
+//        }else{
+//            this.outputStream = (DataOutputStream)outputStream;
+//        }
+    	
+    	if(!(outputStream instanceof DataOutputStream)){
+        	this.rootStream = outputStream;
+        	this.outBuffer = new ByteArrayOutputStream();
+        	this.outputStream = new DataOutputStream(outBuffer);
         }
     }
 
@@ -33,9 +42,16 @@ public class PacketOutputStream {
     }
 
     public void writePacket(IPacket packet) throws IOException {
+//    	System.out.println("+++ Out: "+packet.getPacketId());
+//        this.outputStream.writeByte(packet.getPacketId());
+//        packet.writeExternal(outputStream);
+//        outputStream.flush();
+    	
     	System.out.println("+++ Out: "+packet.getPacketId());
         this.outputStream.writeByte(packet.getPacketId());
         packet.writeExternal(outputStream);
-        outputStream.flush();
+        outBuffer.writeTo(rootStream);
+        rootStream.flush();
+        outBuffer.reset();//FFFUUUUUUUU
     }
 }

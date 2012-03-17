@@ -26,6 +26,7 @@ public class Packet0APlayer implements IPacket {
     private boolean onGround;
     
     public Packet0APlayer(){}
+    
     public Packet0APlayer(boolean onGround){
         this.onGround = onGround;
     }
@@ -43,10 +44,6 @@ public class Packet0APlayer implements IPacket {
     }
 
     public void readExternal(DataInputStream objectInput) throws IOException {
-
-    }
-    
-    public String log(){
-    	return "@ 0x0A Grounded="+onGround;
+    	onGround = objectInput.readBoolean();
     }
 }

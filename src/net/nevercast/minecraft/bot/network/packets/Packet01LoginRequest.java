@@ -94,6 +94,10 @@ public class Packet01LoginRequest implements IPacket{
         this.dimension = dimension;
     }
 
+    public String getLevelType(){
+    	return levelType;
+    }
+    
     private int versionAndEntity;
     private String username;
     private String levelType;

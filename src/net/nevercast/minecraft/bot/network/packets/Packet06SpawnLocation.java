@@ -36,11 +36,7 @@ public class Packet06SpawnLocation implements IPacket{
         return z;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
-        objectOutput.writeInt(x);
-        objectOutput.writeInt(y);
-        objectOutput.writeInt(z);
-    }
+    public void writeExternal(DataOutputStream objectOutput) throws IOException {}
 
     public void readExternal(DataInputStream objectInput) throws IOException {
         x = objectInput.readInt();

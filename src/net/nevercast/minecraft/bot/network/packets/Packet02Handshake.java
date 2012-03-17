@@ -43,10 +43,7 @@ public class Packet02Handshake implements IPacket{
     }
 
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
-//    	String hack = usernameOrHash+";localhost:25565";
     	String hack = usernameOrHash+";192.168.1.66:25565";
-//        objectOutput.writeShort(usernameOrHash.length());
-//        objectOutput.write(usernameOrHash.getBytes("UTF-16BE"));
     	objectOutput.writeShort(hack.length());
         objectOutput.write(hack.getBytes("UTF-16BE"));
     }

@@ -38,8 +38,8 @@ public class PacketInputStream {
     public IPacket readPacket() throws IOException {
         try{
             byte id = inputStream.readByte();
-            String hexed = String.format("%x", id).toUpperCase();
-            System.out.println("---Packet: "+hexed);
+//            String hexed = String.format("%x", id).toUpperCase();
+//            System.out.println("---Packet: "+hexed);
             if(id == -1){
                 throw new IOException("This shit died!");
             }

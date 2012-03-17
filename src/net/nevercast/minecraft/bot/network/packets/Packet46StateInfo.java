@@ -41,12 +41,13 @@ public class Packet46StateInfo implements IPacket{
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    byte reason;
+    byte reason,gameMode;
     public void readExternal(DataInputStream objectInput) throws IOException {
         reason = objectInput.readByte();
+        gameMode = objectInput.readByte();
         state = State.values()[reason];
-        if(reason == 3)
-        	objectInput.readByte();
+//        if(reason == 3)
+//        	objectInput.readByte();
     }
     public String log(){
     	return "@ 0x46 Reason="+reason+" State="+state;

@@ -22,12 +22,13 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class Packet0FPlayerBlockPlacement implements IPacket {
-    public byte getPacketId() {
+    
+	public byte getPacketId() {
         return 0x0F;
     }
 
     private Vector blockPosition;
-    private BlockFace direction;
+    private int direction;
     private ItemStack item;
     
     public Vector getBlockPosition() {
@@ -38,11 +39,11 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
         this.blockPosition = blockPosition;
     }
 
-    public BlockFace getDirection() {
+    public int getDirection() {
         return direction;
     }
 
-    public void setDirection(BlockFace direction) {
+    public void setDirection(int direction) {
         this.direction = direction;
     }
 
@@ -54,39 +55,38 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
         this.item = item;
     }
 
+    //Not fully implemented. Need to work on slot data;
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
-
+    	objectOutput.writeInt(blockPosition.X);
+    	objectOutput.writeByte(blockPosition.Y);
+    	objectOutput.writeInt(blockPosition.Z);
+    	objectOutput.writeByte(direction);
+    	objectOutput.writeShort(-1);
     }
-    
-    short id;
     
     public void readExternal(DataInputStream objectInput) throws IOException {
-        blockPosition = new Vector(
-                objectInput.readInt(),
-                objectInput.readByte(),
-                objectInput.readInt()
-        );
-        direction = BlockFace.values()[objectInput.readByte()];
-        id = objectInput.readByte();
-        if(id == -1){
-            item = ItemStack.EMPTY;
-        }else{
-            byte amount = objectInput.readByte();
-            item = new ItemStack(id, amount, objectInput.readShort());
-        }
-        //NEW, For Enchantable Crap.
-        if(enchantable(id)){
-        	short enchantData = objectInput.readShort();
-        	if(enchantData != -1){
-        		byte[] bytes = new byte[enchantData * 2];
-                objectInput.read(bytes);	
-        	}
-        }
+//        blockPosition = new Vector(
+//                objectInput.readInt(),
+//                objectInput.readByte(),
+//                objectInput.readInt()
+//        );
+//        direction = BlockFace.values()[objectInput.readByte()];
+//        id = objectInput.readByte();
+//        if(id == -1){
+//            item = ItemStack.EMPTY;
+//        }else{
+//            byte amount = objectInput.readByte();
+//            item = new ItemStack(id, amount, objectInput.readShort());
+//        }
+//        //NEW, For Enchantable Crap.
+//        if(enchantable(id)){
+//        	short enchantData = objectInput.readShort();
+//        	if(enchantData != -1){
+//        		byte[] bytes = new byte[enchantData * 2];
+//                objectInput.read(bytes);	
+//        	}
+//        }
     }
-    
-    public String log(){
-    	return "@ 0x0F X="+blockPosition.X+" Y="+blockPosition.Y+" Z="+blockPosition.Z+" Face="+direction+" ID="+id;
-    }    
     
     public boolean enchantable(short id){
     	if(id<0x100) return false;

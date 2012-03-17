@@ -23,7 +23,7 @@ import java.util.logging.SimpleFormatter;
 public class NeverCastsBot {  
     
     public static void main(String[] args) {
-        String loginName = "iLiveForaMinute";
+        String loginName = "name";
         if(args.length > 0){
             loginName = args[0];
         }

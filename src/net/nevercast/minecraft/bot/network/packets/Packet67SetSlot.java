@@ -53,11 +53,32 @@ public class Packet67SetSlot implements IPacket {
         short id = objectInput.readShort();
         if(id == -1){
             item = ItemStack.EMPTY;
+            report += "    Slot="+slot+" Empty"+"\n";
         }else{
-            item = new ItemStack(id, objectInput.readByte(), objectInput.readShort());
+        	byte itemCount = objectInput.readByte();
+        	short itemMeta = objectInput.readShort();
+        	item = new ItemStack(id, itemCount, itemMeta);
+        	report += "    Slot="+slot+" ID="+id+" Count="+itemCount;
+			if(enchantable(id)){
+				short enchantData = objectInput.readShort();
+				report+= " Enchantable="+enchantData+"\n";
+				if(enchantData != -1){
+					byte[] bytes = new byte[enchantData];
+					objectInput.read(bytes);	
+				}
+			}
         }
         report = report + "Window="+wid+" Slot="+slot+" ID="+item.id+" Count="+item.count;
-//        System.out.println(report);
+        System.out.println(report);
+    }
+    
+    public boolean enchantable(short id){
+    	if(id<0x100) return false;
+    	else if (id>=0x100 && id<=0x102) return true;
+    	else if (id>=0x108 && id<=0x117) return true;
+    	else if (id>=0x11B && id<=0x11E) return true;
+    	else if (id>=0x12A && id<=0x13D) return true;
+    	else return false;
     }
     
     public String log(){

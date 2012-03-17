@@ -59,12 +59,34 @@ public class Packet68WindowItems implements IPacket{
                 itemStack[i] = ItemStack.EMPTY;
                 report += "    Slot="+i+" Empty"+"\n";
             }else{
-                itemStack[i] = new ItemStack(id, objectInput.readByte(), objectInput.readShort());
-                report += "    Slot="+i+" ID="+itemStack[i].id+" Count="+itemStack[i].count+"\n";
+            	byte itemCount = objectInput.readByte();
+            	short itemMeta = objectInput.readShort();
+            	itemStack[i] = new ItemStack(id, itemCount, itemMeta);
+            	report += "    Slot="+i+" ID="+itemStack[i].id+" Count="+itemStack[i].count;
+				if(enchantable(id)){
+					short enchantData = objectInput.readShort();
+					report+= " Enchantable="+enchantData+"\n";
+					if(enchantData != -1){
+						byte[] bytes = new byte[enchantData];
+						objectInput.read(bytes);	
+					}
+				}
             }
         }
-//        System.out.println(report);
+        System.out.println(report);//encha
     }
+    
+
+//}
+
+	public boolean enchantable(short id){
+		if(id<0x100) return false;
+		else if (id>=0x100 && id<=0x102) return true;
+		else if (id>=0x108 && id<=0x117) return true;
+		else if (id>=0x11B && id<=0x11E) return true;
+		else if (id>=0x12A && id<=0x13D) return true;
+		else return false;
+	}
     
     public String log(){
     	return "@ 0x68 "+report;

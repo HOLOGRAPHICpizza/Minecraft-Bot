@@ -5,9 +5,16 @@
  */
 package net.nevercast.minecraft.bot.structs;
 
+import java.lang.reflect.Field;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import com.sun.org.apache.xerces.internal.impl.dv.xs.YearDV;
 
 import javax.swing.text.ZoneView;
+
+import net.nevercast.minecraft.bot.network.IPacket;
 
 /**
  * Created by IntelliJ IDEA.
@@ -73,4 +80,36 @@ public class Location {
         /* Data needs to be rounded down for block positions, which is what I use this for */
         return new Vector((int)Math.floor(X), (int)Math.floor(Y), (int)Math.floor(Z));
     }
+    
+    //////////////
+    
+//    while(socket.isConnected() && !isInterrupted()){
+//        IPacket mcPacket = packetInputStream.readPacket();
+//        if(mcPacket != null){
+//            handlePacket(mcPacket);
+//            if(enableLogging==true || mcPacket.getPacketId()==0xFF){
+//            	try { handleLogging(mcPacket); } catch(Exception ex){
+//            		System.out.println("@ "+String.format("%x", mcPacket.getPacketId()).toUpperCase());
+//            	}
+//            }
+//        }
+//    }
+//    
+//    private void handleLogging(IPacket packet) throws IllegalArgumentException, IllegalAccessException{
+//    	Calendar cal = Calendar.getInstance();
+//    	SimpleDateFormat date_format = new SimpleDateFormat("HH:mm:ss");
+//    	Date resultdate = new Date(cal.getTimeInMillis());
+//    	String packetName = String.format("%x", packet.getPacketId()).toUpperCase();
+//		Field[] packetFields = packet.getClass().getDeclaredFields();
+//		String pName = "";
+//		String pValue = "";
+//		String toLog = date_format.format(resultdate)+" @ 0x"+packetName+" ";
+//		for(Field pField : packetFields){
+//			pName = pField.getName();
+//			pField.setAccessible(true);
+//			pValue = (String)pField.get(packet).toString();
+//			toLog += pName+"="+pValue+" ";
+//		}
+//		System.out.println(toLog);
+//    }
 }

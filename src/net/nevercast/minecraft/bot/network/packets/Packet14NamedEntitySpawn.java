@@ -29,17 +29,14 @@ public class Packet14NamedEntitySpawn implements IPacket {
     }
 
     private NamedGameEntity entity;
-
+    int id;
+    
     public NamedGameEntity getEntity(){
         return entity;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(DataOutputStream objectOutput) throws IOException {}
 
-    }
-
-    int id;
-    
     public void readExternal(DataInputStream objectInput) throws IOException {
         id = objectInput.readInt();
         entity = new NamedGameEntity(id, PacketInputStream.readString16(objectInput));
@@ -50,10 +47,5 @@ public class Packet14NamedEntitySpawn implements IPacket {
         );
         entity.getLocation().setRotationPacked(objectInput.readByte(), objectInput.readByte());
         entity.setHoldingItem(objectInput.readShort());
-//        System.out.println("Packet14-ReadExternal");
-//        System.out.println("Packet14-Spawned: "+entity.getName());
-    }
-    public String log(){
-    	return "@ 0x14 EID="+entity.getEid()+" Name="+entity.getName();
     }
 }

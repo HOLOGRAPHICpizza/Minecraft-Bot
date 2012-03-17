@@ -19,43 +19,32 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 
-/*
- * This is going to need some updating, yep.
- */
-
 public class Packet09Respawn implements IPacket {
-    private byte difficulty;
+    
+	public byte getPacketId() {
+        return 0x09;
+    }
+	
+    private int dimension;
+	private byte difficulty;
     private byte mode;
     private short worldHeight;
-    private long seed;
+    private String level;
     
-    public void setDifficulty(byte difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public void setMode(byte mode) {
-        this.mode = mode;
-    }
-
-    public void setSeed(long seed) {
-        this.seed = seed;
-    }
-
-    public void setWorldHeight(short worldHeight) {
-        this.worldHeight = worldHeight;
-    }
-
     public Packet09Respawn(){}
 
     public Packet09Respawn(byte dimension) {
         this.dimension = dimension;
     }
-
-    public byte getPacketId() {
-        return 0x09;
+    
+    public Packet09Respawn(int dimension, byte difficulty, byte mode, short height, String level){
+    	this.dimension = dimension;
+    	this.difficulty = difficulty;
+    	this.mode = mode;
+    	this.worldHeight = height;
+    	this.level = level;
     }
-
-    private int dimension;
+    
     public int getDimension(){
         return dimension;
     }
@@ -63,40 +52,55 @@ public class Packet09Respawn implements IPacket {
     public void setDimension(int dimension){
         this.dimension = dimension;
     }
-
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
-        objectOutput.writeByte(dimension);
-        objectOutput.writeByte(difficulty);
-        objectOutput.writeByte(mode);
-        objectOutput.writeShort(worldHeight);
-        objectOutput.writeLong(seed);
-    }
-
+    
     public byte getDifficulty() {
         return difficulty;
+    }
+    
+    public void setDifficulty(byte difficulty) {
+        this.difficulty = difficulty;
     }
 
     public byte getMode() {
         return mode;
     }
-
-    public long getSeed() {
-        return seed;
+    
+    public void setMode(byte mode) {
+        this.mode = mode;
     }
 
     public short getWorldHeight() {
         return worldHeight;
     }
-
-    public void readExternal(DataInputStream objectInput) throws IOException {
-        this.dimension = objectInput.readByte();
-        difficulty = objectInput.readByte();
-        mode = objectInput.readByte();
-        worldHeight = objectInput.readShort();
-        seed = objectInput.readLong();
+    
+    public void setWorldHeight(short worldHeight) {
+        this.worldHeight = worldHeight;
     }
     
-    public String log(){
-    	return "@ 0x09 Mode="+mode+" Dimension="+dimension+" Difficulty="+difficulty+" Height="+worldHeight;
+    public String getLevel() {
+        return level;
+    }
+    
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+        objectOutput.writeInt(dimension);
+        objectOutput.writeByte(difficulty);
+        objectOutput.writeByte(mode);
+        objectOutput.writeShort(worldHeight);
+        objectOutput.writeShort(level.length());
+        objectOutput.write(level.getBytes("UTF-16BE"));
+    }
+
+    public void readExternal(DataInputStream objectInput) throws IOException {
+    	dimension = objectInput.readInt();
+    	difficulty = objectInput.readByte();
+    	mode = objectInput.readByte();
+    	worldHeight = objectInput.readShort();
+    	byte[] bytes = new byte[objectInput.readShort() * 2];
+        objectInput.read(bytes);
+        level = new String(bytes, "UTF-16BE");//always empty string, not actually used
     }
 }

@@ -48,8 +48,4 @@ public class Packet08UpdateHealth implements IPacket{
         food = objectInput.readShort();
         foodSaturation = objectInput.readFloat();
     }
-    
-    public String log(){
-    	return "@ 0x07 Health="+health+" Food="+food+" Saturation="+foodSaturation;
-    }
 }

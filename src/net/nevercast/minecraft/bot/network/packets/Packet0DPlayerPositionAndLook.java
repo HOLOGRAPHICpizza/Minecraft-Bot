@@ -20,16 +20,19 @@ import java.io.DataOutputStream;
  * To change this template use File | Settings | File Templates.
  */
 public class Packet0DPlayerPositionAndLook implements IPacket {
-    public byte getPacketId() {
+    
+	public byte getPacketId() {
         return 0x0D;
     }
-    
+
+	private Location location = new Location();
+
+	public Packet0DPlayerPositionAndLook(){
+        this(new Location());
+    }
+	
     public Packet0DPlayerPositionAndLook(Location location){
         this.location = location;
-    }
-
-    public Packet0DPlayerPositionAndLook(){
-        this(new Location());
     }
 
     public Location getLocation() {
@@ -40,10 +43,6 @@ public class Packet0DPlayerPositionAndLook implements IPacket {
         this.location = location;
     }
 
-    private Location location = null;
-
-
-    //Send to server
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
         objectOutput.writeDouble(location.X);
         objectOutput.writeDouble(location.Y);
@@ -52,11 +51,9 @@ public class Packet0DPlayerPositionAndLook implements IPacket {
         objectOutput.writeFloat(location.Yaw);
         objectOutput.writeFloat(location.Pitch);
         objectOutput.writeBoolean(location.OnGround);
-//        System.out.println("Packet0D-WriteExternal\n  X:"+location.X+" Y:"+location.Y+" Z:"+location.Z);
-//        System.out.println("  Ground="+location.OnGround+" Pitch="+location.Pitch+" Yaw="+location.Yaw+" Stance="+location.Stance);
+//        System.out.println("x="+location.X+" ground="+location.OnGround);
     }
 
-    //Received from Server
     public void readExternal(DataInputStream objectInput) throws IOException {
         if(location == null){
             location = new Location();
@@ -68,13 +65,6 @@ public class Packet0DPlayerPositionAndLook implements IPacket {
         location.Yaw 		= objectInput.readFloat();
         location.Pitch 		= objectInput.readFloat();
         location.OnGround 	= objectInput.readBoolean();
-        location.Stance = location.Y + 1;
-//        System.out.println("Packet0D-ReadExternal\n  X:"+location.X+" Y:"+location.Y+" Z:"+location.Z);
-//        System.out.println("  Ground="+location.OnGround+" Pitch="+location.Pitch+" Yaw="+location.Yaw+" Stance="+location.Stance);
-    }
-    
-    public String log(){
-    	return "@ 0x0D X="+location.X+" Y="+location.Y+" Z="+location.Z+" Yaw="+location.Yaw+"\n       "+
-    			"Pitch="+location.Pitch+" Stance="+location.Stance+" Grounded="+location.OnGround;
+//        location.Stance = location.Y + 1;
     }
 }

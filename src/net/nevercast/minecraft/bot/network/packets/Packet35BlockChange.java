@@ -28,6 +28,9 @@ public class Packet35BlockChange implements IPacket {
     private Vector position;
     private BlockInfo blockInfo;
 
+    private int x,y,z;
+    private byte type,data;
+    
     public Vector getPosition(){
         return position;
     }
@@ -41,17 +44,19 @@ public class Packet35BlockChange implements IPacket {
     }
 
     public void readExternal(DataInputStream objectInput) throws IOException {
-        position = new Vector(
-                objectInput.readInt(),
-                objectInput.readByte(),
-                objectInput.readInt()
-        );
-        blockInfo = new BlockInfo();
-        blockInfo.blockType = objectInput.readByte();
-        blockInfo.blockData = objectInput.readByte();
+//        position = new Vector(
+//                objectInput.readInt(),
+//                objectInput.readByte(),
+//                objectInput.readInt()
+//        );
+//        blockInfo = new BlockInfo();
+//        blockInfo.blockType = objectInput.readByte();
+//        blockInfo.blockData = objectInput.readByte();
+    	x = objectInput.readInt();
+        y = objectInput.readByte();
+        z = objectInput.readInt();
+        type = objectInput.readByte();
+        data = objectInput.readByte();
     }
     
-    public String log(){
-    	return "@ 0x35 X="+position.X+" Y="+position.Y+" Z="+position.Z+" BlockType="+blockInfo.blockType;
-    }
 }
