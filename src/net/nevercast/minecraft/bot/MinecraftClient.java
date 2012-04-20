@@ -56,8 +56,10 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 	@SuppressWarnings("unused")
 	private IPacket previousPacket;
 	
-	private boolean running = true;
-
+	/**
+	 * Set to false to kill the client.
+	 */
+	private boolean running = false;
     public boolean first0Dpacket = true;
     
     public MinecraftClient(MinecraftLogin loginInformation){
@@ -114,10 +116,10 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
             }
             
         } catch (IOException e) {
-        	running = false;
             e.printStackTrace();
             try { socket.shutdownInput(); } catch (Exception ex){}
             try { socket.close(); } catch(Exception ex){}
+            kill();
         } catch (Exception e) {
 			e.printStackTrace();
 			try { socket.shutdownInput(); } catch (Exception ex){}
@@ -370,7 +372,15 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
      * Is the client running?
      * @return True if client is running, false otherwise.
      */
-    public boolean isRunning() {
-    	return running;
-    }
+	public boolean isRunning() {
+		return running;
+	}
+
+	/**
+	 * Kills the client and its tick source.
+	 */
+	public void kill() {
+		this.running = false;
+		this.tickSource.running = false;
+	}
 }

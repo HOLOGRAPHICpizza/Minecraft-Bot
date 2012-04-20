@@ -13,9 +13,12 @@ import java.io.IOException;
 public class NeverCastsBot {  
     
 	/**
-	 * Runs the bot. Pass server, username, and password as arguments.
+	 * Runs the bot. Pass server, port, username, and password as arguments.
+	 * If port is missing default port will be used.
 	 * If password is missing offline mode will be used.
-	 * @param args server username [password]
+	 * Example: localhost:1337 HOLOGRAPHICpizza tacos27
+	 * Example: 158.56.25.48 UberGreifer9001
+	 * @param args server[:port] username [password]
 	 */
     public static void main(String[] args) {
         if(args.length < 2) {
@@ -25,8 +28,15 @@ public class NeverCastsBot {
     	String loginName = "";
         String loginPass = "";
         String server = "";
+        int port = -1;
         if(args.length >= 2) {
             server = args[0];
+            if(server.contains(":")) {
+            	String[] split = server.split(":");
+            	server = split[0];
+            	port = Integer.parseInt(split[1]);
+            }
+            
             loginName = args[1];
         }
         
@@ -52,12 +62,17 @@ public class NeverCastsBot {
         
         MinecraftClient client = new MinecraftClient(login);
         try {
-            client.connect(server);
+        	if(port > 0)
+        		client.connect(server, port);
+        	else
+        		client.connect(server);
             while(client.isAlive() && client.isRunning()){
                 Thread.sleep(1000);
             }
         } catch (IOException e) {
             e.printStackTrace();
+            client.kill();
+            
         } catch (InterruptedException e) {}
 
     }
