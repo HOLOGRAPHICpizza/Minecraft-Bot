@@ -5,10 +5,8 @@
  */
 package net.nevercast.minecraft.bot.world;
 
-import com.sun.org.apache.xerces.internal.impl.dv.xs.YearDV;
 import net.nevercast.minecraft.bot.structs.BlockInfo;
 import net.nevercast.minecraft.bot.structs.Vector;
-import sun.awt.image.BytePackedRaster;
 
 /**
  * Created by IntelliJ IDEA.

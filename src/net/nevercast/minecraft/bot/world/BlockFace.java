@@ -5,7 +5,6 @@
  */
 package net.nevercast.minecraft.bot.world;
 
-import com.sun.istack.internal.FinalArrayList;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 /**

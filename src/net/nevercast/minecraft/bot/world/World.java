@@ -80,7 +80,7 @@ public class World {
         byte[] decompressedData = new byte[(int)(size.X * size.Y * size.Z * 2.5)];
         Inflater inflater = new Inflater();
         inflater.setInput(data);
-        int length = inflater.inflate(decompressedData);
+        inflater.inflate(decompressedData);
         byte[] typeData = new byte[size.X * size.Y * size.Z];
         System.arraycopy(decompressedData, 0, typeData, 0, typeData.length);
         byte[] metaData = new byte[(size.X * size.Y * size.Z) / 2];

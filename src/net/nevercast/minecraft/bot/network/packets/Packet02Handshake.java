@@ -9,7 +9,6 @@ import net.nevercast.minecraft.bot.network.IPacket;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 /**

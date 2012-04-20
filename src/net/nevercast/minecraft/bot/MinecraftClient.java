@@ -1,13 +1,7 @@
-/*
- * Updated March 10, 2012
- * By: mikecyber 
- * For: Protocol 1.2.3 Compliance
- */
 package net.nevercast.minecraft.bot;
 
 import net.nevercast.minecraft.bot.entities.EntityPool;
 import net.nevercast.minecraft.bot.entities.MobGameEntity;
-import net.nevercast.minecraft.bot.network.PacketFactory;
 import net.nevercast.minecraft.bot.structs.ItemStack;
 import net.nevercast.minecraft.bot.structs.Location;
 import net.nevercast.minecraft.bot.structs.Vector;
@@ -22,13 +16,12 @@ import net.nevercast.minecraft.bot.world.World;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.zip.DataFormatException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Josh
- * Date: 8/14/11
- * Time: 9:48 PM
+ * This is supposedly 1.2.3 compliant.
+ * @author Michael Craft <mcraft@peak15.org>
+ * @author mikecyber
+ * @author Josh
  */
 public class MinecraftClient extends Thread implements GamePulser.IGamePulserReceptor{
 
@@ -39,7 +32,8 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     private PacketOutputStream packetOutputStream;
     private Location location = null;
     private Vector spawn = null;
-    private long gameTicks;
+    @SuppressWarnings("unused")
+	private long gameTicks;
     private ItemStack[] inventory;
     private GamePulser tickSource;
     private short health;
@@ -48,14 +42,19 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     private World world;
 
     private int myEntId;
-    private int worldHeight;
+    @SuppressWarnings("unused")
+	private int worldHeight;
     private byte mode;//0 for survival, 1 for creative
     private byte difficulty;
     private int maxPlayers = 0;
-    private short food;
-    private float foodSaturation;
-    private long seed;
-    private IPacket previousPacket;
+    @SuppressWarnings("unused")
+	private short food;
+    @SuppressWarnings("unused")
+	private float foodSaturation;
+    @SuppressWarnings("unused")
+	private long seed;
+	@SuppressWarnings("unused")
+	private IPacket previousPacket;
 
     public boolean first0Dpacket = true;
     
@@ -72,9 +71,9 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         inventory[slot] = itemStack;
     }
 
-    private ItemStack getInventoryItem(int slot){
+    /*private ItemStack getInventoryItem(int slot){
         return inventory[slot];
-    }
+    }*/
 
     private void initInventory() {
         inventory = new ItemStack[45];
@@ -206,7 +205,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         }else if(message.startsWith("lookat")){
             if(!message.contains(" "))
                 return;
-            String who = message.split(" ")[1];
+            //String who = message.split(" ")[1];
         }else if(message.equalsIgnoreCase("echo mob count")){
             sendMessage("Mobs: " + entityPool.getMobs().length);
         }else if(message.equalsIgnoreCase("echo player count")){

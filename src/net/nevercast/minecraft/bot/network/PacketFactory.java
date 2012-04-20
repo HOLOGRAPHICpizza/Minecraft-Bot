@@ -1,31 +1,25 @@
-/*
- * Updated March 10, 2012
- * By: mikecyber 
- * For: Protocol 1.2.3 Compliance
- */
 package net.nevercast.minecraft.bot.network;
 
 import net.nevercast.minecraft.bot.network.packets.*;
-
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Josh
- * Date: 8/14/11
- * Time: 10:46 PM
- * To change this template use File | Settings | File Templates.
+ * This is supposedly 1.2.3 compliant.
+ * @author Michael Craft <mcraft@peak15.org>
+ * @author mikecyber
+ * @author Josh
  */
 public class PacketFactory {
 
-    private static HashMap<Byte, Class> supportedPackets = new HashMap<Byte, Class>();
+    private static HashMap<Byte, Class<? extends IPacket>> supportedPackets = new HashMap<Byte, Class<? extends IPacket>>();
     private static HashMap<Byte, Integer> unsupportedPackets = new HashMap<Byte, Integer>();
 
     static{
+    	//TODO: Support more packets.
         supportedPackets.put((byte)0x00, Packet00KeepAlive.class);
         supportedPackets.put((byte)0x01, Packet01LoginRequest.class);
         supportedPackets.put((byte)0x02, Packet02Handshake.class);
-//        supportedPackets.put((byte)0x02, UpdatePacket02Handshake.class);
+        //supportedPackets.put((byte)0x02, UpdatePacket02Handshake.class);
         supportedPackets.put((byte)0x03, Packet03ChatMessage.class);
         supportedPackets.put((byte)0x04, Packet04TimeUpdate.class);
         supportedPackets.put((byte)0x05, Packet05EntityEquipment.class);
@@ -37,32 +31,32 @@ public class PacketFactory {
         supportedPackets.put((byte)0x0C, Packet0CPlayerLook.class);
         supportedPackets.put((byte)0x0D, Packet0DPlayerPositionAndLook.class);
         supportedPackets.put((byte)0x0F, Packet0FPlayerBlockPlacement.class);
-        supportedPackets.put((byte)0x11, Packet11UseBed.class);
-        supportedPackets.put((byte)0x12, Packet12Animation.class);
-        supportedPackets.put((byte)0x13, Packet13EntityAction.class);
+        //supportedPackets.put((byte)0x11, Packet11UseBed.class);
+        //supportedPackets.put((byte)0x12, Packet12Animation.class);
+        //supportedPackets.put((byte)0x13, Packet13EntityAction.class);
         supportedPackets.put((byte)0x14, Packet14NamedEntitySpawn.class);
         supportedPackets.put((byte)0x15, Packet15ItemSpawned.class);
-        supportedPackets.put((byte)0x16, Packet16CollectItem.class);
-        supportedPackets.put((byte)0x17, Packet17SpawnObjectVehicle.class);
+        //supportedPackets.put((byte)0x16, Packet16CollectItem.class);
+        //supportedPackets.put((byte)0x17, Packet17SpawnObjectVehicle.class);
         supportedPackets.put((byte)0x18, Packet18MobSpawned.class);
-        supportedPackets.put((byte)0x1C, Packet1CEntityVelocity.class);
+        //supportedPackets.put((byte)0x1C, Packet1CEntityVelocity.class);
         supportedPackets.put((byte)0x1D, Packet1DEntityDestroyed.class);
-        supportedPackets.put((byte)0x1F, Packet1FEntityMoved.class);
-//        supportedPackets.put((byte)0x20, Packet20EntityLook.class);
-        supportedPackets.put((byte)0x22, Packet22EntityTeleport.class);
-//        supportedPackets.put((byte)0x23, Packet23EntityHeadLook.class);
+        //supportedPackets.put((byte)0x1F, Packet1FEntityMoved.class);
+        //supportedPackets.put((byte)0x20, Packet20EntityLook.class);
+        //supportedPackets.put((byte)0x22, Packet22EntityTeleport.class);
+        //supportedPackets.put((byte)0x23, Packet23EntityHeadLook.class);
         supportedPackets.put((byte)0x28, Packet28EntityMetadata.class);
-        supportedPackets.put((byte)0x32, Packet32PreChunk.class);
+        //supportedPackets.put((byte)0x32, Packet32PreChunk.class);
         supportedPackets.put((byte)0x33, Packet33MapChunk.class);
         supportedPackets.put((byte)0x34, Packet34MultiBlockChange.class);
         supportedPackets.put((byte)0x35, Packet35BlockChange.class);
-        supportedPackets.put((byte)0x36, Packet36BlockAction.class);
+        //supportedPackets.put((byte)0x36, Packet36BlockAction.class);
         supportedPackets.put((byte)0x46, Packet46StateInfo.class);
         supportedPackets.put((byte)0x67, Packet67SetSlot.class);
         supportedPackets.put((byte)0x68, Packet68WindowItems.class);
-        supportedPackets.put((byte)0x6B, Packet6BCreativeInventoryAction.class);
+        //supportedPackets.put((byte)0x6B, Packet6BCreativeInventoryAction.class);
         supportedPackets.put((byte)0x82, Packet82UpdateSign.class);
-        supportedPackets.put((byte)0xC9, PacketC9PlayerListItem.class);
+        //supportedPackets.put((byte)0xC9, PacketC9PlayerListItem.class);
         supportedPackets.put((byte)0xFF, PacketFFDisconnect.class);
 
 
@@ -115,7 +109,7 @@ public class PacketFactory {
     }
 
     public static IPacket getPacket(byte id){
-        Class clazz = supportedPackets.get(id);
+        Class<? extends IPacket> clazz = supportedPackets.get(id);
         try{
             Object o = clazz.newInstance();
             if(!(o instanceof IPacket)){

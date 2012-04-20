@@ -8,10 +8,6 @@ package net.nevercast.minecraft.bot;
 import net.nevercast.minecraft.bot.web.MinecraftLogin;
 
 import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 /**
  * Created by IntelliJ IDEA.

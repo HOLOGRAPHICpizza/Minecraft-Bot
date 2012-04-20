@@ -9,7 +9,6 @@ import net.nevercast.minecraft.bot.network.IPacket;
 import net.nevercast.minecraft.bot.network.PacketInputStream;
 import net.nevercast.minecraft.bot.structs.Vector;
 
-import javax.xml.bind.util.ValidationEventCollector;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

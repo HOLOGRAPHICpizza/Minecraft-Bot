@@ -8,12 +8,9 @@ package net.nevercast.minecraft.bot.entities;
 import net.nevercast.minecraft.bot.network.PacketInputStream;
 import net.nevercast.minecraft.bot.structs.ItemStack;
 import net.nevercast.minecraft.bot.structs.Vector;
-import sun.nio.cs.ext.MacDingbat;
 
-import javax.xml.bind.util.ValidationEventCollector;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -29,7 +26,7 @@ public class Metadata {
         Metadata metadata = new Metadata();
         byte x = 0;
         while ((x = dataInputStream.readByte()) != 127){
-        	int index = x & 0x1F;
+        	//int index = x & 0x1F;
     		int type  = x >>> 5;
 //            switch (x){
     		switch (type){

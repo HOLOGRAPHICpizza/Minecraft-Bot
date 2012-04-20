@@ -5,9 +5,6 @@
  */
 package net.nevercast.minecraft.bot.structs;
 
-import com.sun.org.apache.xerces.internal.impl.dv.xs.YearDV;
-
-import javax.swing.text.ZoneView;
 
 /**
  * Created by IntelliJ IDEA.

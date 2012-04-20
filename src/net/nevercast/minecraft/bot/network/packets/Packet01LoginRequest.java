@@ -5,7 +5,6 @@
  */
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.IPacket;
 import net.nevercast.minecraft.bot.web.MinecraftLogin;
 

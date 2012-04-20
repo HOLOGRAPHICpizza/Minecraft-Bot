@@ -8,7 +8,6 @@ package net.nevercast.minecraft.bot.network.packets;
 import net.nevercast.minecraft.bot.network.IPacket;
 import net.nevercast.minecraft.bot.structs.Vector;
 
-import javax.swing.text.ZoneView;
 import java.io.*;
 
 /**
@@ -27,8 +26,10 @@ public class Packet33MapChunk implements IPacket{
 //    private int Y;
     private int Z;
     private boolean groundUp;
-    private int pBm;
-    private int aBm;
+    @SuppressWarnings("unused")
+	private int pBm;
+    @SuppressWarnings("unused")
+	private int aBm;
     private int size;
 //    private int Size_X, Size_Y, Size_Z;
     private byte[] compressedData;
@@ -56,7 +57,7 @@ public class Packet33MapChunk implements IPacket{
     	pBm = objectInput.readUnsignedShort();
     	aBm = objectInput.readUnsignedShort();
     	size = objectInput.readInt();
-    	int unused = objectInput.readInt();
+    	objectInput.readInt();
     	compressedData = new byte[size];
     	objectInput.readFully(compressedData);
 //        X = objectInput.readInt();

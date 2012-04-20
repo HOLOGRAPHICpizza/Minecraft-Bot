@@ -10,7 +10,6 @@ import net.nevercast.minecraft.bot.network.IPacket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.security.PublicKey;
 
 /**
  * Created by IntelliJ IDEA.

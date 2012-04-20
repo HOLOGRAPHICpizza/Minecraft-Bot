@@ -7,7 +7,6 @@ package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
 import net.nevercast.minecraft.bot.structs.ItemStack;
-import sun.java2d.pipe.OutlineTextRenderer;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -5,7 +5,6 @@
  */
 package net.nevercast.minecraft.bot.entities;
 
-import net.nevercast.minecraft.bot.structs.Vector;
 import net.nevercast.minecraft.bot.structs.VectorD;
 
 /**
