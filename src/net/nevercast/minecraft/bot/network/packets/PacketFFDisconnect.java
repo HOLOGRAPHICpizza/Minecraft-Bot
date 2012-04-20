@@ -43,7 +43,7 @@ public class PacketFFDisconnect implements IPacket{
         short length = objectInput.readShort();
         byte[] data = new byte[length*2];
         objectInput.readFully(data);
-        reason = new String(data, "UTF16-BE");
+        reason = new String(data, "UTF-16BE");
     }
     
     public String log(){

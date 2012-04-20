@@ -59,7 +59,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 	/**
 	 * Set to false to kill the client.
 	 */
-	private boolean running = false;
+	private boolean running = true;
     public boolean first0Dpacket = true;
     
     public MinecraftClient(MinecraftLogin loginInformation){
@@ -125,6 +125,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 			try { socket.shutdownInput(); } catch (Exception ex){}
             try { socket.close(); } catch(Exception ex){}
 		}
+        kill();
     }
 
     private void handlePacket(IPacket mcPacket) throws Exception{
@@ -346,7 +347,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     private void handlerBeginLogin(Packet02Handshake packet) throws IOException {
         System.out.println("Handling handshake!");
         String hash = packet.getConnectionHash();
-        System.out.println("Hash: "+hash);
+        System.out.println("Handshake hash: "+hash);
         if(hash.equalsIgnoreCase("-")){
             // Open server, login without check
             Packet01LoginRequest loginRequest = new Packet01LoginRequest(login.getUsername());
