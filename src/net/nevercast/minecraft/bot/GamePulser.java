@@ -1,21 +1,20 @@
-/*
- * Updated March 10, 2012
- * By: mikecyber 
- * For: Protocol 1.2.3 Compliance
- */
 package net.nevercast.minecraft.bot;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Josh
- * Date: 8/15/11
- * Time: 10:22 AM
- * To change this template use File | Settings | File Templates.
+ * This is supposedly 1.2.3 compliant.
+ * @author Michael Craft <mcraft@peak15.org>
+ * @author mikecyber
+ * @author Josh
  */
 public class GamePulser extends Thread {
     private IGamePulserReceptor receptor;
     private double delay;
     private double offset = 0;
+    
+    /**
+     * Set this to false to kill this thread.
+     */
+    public boolean running = true;
 
     private int exceptionCounter = 0;
     public GamePulser(IGamePulserReceptor receptor, long delay){
@@ -26,7 +25,7 @@ public class GamePulser extends Thread {
     public void run(){
         long time = System.currentTimeMillis();
         long split = (long)delay / 5;
-        while(!isInterrupted()){
+        while(!isInterrupted() && running){
             try{
                 long elapsed = System.nanoTime()/1000000 - time;
                 if(elapsed >= ( delay + offset )){

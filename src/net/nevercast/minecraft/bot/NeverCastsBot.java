@@ -1,8 +1,3 @@
-/*
- * Updated March 10, 2012
- * By: mikecyber 
- * For: Protocol 1.2.3 Compliance
- */
 package net.nevercast.minecraft.bot;
 
 import net.nevercast.minecraft.bot.web.MinecraftLogin;
@@ -10,40 +5,60 @@ import net.nevercast.minecraft.bot.web.MinecraftLogin;
 import java.io.IOException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Josh
- * Date: 8/14/11
- * Time: 9:52 PM
- * To change this template use File | Settings | File Templates.
+ * This is supposedly 1.2.3 compliant.
+ * @author Michael Craft <mcraft@peak15.org>
+ * @author mikecyber
+ * @author Josh
  */
 public class NeverCastsBot {  
     
+	/**
+	 * Runs the bot. Pass server, username, and password as arguments.
+	 * If password is missing offline mode will be used.
+	 * @param args server username [password]
+	 */
     public static void main(String[] args) {
-        String loginName = "iLiveForaMinute";
-        if(args.length > 0){
-            loginName = args[0];
+        if(args.length < 2) {
+        	throw new IllegalArgumentException("You must at least specify a server and username.");
         }
-        MinecraftLogin login = new MinecraftLogin(loginName);
-//        MinecraftLogin login = new MinecraftLogin(loginName,loginPass); UNSUPPORTED HANDSHAKE
-        /*if(!login.getLoggedIn()){
-            System.out.println("Login failed!");
-            if(login.getErrorMessage() != null){
-                System.out.println(login.getErrorMessage());
+    	
+    	String loginName = "";
+        String loginPass = "";
+        String server = "";
+        if(args.length >= 2) {
+            server = args[0];
+            loginName = args[1];
+        }
+        
+        if(args.length >= 3) {
+        	loginPass = args[2];
+        }
+        
+        MinecraftLogin login;
+        if(loginPass.equals("")) {
+        	System.out.println("Using offline mode.");
+        	login = new MinecraftLogin(loginName);
+        }
+        else {
+        	login = new MinecraftLogin(loginName,loginPass);
+        	if(!login.getLoggedIn()){
+                System.err.println("Login failed!");
+                if(login.getErrorMessage() != null){
+                    System.err.println(login.getErrorMessage());
+                }
+                System.exit(1);
             }
-            return;
-        }*/
+        }
+        
         MinecraftClient client = new MinecraftClient(login);
         try {
-//            client.connect("localhost");
-            client.connect("192.168.1.66");
-            while(client.isAlive()){
+            client.connect(server);
+            while(client.isAlive() && client.isRunning()){
                 Thread.sleep(1000);
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        } catch (InterruptedException e) {}
 
     }
 }

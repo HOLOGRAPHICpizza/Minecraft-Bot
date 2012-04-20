@@ -32,7 +32,7 @@ public class PacketOutputStream {
     }
 
     public void writePacket(IPacket packet) throws IOException {
-    	System.out.println("+++ Out: "+packet.getPacketId());
+    	System.out.println("+++Out: "+packet.getPacketId());
         this.outputStream.writeByte(packet.getPacketId());
         packet.writeExternal(outputStream);
         outputStream.flush();

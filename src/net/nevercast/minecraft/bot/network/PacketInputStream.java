@@ -39,7 +39,7 @@ public class PacketInputStream {
         try{
             byte id = inputStream.readByte();
             String hexed = String.format("%x", id).toUpperCase();
-            System.out.println("---Packet: "+hexed);
+            System.out.println("---In: "+hexed);
             if(id == -1){
                 throw new IOException("This shit died!");
             }

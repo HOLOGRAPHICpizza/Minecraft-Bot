@@ -55,6 +55,8 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 	private long seed;
 	@SuppressWarnings("unused")
 	private IPacket previousPacket;
+	
+	private boolean running = true;
 
     public boolean first0Dpacket = true;
     
@@ -100,7 +102,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
             packetOutputStream.writePacket(
                     new Packet02Handshake(login.getUsername())
             );
-            while(socket.isConnected() && !isInterrupted()){
+            while(socket.isConnected() && !isInterrupted() && running){
                 IPacket mcPacket = packetInputStream.readPacket();
                 if(mcPacket != null){
                     handlePacket(mcPacket);
@@ -108,8 +110,11 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                     	System.out.println(mcPacket.log());
                     }
                 }
+                tickSource.running = false;
             }
+            
         } catch (IOException e) {
+        	running = false;
             e.printStackTrace();
             try { socket.shutdownInput(); } catch (Exception ex){}
             try { socket.close(); } catch(Exception ex){}
@@ -359,5 +364,13 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 //            Packet0DPlayerPositionAndLook position = new Packet0DPlayerPositionAndLook(location);
             packetOutputStream.writePacket(pman);
         }
+    }
+    
+    /**
+     * Is the client running?
+     * @return True if client is running, false otherwise.
+     */
+    public boolean isRunning() {
+    	return running;
     }
 }
