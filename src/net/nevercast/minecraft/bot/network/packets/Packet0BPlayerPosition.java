@@ -26,7 +26,7 @@ public class Packet0BPlayerPosition implements IPacket {
         x = location.X;
         y = location.Y;
         z = location.Z;
-        stance = location.Stance;
+        stance = location.getStance();
         onGround = location.OnGround;
     }
 

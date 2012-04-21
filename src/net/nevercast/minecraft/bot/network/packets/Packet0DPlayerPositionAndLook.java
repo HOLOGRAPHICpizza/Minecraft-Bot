@@ -47,7 +47,7 @@ public class Packet0DPlayerPositionAndLook implements IPacket {
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
         objectOutput.writeDouble(location.X);
         objectOutput.writeDouble(location.Y);
-        objectOutput.writeDouble(location.Stance);
+        objectOutput.writeDouble(location.getStance());
         objectOutput.writeDouble(location.Z);
         objectOutput.writeFloat(location.Yaw);
         objectOutput.writeFloat(location.Pitch);
@@ -62,19 +62,20 @@ public class Packet0DPlayerPositionAndLook implements IPacket {
             location = new Location();
         }
         location.X 			= objectInput.readDouble();
-        location.Stance 	= objectInput.readDouble();   // This order is intentional
+        //TODO: Read the real stance.
+        objectInput.readDouble();   // Dummy read for stance. This order is intentional.
         location.Y 			= objectInput.readDouble();
         location.Z 			= objectInput.readDouble();
         location.Yaw 		= objectInput.readFloat();
         location.Pitch 		= objectInput.readFloat();
         location.OnGround 	= objectInput.readBoolean();
-        location.Stance = location.Y + 1;
+        //location.Stance = location.Y + 1;
 //        System.out.println("Packet0D-ReadExternal\n  X:"+location.X+" Y:"+location.Y+" Z:"+location.Z);
 //        System.out.println("  Ground="+location.OnGround+" Pitch="+location.Pitch+" Yaw="+location.Yaw+" Stance="+location.Stance);
     }
     
     public String log(){
     	return "@ 0x0D X="+location.X+" Y="+location.Y+" Z="+location.Z+" Yaw="+location.Yaw+"\n       "+
-    			"Pitch="+location.Pitch+" Stance="+location.Stance+" Grounded="+location.OnGround;
+    			"Pitch="+location.Pitch+" Stance="+location.getStance()+" Grounded="+location.OnGround;
     }
 }

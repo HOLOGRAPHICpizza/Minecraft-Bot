@@ -14,11 +14,13 @@ import net.nevercast.minecraft.bot.world.Block;
 import net.nevercast.minecraft.bot.world.Chunk;
 import net.nevercast.minecraft.bot.world.World;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
 /**
- * This is supposedly 1.2.3 compliant.
+ * Main client.
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
  * @author Josh
@@ -30,7 +32,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 	/**
 	 * Should we print all inbound and outbound packets?
 	 */
-	public static final boolean PACKET_DEBUG = false;
+	public static final boolean PACKET_DEBUG = true;
 	
 	private boolean enableLogging = false;
     private MinecraftLogin login;
@@ -49,30 +51,26 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     private World world;
 
     private int myEntId;
-    @SuppressWarnings("unused")
-	private int worldHeight;
-    private byte mode;//0 for survival, 1 for creative
+	private short worldHeight;
+    private int mode;//0 for survival, 1 for creative
     private byte difficulty;
     private int maxPlayers = 0;
     @SuppressWarnings("unused")
 	private short food;
     @SuppressWarnings("unused")
 	private float foodSaturation;
-    @SuppressWarnings("unused")
-	private long seed;
+	private String levelType;
 	@SuppressWarnings("unused")
 	private IPacket previousPacket;
 	
 	/**
 	 * Set to false to kill the client.
 	 */
-	private boolean running = true;
+	private boolean running = false;
     public boolean first0Dpacket = true;
     
     public MinecraftClient(MinecraftLogin loginInformation){
         this.login = loginInformation;
-        tickSource = new GamePulser(this, 50);
-        tickSource.start();
         initInventory();
         entityPool = new EntityPool();
         world = new World();
@@ -101,7 +99,12 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         socket = new Socket(address, port);
         socket.setTcpNoDelay(true);
         packetInputStream = new PacketInputStream(socket.getInputStream());
-        packetOutputStream = new PacketOutputStream(socket.getOutputStream());
+        packetOutputStream = new PacketOutputStream(socket);
+        running = true;
+        
+        tickSource = new GamePulser(this, 50);
+        tickSource.start();
+        
         start(); //Start the thread
     }
 
@@ -111,9 +114,9 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
             packetOutputStream.writePacket(
                     new Packet02Handshake(login.getUsername())
             );
-            while(socket.isConnected() && !isInterrupted() && running){
+            while(packetOutputStream.isReady() && !isInterrupted() && running) {
                 IPacket mcPacket = packetInputStream.readPacket();
-                if(mcPacket != null){
+                if(mcPacket != null) {
                     handlePacket(mcPacket);
                     if(enableLogging==true || mcPacket.getPacketId()==0xFF){
                     	System.out.println(mcPacket.log());
@@ -271,9 +274,11 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
             System.out.println("have died, attempting Respawn");
             try{
                 Packet09Respawn respawn = new Packet09Respawn();
-                respawn.setDifficulty(difficulty);
                 respawn.setDimension(dimension);
-                respawn.setMode(mode);
+                respawn.setDifficulty(difficulty);
+                respawn.setMode((byte) mode);
+                respawn.setWorldHeight(worldHeight);
+                respawn.setLevelType(levelType);
                 packetOutputStream.writePacket(respawn);
             }catch(IOException e){
                 e.printStackTrace();
@@ -288,7 +293,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         difficulty = packet.getDifficulty();
         mode = packet.getMode();
         worldHeight = packet.getWorldHeight();
-        seed = packet.getSeed();
+        levelType = packet.getLevelType();
     }
 
     private void handleDisconnect(PacketFFDisconnect packet) {
@@ -333,19 +338,14 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         packetOutputStream.writePacket(packet);
         //System.out.println("Marco-Polo!");
     }
-//99
+
     private void handlerFinishLogin(Packet01LoginRequest packet) throws Exception {
-        myEntId = packet.getVersionAndEntity();
-        
+        myEntId = packet.getEntId();
+        levelType = packet.getLevelType();
+        mode = packet.getMode();
         dimension = packet.getDimension();
-        worldHeight = packet.getWorldHeight();
-        mode = (byte) packet.getMode();
         difficulty = packet.getDifficulty();
         maxPlayers = packet.getMaxPlayers();
-        seed = packet.getSeed();
-//        System.out.println("Oh cool! I'm Mr." + myEntId + ". Kinda unsocial really!");
-//        System.out.println("World: "+dimension+"\tHeight: "+worldHeight+"\tSeed: "+seed);
-//        System.out.println("Difficulty: "+difficulty+"\tSlots: "+maxPlayers+"\tMode: "+mode);
     }
 
     private void handlerBeginLogin(Packet02Handshake packet) throws IOException {
@@ -370,10 +370,13 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 
     public void tick(long elapsedTime) throws Exception{
         //System.out.println("Tick: " + elapsedTime + "ms");
-        if(maxPlayers != 0){
+        if(maxPlayers != 0 && running && packetOutputStream.isReady()){
         	Packet0APlayer pman = new Packet0APlayer(true);
 //            Packet0DPlayerPositionAndLook position = new Packet0DPlayerPositionAndLook(location);
             packetOutputStream.writePacket(pman);
+        }
+        else {
+        	System.out.println("Attempted tick on closed connection.");
         }
     }
     
@@ -390,6 +393,30 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 	 */
 	public void kill() {
 		this.running = false;
-		this.tickSource.running = false;
+		if(this.tickSource != null)
+			this.tickSource.running = false;
+	}
+	
+	/**
+	 * Reads a minecraft formatted string from a DataInputStream.
+	 * @param objectInput Stream to read from.
+	 * @return String read from input.
+	 * @throws IOException if string could not be read.
+	 */
+	public static String readString(DataInputStream objectInput) throws IOException {
+		byte[] bytes = new byte[objectInput.readShort() * 2];
+        objectInput.read(bytes);
+        return new String(bytes, "UTF-16BE");
+	}
+	
+	/**
+	 * Writes a minecraft formatted string to a DataOutputStream.
+	 * @param objectOutput Stream to write to.
+	 * @param string String to write.
+	 * @throws IOException if string could not be written.
+	 */
+	public static void writeString(DataOutputStream objectOutput, String string) throws IOException {
+		objectOutput.writeShort(string.length());
+        objectOutput.write(string.getBytes("UTF-16BE"));
 	}
 }

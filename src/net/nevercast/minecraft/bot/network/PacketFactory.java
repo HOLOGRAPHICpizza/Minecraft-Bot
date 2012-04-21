@@ -4,7 +4,7 @@ import net.nevercast.minecraft.bot.network.packets.*;
 import java.util.HashMap;
 
 /**
- * This is supposedly 1.2.3 compliant.
+ * Handles supported and unsupported packets.
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
  * @author Josh
@@ -52,6 +52,7 @@ public class PacketFactory {
         supportedPackets.put((byte)0x35, Packet35BlockChange.class);
         //supportedPackets.put((byte)0x36, Packet36BlockAction.class);
         supportedPackets.put((byte)0x46, Packet46StateInfo.class);
+        supportedPackets.put((byte)0x66, Packet66ClickWindow.class);
         supportedPackets.put((byte)0x67, Packet67SetSlot.class);
         supportedPackets.put((byte)0x68, Packet68WindowItems.class);
         //supportedPackets.put((byte)0x6B, Packet6BCreativeInventoryAction.class);

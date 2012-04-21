@@ -22,4 +22,9 @@ public class Test implements Runnable, IGamePulserReceptor {
 			} catch (InterruptedException e) {}
 		}
 	}
+
+	@Override
+	public void kill() {
+		System.exit(1);
+	}
 }

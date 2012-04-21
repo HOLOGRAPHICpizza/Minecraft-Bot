@@ -5,6 +5,7 @@
  */
 package net.nevercast.minecraft.bot.network.packets;
 
+import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.IPacket;
 
 import java.io.IOException;
@@ -41,9 +42,7 @@ public class Packet03ChatMessage implements IPacket{
     }
 
     public void readExternal(DataInputStream objectInput) throws IOException {
-        byte[] bytes = new byte[objectInput.readShort() * 2];
-        objectInput.read(bytes);
-        message = new String(bytes, "UTF-16BE");
+        message = MinecraftClient.readString(objectInput);
     }
     
     public String log(){

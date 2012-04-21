@@ -1,5 +1,6 @@
 package net.nevercast.minecraft.bot.network.packets;
 
+import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.IPacket;
 import net.nevercast.minecraft.bot.web.MinecraftLogin;
 
@@ -14,11 +15,90 @@ import java.io.DataOutputStream;
  * @author Josh
  */
 public class Packet01LoginRequest implements IPacket{
-    private int mode;
-    private byte difficulty;
-    private int worldHeight;
-    private int maxPlayers;
+	public Packet01LoginRequest(){}
 
+    public Packet01LoginRequest(String username){
+        this.version = MinecraftLogin.CLIENT_VERSION;
+        this.username = username;
+    }
+
+    /*public Packet01LoginRequest(int entID, byte dimension){
+        this.version = entID;
+        this.dimension = dimension;
+        this.username = "";
+    }*/
+
+    public byte getPacketId() {
+        return 0x01;
+    }
+	
+	// --------------------
+	// Outbound Stuff
+    // --------------------
+	private int version;
+	private String username;
+	
+	public int getVersion() {
+        return version;
+    }
+	
+	public String getUsername() {
+        return username;
+    }
+	
+	public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+	
+    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+        objectOutput.writeInt(version);							// Protocol Version
+        MinecraftClient.writeString(objectOutput, username);	// Username
+        MinecraftClient.writeString(objectOutput, "");			// Empty String
+        objectOutput.writeInt(0);								// 0 int
+        objectOutput.writeInt(0);								// 0 int
+        objectOutput.writeByte(0);								// 0 byte
+        objectOutput.writeByte(0);								// 0 unsigned byte
+        objectOutput.writeByte(0);								// 0 unsigned byte
+    }
+    
+    // --------------------
+ 	// Inbound Stuff
+    // --------------------
+    private int entId;
+    private String levelType;
+    private int mode;
+    private int dimension;
+    private byte difficulty;
+    private int maxPlayers;
+    
+    /**
+	 * Get the entity ID.
+	 * @return the entity ID.
+	 */
+	public int getEntId() {
+		return entId;
+	}
+    
+	/**
+	 * Get the level type.
+	 * @return level type.
+	 */
+	public String getLevelType() {
+		return levelType;
+	}
+	
+	public int getMode() {
+        return mode;
+    }
+	
+	public int getDimension() {
+        return dimension;
+    }
+	
     public byte getDifficulty() {
         return difficulty;
     }
@@ -26,106 +106,20 @@ public class Packet01LoginRequest implements IPacket{
     public int getMaxPlayers() {
         return maxPlayers;
     }
-
-    public int getMode() {
-        return mode;
-    }
-
-    public int getWorldHeight() {
-        return worldHeight;
-    }
-
-    public Packet01LoginRequest(){}
-
-    public Packet01LoginRequest(String username){
-        this.versionAndEntity = MinecraftLogin.CLIENT_VERSION;
-        this.username = username;
-        this.seed = 0;
-        this.dimension = 0;
-    }
-
-    public Packet01LoginRequest(int entID, long mapSeed, byte dimension){
-        this.versionAndEntity = entID;
-        this.seed = mapSeed;
-        this.dimension = dimension;
-        this.username = "";
-    }
-
-    public byte getPacketId() {
-        return 0x01;
-    }
-
-    public int getVersionAndEntity() {
-        return versionAndEntity;
-    }
-
-    public void setVersionAndEntity(int versionAndEntity) {
-        this.versionAndEntity = versionAndEntity;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public long getSeed() {
-        return seed;
-    }
-
-    public void setSeed(long seed) {
-        this.seed = seed;
-    }
-
-    public int getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(byte dimension) {
-        this.dimension = dimension;
-    }
-
-    private int versionAndEntity;
-    private String username;
-    private String levelType;
-    private long seed;
-    private int dimension;
-
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
-        objectOutput.writeInt(versionAndEntity);
-        objectOutput.writeShort(username.length());
-        objectOutput.write(username.getBytes("UTF-16BE"));
-        objectOutput.writeLong(seed);
-        objectOutput.writeInt(0);
-        objectOutput.writeByte(0);
-        objectOutput.writeByte(0);
-        objectOutput.writeByte(0);//unsigned for some reason in protocol definition
-        objectOutput.writeByte(0);//unsigned for some reason in prtocol definition
-//        System.out.println("Packet01-WriteExternal");
-    }
-
+    
     public void readExternal(DataInputStream objectInput) throws IOException {
-        versionAndEntity = objectInput.readInt();
-        byte[] bytes = new byte[objectInput.readShort() * 2];
-        objectInput.read(bytes);
-        username = new String(bytes, "UTF-16BE");//always empty string, not actually used
-        byte[] levelTypeLen = new byte[objectInput.readShort() * 2];
-        objectInput.read(levelTypeLen);
-        levelType = new String(levelTypeLen, "UTF-16BE");
-        System.out.println("Level Type: "+levelType);
-//        seed = objectInput.readLong();
-        mode = objectInput.readInt();//0 for survival, 1 for creative
-        dimension = objectInput.readInt();
-        difficulty = objectInput.readByte();
-        worldHeight = (int)objectInput.readByte();
-        maxPlayers = (int)objectInput.readByte();
-//        System.out.println("Packet01-ReadExternal");
+        entId = objectInput.readInt();							// Entity ID
+        MinecraftClient.readString(objectInput);				// Empty String
+        levelType = MinecraftClient.readString(objectInput);	// Level Type
+        mode = objectInput.readInt();							// Server Mode
+        dimension = objectInput.readInt();						// Dimension
+        difficulty = objectInput.readByte();					// Difficulty
+        objectInput.readUnsignedByte();							// 0 unsigned byte
+        maxPlayers = objectInput.readUnsignedByte();			// Max Players
     }
     
     public String log(){
-    	return "@ 0x01 Username="+username+" V&E="+versionAndEntity+" LvlType="+levelType+" Mode="+mode+"\n       "+
-    		   "Dimension="+dimension+" Difficulty="+difficulty+" Height="+worldHeight+" Slots="+maxPlayers;
+    	return "@ 0x01 Username="+username+" version="+version+" LvlType="+levelType+" Mode="+mode+"\n       "+
+    		   "Dimension="+dimension+" Difficulty="+difficulty+" Slots="+maxPlayers;
     }
 }

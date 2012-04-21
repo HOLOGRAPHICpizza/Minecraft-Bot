@@ -23,7 +23,7 @@ public class Location {
         this.Z = Z;
     }
 
-    public double X, Y, Stance, Z;
+    public double X, Y, Z;
     public float Yaw,Pitch, Roll;
     public boolean OnGround;
     
@@ -69,5 +69,15 @@ public class Location {
         /* Truncating is no good, we gotta round this data */
         /* Data needs to be rounded down for block positions, which is what I use this for */
         return new Vector((int)Math.floor(X), (int)Math.floor(Y), (int)Math.floor(Z));
+    }
+    
+    /**
+     * Get the "stance" of the player, which I think is where the top of their head is.
+     * @return "stance" of the player, which I think is where the top of their head is.
+     */
+    public double getStance() {
+    	//TODO: Modify stance for crouching, stairs, etc.
+    	// I think 1.62 is the height of a standing player.
+    	return Y + 1.62;
     }
 }

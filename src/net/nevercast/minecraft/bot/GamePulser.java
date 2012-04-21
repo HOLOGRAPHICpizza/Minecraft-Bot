@@ -55,6 +55,7 @@ public class GamePulser extends Thread {
                     continue;
                 }else{
                     System.out.println("Too many errors!");
+                    receptor.kill();
                     return;
                 }
             }
@@ -63,5 +64,10 @@ public class GamePulser extends Thread {
 
     public interface IGamePulserReceptor{
         void tick(long elapsedTime) throws Exception;
+        
+        /**
+         * Called when this pulser dies.
+         */
+        void kill();
     }
 }

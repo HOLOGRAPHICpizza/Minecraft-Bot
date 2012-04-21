@@ -45,7 +45,8 @@ public class EntityPool {
 
     public void removeEntity(int id){
         if(entities.containsKey(id)){
-            System.out.println("Remove ent " + entities.remove(id));
+        	entities.remove(id);
+            //System.out.println("Remove ent " + entities.remove(id));
         }
     }
     
