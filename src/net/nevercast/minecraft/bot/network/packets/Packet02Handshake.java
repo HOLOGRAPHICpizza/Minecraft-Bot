@@ -1,5 +1,6 @@
 package net.nevercast.minecraft.bot.network.packets;
 
+import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.IPacket;
 
 import java.io.DataInputStream;
@@ -16,42 +17,57 @@ public class Packet02Handshake implements IPacket{
 
     public Packet02Handshake(){}
 
-    public Packet02Handshake(String usernameOrHash){
-        this.usernameOrHash = usernameOrHash;
-//        this.usernameOrHash += ;
+    public Packet02Handshake(String userAndHost){
+        this.userAndHost = userAndHost;
     }
 
     public byte getPacketId() {
         return 0x02;
     }
-
-    private String usernameOrHash;
-
-    public String getUsername(){
-        return usernameOrHash;
+    
+    // --------------------
+    // Outbound Stuff
+    // --------------------
+    private String userAndHost;
+    
+    /**
+     * Get the username and host with port.
+     * @return username and host with port.
+     */
+    public String getUserAndHost(){
+        return userAndHost;
     }
-
-    public String getConnectionHash(){
-        return usernameOrHash;
+    
+    /**
+     * Set the username and host with port, i.e. testUser;localhost:1337
+     * @param userAndHost username and host with port.
+     */
+    public void setUserAndHost(String userAndHost) {
+    	this.userAndHost = userAndHost;
     }
 
     public void writeExternal(DataOutputStream objectOutput) throws IOException {
-    	//TODO: I am extremely concerned with this hacky shit.
-//    	String hack = usernameOrHash+";localhost:25565";
-//    	String hack = usernameOrHash+";192.168.1.66:25565";
-    	objectOutput.writeShort(usernameOrHash.length());
-    	objectOutput.write(usernameOrHash.getBytes("UTF-16BE"));
-    	//objectOutput.writeShort(hack.length());
-        //objectOutput.write(hack.getBytes("UTF-16BE"));
+    	MinecraftClient.writeString(objectOutput, userAndHost);
     }
-
+    
+    // --------------------
+    // Inbound Stuff
+    // --------------------
+    private String hash;
+    
+    /**
+	 * Get the connection hash from the server.
+	 * @return connection hash
+	 */
+	public String getHash() {
+		return hash;
+	}
+    
     public void readExternal(DataInputStream objectInput) throws IOException {
-        byte[] bytes = new byte[objectInput.readShort() * 2];
-        objectInput.read(bytes);
-        usernameOrHash = new String(bytes, "UTF-16BE");
+        hash = MinecraftClient.readString(objectInput);
     }
     
     public String log(){
-    	return "@ 0x02 U || H="+usernameOrHash;
+    	return "@ 0x02 U&H=" + userAndHost + " hash=" + hash;
     }
 }

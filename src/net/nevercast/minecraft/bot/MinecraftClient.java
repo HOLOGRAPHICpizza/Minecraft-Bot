@@ -1,6 +1,7 @@
 package net.nevercast.minecraft.bot;
 
 import net.nevercast.minecraft.bot.entities.EntityPool;
+import net.nevercast.minecraft.bot.entities.GameEntity;
 import net.nevercast.minecraft.bot.entities.MobGameEntity;
 import net.nevercast.minecraft.bot.structs.ItemStack;
 import net.nevercast.minecraft.bot.structs.Location;
@@ -26,13 +27,11 @@ import java.net.Socket;
  * @author Josh
  */
 public class MinecraftClient extends Thread implements GamePulser.IGamePulserReceptor{
-	//TODO: Figure out the weird dieing issue, I highly suspect it's the tick thread.
-	// Also, remember to re-implement the 55ms delay if it turns out to be necessary.
 	
 	/**
 	 * Should we print all inbound and outbound packets?
 	 */
-	public static final boolean PACKET_DEBUG = true;
+	public static final boolean PACKET_DEBUG = false;
 	
 	private boolean enableLogging = false;
     private MinecraftLogin login;
@@ -62,6 +61,9 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 	private String levelType;
 	@SuppressWarnings("unused")
 	private IPacket previousPacket;
+	
+	private String server;
+	private int port;
 	
 	/**
 	 * Set to false to kill the client.
@@ -96,6 +98,9 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     }
 
     public void connect(String address, int port) throws IOException {
+    	this.server = address;
+    	this.port = port;
+    	
         socket = new Socket(address, port);
         socket.setTcpNoDelay(true);
         packetInputStream = new PacketInputStream(socket.getInputStream());
@@ -112,7 +117,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     public void run(){
         try {
             packetOutputStream.writePacket(
-                    new Packet02Handshake(login.getUsername())
+                    new Packet02Handshake(login.getUsername() + ";" + server + ":" + port)
             );
             while(packetOutputStream.isReady() && !isInterrupted() && running) {
                 IPacket mcPacket = packetInputStream.readPacket();
@@ -181,9 +186,9 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     }
 
     private void handleEntMeta(Packet28EntityMetadata packet) {
-    	MobGameEntity ent = ((MobGameEntity)entityPool.getEntity(packet.getEid()));
-    	if(ent != null)
-    		ent.setData(packet.getData());
+    	GameEntity ent = entityPool.getEntity(packet.getEid());
+    	if(ent != null && ent instanceof MobGameEntity)
+    		((MobGameEntity)ent).setData(packet.getData());
     }
 
     private void handleItemSpawn(Packet15ItemSpawned packet) {
@@ -350,7 +355,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 
     private void handlerBeginLogin(Packet02Handshake packet) throws IOException {
         System.out.println("Handling handshake!");
-        String hash = packet.getConnectionHash();
+        String hash = packet.getHash();
         System.out.println("Handshake hash: "+hash);
         if(hash.equalsIgnoreCase("-")){
             // Open server, login without check

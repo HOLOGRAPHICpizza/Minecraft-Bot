@@ -34,11 +34,11 @@ public class Packet66ClickWindow implements IPacket {
 
 	@Override
 	public void readExternal(DataInputStream objectInput) throws IOException {
-		System.exit(0);
+		/*System.exit(0);
 		byte[] bytes = new byte[10];
 		objectInput.readFully(bytes);
 		short sid = (short) ((bytes[1] << 8) | (bytes[2] & 0xff));
-		System.out.println();
+		System.out.println();*/
 		
 		windowId = objectInput.readByte();
 		slot = objectInput.readShort();

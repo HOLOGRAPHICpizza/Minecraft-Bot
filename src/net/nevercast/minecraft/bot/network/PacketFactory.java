@@ -15,7 +15,6 @@ public class PacketFactory {
     private static HashMap<Byte, Integer> unsupportedPackets = new HashMap<Byte, Integer>();
 
     static{
-    	//TODO: Support more packets.
         supportedPackets.put((byte)0x00, Packet00KeepAlive.class);
         supportedPackets.put((byte)0x01, Packet01LoginRequest.class);
         supportedPackets.put((byte)0x02, Packet02Handshake.class);

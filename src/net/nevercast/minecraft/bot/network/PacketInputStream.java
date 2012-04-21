@@ -60,7 +60,8 @@ public class PacketInputStream {
 	            inputStream.skipBytes(PacketFactory.getPacketLength(id));
         	}
         	else {
-        		//TODO: uncomment Thread.sleep(55);
+        		//TODO: Compare performance with and without sleeping.
+        		//Thread.sleep(55);
         	}
         }catch (IOException ioe){
             throw ioe;
