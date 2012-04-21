@@ -1,8 +1,3 @@
-/*
- * Updated March 10, 2012
- * By: mikecyber 
- * For: Protocol 1.2.3 Compliance
- */
 package net.nevercast.minecraft.bot.entities;
 
 import net.nevercast.minecraft.bot.network.PacketInputStream;
@@ -14,21 +9,34 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Josh
- * Date: 8/15/11
- * Time: 3:04 AM
- * To change this template use File | Settings | File Templates.
+ * Parses entity metadata.
+ * @see http://wiki.vg/Entities
+ * @author Michael Craft <mcraft@peak15.org>
+ * @author mikecyber
+ * @author Josh
  */
 public class Metadata {
-
+	//TODO: I'm pretty sure this should be a map, not a list.
+	
     public static Metadata createFromStream(DataInputStream dataInputStream) throws IOException {
         Metadata metadata = new Metadata();
         byte x = 0;
-        while ((x = dataInputStream.readByte()) != 127){
-        	//int index = x & 0x1F;
+        // 1) Read an unsigned byte.
+        // 2) If this byte == 127, stop reading.
+        while ((x = (byte) dataInputStream.readUnsignedByte()) != 127){
+			/* 3) Decompose the byte. 
+			 * 		The bottom 5 bits (0x1F) serve as an identifier (key) for the data to follow. 
+			 * 		The top 3 bits (0xE0) serve as a type:
+			 * 			0: byte
+			 * 			1: short
+			 * 			2: int
+			 * 			3: float
+			 * 			4: string16,
+			 * 			5: short, byte, short (slot type)
+			 * 			6: int, int, int
+			 */
+        	
     		int type  = x >>> 5;
-//            switch (x){
     		switch (type){
                 case 0: metadata.appendField(dataInputStream.readByte()); break;
                 case 1: metadata.appendField(dataInputStream.readShort()); break;

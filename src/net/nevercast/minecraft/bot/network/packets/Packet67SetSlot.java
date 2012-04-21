@@ -10,6 +10,7 @@ import java.io.IOException;
 /**
  * Sent by the server when an item in a slot (in a window) is added/removed.
  * Note: This packet is not fully understood.
+ * @see http://wiki.vg/Slot_Data
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
  * @author Josh

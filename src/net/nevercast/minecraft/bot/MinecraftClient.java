@@ -27,6 +27,11 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 	//TODO: Figure out the weird dieing issue, I highly suspect it's the tick thread.
 	// Also, remember to re-implement the 55ms delay if it turns out to be necessary.
 	
+	/**
+	 * Should we print all inbound and outbound packets?
+	 */
+	public static final boolean PACKET_DEBUG = false;
+	
 	private boolean enableLogging = false;
     private MinecraftLogin login;
     private Socket socket = null;
@@ -367,7 +372,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     }
 
     public void tick(long elapsedTime) throws Exception{
-        System.out.println("Tick: " + elapsedTime + "ms");
+        //System.out.println("Tick: " + elapsedTime + "ms");
         if(maxPlayers != 0){
         	Packet0APlayer pman = new Packet0APlayer(true);
 //            Packet0DPlayerPositionAndLook position = new Packet0DPlayerPositionAndLook(location);

@@ -9,6 +9,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import net.nevercast.minecraft.bot.MinecraftClient;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Josh
@@ -32,7 +34,10 @@ public class PacketOutputStream {
     }
 
     public void writePacket(IPacket packet) throws IOException {
-    	System.out.println("+++Out: "+packet.getPacketId());
+    	if(MinecraftClient.PACKET_DEBUG) {
+    		String hexed = String.format("%x", packet.getPacketId()).toUpperCase();
+    		System.out.println("+++Out: " + hexed);
+    	}
         this.outputStream.writeByte(packet.getPacketId());
         packet.writeExternal(outputStream);
         outputStream.flush();

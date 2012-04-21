@@ -7,6 +7,8 @@ package net.nevercast.minecraft.bot.network;
 
 import java.io.*;
 
+import net.nevercast.minecraft.bot.MinecraftClient;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Josh
@@ -45,8 +47,10 @@ public class PacketInputStream {
         try{
         	if(inputStream.available() >= 1) {
 	            byte id = inputStream.readByte();
-	            String hexed = String.format("%x", id).toUpperCase();
-	            System.out.println("---In: "+hexed);
+	            if(MinecraftClient.PACKET_DEBUG) {
+	            	String hexed = String.format("%x", id).toUpperCase();
+	            	System.out.println("---In: "+hexed);
+	            }
 	            //if(id == -1){
 	            //    throw new IOException("This shit died!");
 	            //}

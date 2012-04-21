@@ -23,10 +23,11 @@ public class GamePulser extends Thread {
     }
 
     public void run(){
-        long time = System.currentTimeMillis();
+        long time = System.nanoTime()/1000000;
         long split = (long)delay / 5;
         while(!isInterrupted() && running){
             try{
+            	// Time elapsed since thread started. (in ms I think)
                 long elapsed = System.nanoTime()/1000000 - time;
                 if(elapsed >= ( delay + offset )){
                     time = System.nanoTime()/1000000;
