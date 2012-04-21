@@ -23,7 +23,7 @@ public class MinecraftLogin {
     private boolean isLoggedIn;
     private String errorMessage = null;
 
-    public static final int CLIENT_VERSION = 28; //28
+    public static final int CLIENT_VERSION = 29; // 1.2.5
 
     // Offline mode
     public MinecraftLogin(String username){

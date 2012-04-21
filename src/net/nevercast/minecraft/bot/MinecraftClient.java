@@ -24,7 +24,9 @@ import java.net.Socket;
  * @author Josh
  */
 public class MinecraftClient extends Thread implements GamePulser.IGamePulserReceptor{
-
+	//TODO: Figure out the weird dieing issue, I highly suspect it's the tick thread.
+	// Also, remember to re-implement the 55ms delay if it turns out to be necessary.
+	
 	private boolean enableLogging = false;
     private MinecraftLogin login;
     private Socket socket = null;
@@ -112,9 +114,8 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                     	System.out.println(mcPacket.log());
                     }
                 }
-                tickSource.running = false;
             }
-            
+            tickSource.running = false;
         } catch (IOException e) {
             e.printStackTrace();
             try { socket.shutdownInput(); } catch (Exception ex){}
@@ -148,6 +149,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
             case 0x28: handleEntMeta((Packet28EntityMetadata)mcPacket); 				break;
             case 0x33: handleMapChunk((Packet33MapChunk)mcPacket); 						break;
             case 0x68: handleWindowItems((Packet68WindowItems)mcPacket);				break;
+            case (byte)0xC9: handlePlayerListItem((PacketC9PlayerListItem)mcPacket);	break;
             case (byte)0xFF: handleDisconnect((PacketFFDisconnect)mcPacket); 			break;
             default:
 //                byte oP = previousPacket.getPacketId();
@@ -327,7 +329,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     private void handleAnnoyingKeepAlive(Packet00KeepAlive packet) throws IOException {
         // Marco, Polo
         packetOutputStream.writePacket(packet);
-        System.out.println("Marco-Polo!");
+        //System.out.println("Marco-Polo!");
     }
 //99
     private void handlerFinishLogin(Packet01LoginRequest packet) throws Exception {
@@ -359,6 +361,10 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 
     }
 
+    private void handlePlayerListItem(PacketC9PlayerListItem item) {
+    	//TODO: Maintain a player list.
+    	//System.out.println(item);
+    }
 
     public void tick(long elapsedTime) throws Exception{
         System.out.println("Tick: " + elapsedTime + "ms");

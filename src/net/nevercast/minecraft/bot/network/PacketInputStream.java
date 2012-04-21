@@ -35,22 +35,35 @@ public class PacketInputStream {
         return new String(bytes, "UTF-16BE");
     }
 
+    /**
+     * Reads a packet from the input stream.
+     * Is simi-blocking, will sleep for 55ms and then return null if no packet is available.
+     * @return The packet read, or null.
+     * @throws IOException if there was a problem reading.
+     */
     public IPacket readPacket() throws IOException {
         try{
-            byte id = inputStream.readByte();
-            String hexed = String.format("%x", id).toUpperCase();
-            System.out.println("---In: "+hexed);
-            //if(id == -1){
-            //    throw new IOException("This shit died!");
-            //}
-            if (PacketFactory.getSupportsPacketId(id)) {
-                IPacket packet = PacketFactory.getPacket(id);
-                if(packet == null) throw new IOException(id + " was provided as a null packet, Death to input stream!");
-                packet.readExternal(inputStream);
-                return packet;
-            }
-            if(!PacketFactory.getCanEatPacket(id)) throw new IOException("Couldn't eat unknown packet " + id + ", I'm bailing!");
-            inputStream.skipBytes(PacketFactory.getPacketLength(id));
+        	if(inputStream.available() >= 1) {
+	            byte id = inputStream.readByte();
+	            String hexed = String.format("%x", id).toUpperCase();
+	            System.out.println("---In: "+hexed);
+	            //if(id == -1){
+	            //    throw new IOException("This shit died!");
+	            //}
+	            if (PacketFactory.getSupportsPacketId(id)) {
+	                IPacket packet = PacketFactory.getPacket(id);
+	                if(packet == null) throw new IOException(String.format("%x", id).toUpperCase() + " was provided as a null packet, Death to input stream!");
+	                packet.readExternal(inputStream);
+	                return packet;
+	            }
+	            if(!PacketFactory.getCanEatPacket(id)) throw new IOException("Couldn't eat unknown packet " + String.format("%x", id).toUpperCase() + ", I'm bailing!");
+	            
+	            // PacketFactory returns null if the packet is supported.
+	            inputStream.skipBytes(PacketFactory.getPacketLength(id));
+        	}
+        	else {
+        		//TODO: uncomment Thread.sleep(55);
+        	}
         }catch (IOException ioe){
             throw ioe;
         }catch (Exception e){

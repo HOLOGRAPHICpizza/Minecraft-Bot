@@ -1,8 +1,3 @@
-/*
- * Updated March 10, 2012
- * By: mikecyber 
- * For: Protocol 1.2.3 Compliance
- */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -13,11 +8,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Josh
- * Date: 8/15/11
- * Time: 3:57 AM
- * To change this template use File | Settings | File Templates.
+ * Sent by the server when an item in a slot (in a window) is added/removed.
+ * Note: This packet is not fully understood.
+ * @author Michael Craft <mcraft@peak15.org>
+ * @author mikecyber
+ * @author Josh
  */
 public class Packet67SetSlot implements IPacket {
     public byte getPacketId() {
@@ -44,12 +39,16 @@ public class Packet67SetSlot implements IPacket {
 
     }
 
-    String report;
+    String report = "";
     public void readExternal(DataInputStream objectInput) throws IOException {
+    	//TODO: This currently has the potential to fail horribly if the item is enchantable.
+    	// See: http://wiki.vg/Slot_Data
+    	
 //    	String report = "Packet67-ReadExternal\n  ";
     	wid = objectInput.readByte();
         slot = objectInput.readShort();
         short id = objectInput.readShort();
+        System.out.println("Item: " + id);
         if(id == -1){
             item = ItemStack.EMPTY;
         }else{
@@ -63,4 +62,7 @@ public class Packet67SetSlot implements IPacket {
     	return "@ 0x67 "+report;
     }
     
+    public String toString() {
+    	return "0x67: " + report;
+    }
 }

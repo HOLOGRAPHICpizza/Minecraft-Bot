@@ -24,4 +24,8 @@ public class Vector {
     public Location toLocation(){
         return new Location(X,Y,Z);
     }
+    
+    public String toString() {
+    	return "(" + X + "," + Y + "," + Z + ")";
+    }
 }

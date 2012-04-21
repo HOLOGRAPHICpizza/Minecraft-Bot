@@ -56,10 +56,11 @@ public class PacketFactory {
         supportedPackets.put((byte)0x68, Packet68WindowItems.class);
         //supportedPackets.put((byte)0x6B, Packet6BCreativeInventoryAction.class);
         supportedPackets.put((byte)0x82, Packet82UpdateSign.class);
-        //supportedPackets.put((byte)0xC9, PacketC9PlayerListItem.class);
+        supportedPackets.put((byte)0xC9, PacketC9PlayerListItem.class);
         supportedPackets.put((byte)0xFF, PacketFFDisconnect.class);
 
-
+        // Format is (packet id, length - 1)
+        
 //        unsupportedPackets.put((byte)0x0E, 12); 	// Digging Pig
         unsupportedPackets.put((byte)0x0E, 11); 	// Digging
 //        unsupportedPackets.put((byte)0x11, 14); 	// Use Bed
@@ -67,19 +68,19 @@ public class PacketFactory {
 //        unsupportedPackets.put((byte)0x16, 8); 		// Collect item
 //        unsupportedPackets.put((byte)0x17, 22);		// Spawn Object / Vehicle: Len = 28 if fireball;
         unsupportedPackets.put((byte)0x1A, 18);		// Spawn Experience Orb
-//        unsupportedPackets.put((byte)0x1C, 10); 	// Entity velocity
+        unsupportedPackets.put((byte)0x1C, 10); 	// Entity velocity
         unsupportedPackets.put((byte)0x1E, 4); 		// Entity
-//        unsupportedPackets.put((byte)0x1F, 8); 		// Entity Relative Move
+        unsupportedPackets.put((byte)0x1F, 7); 		// Entity Relative Move
         unsupportedPackets.put((byte)0x20, 6); 		// Entity Look
         unsupportedPackets.put((byte)0x21, 9); 		// Entity Look/Move
-//        unsupportedPackets.put((byte)0x22, 18); 	// Entity Teleport
+        unsupportedPackets.put((byte)0x22, 18); 	// Entity Teleport
         unsupportedPackets.put((byte)0x23, 5);	 	// Entity Head Look
         unsupportedPackets.put((byte)0x26, 5); 		// Entity state
         unsupportedPackets.put((byte)0x27, 8); 		// Attach Entity
         unsupportedPackets.put((byte)0x29, 8); 		// Entity MetaData
         unsupportedPackets.put((byte)0x2A, 5); 		// Remove Entity Effect
         unsupportedPackets.put((byte)0x2B, 8); 		// Set Experience
-//        unsupportedPackets.put((byte)0x32, 9); 		// Pre-Chunk (Map Column Allocation)
+        unsupportedPackets.put((byte)0x32, 9);		// Pre-Chunk (Map Column Allocation)
 //        unsupportedPackets.put((byte)0x36, 13); 	// Block Action
         											// Explosion (0x3C) 
         unsupportedPackets.put((byte)0x3D, 17); 	// Effect
@@ -91,8 +92,8 @@ public class PacketFactory {
         unsupportedPackets.put((byte)0x84, 23); 	// Update Tile Entity
 //        unsupportedPackets.put((byte)0x6B, X); 		// Creative Inventory Action
 //        unsupportedPackets.put((byte)0x6B, 3);//+slot 		// Enchant Item
-        unsupportedPackets.put((byte)0xC8, 5); 		// Increment stats
-        
+        unsupportedPackets.put((byte)0xC8, 5); 		// Increment Statistic
+        unsupportedPackets.put((byte)0xCA, 4);		// Player Abilities
         
     }
 
