@@ -48,7 +48,7 @@ public class EntityPool {
             System.out.println("Remove ent " + entities.remove(id));
         }
     }
-
+    
     public GameEntity getEntity(int id){
         if(entities.containsKey(id)){
             return entities.get(id);

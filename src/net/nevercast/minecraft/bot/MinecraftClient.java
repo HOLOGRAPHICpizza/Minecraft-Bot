@@ -178,12 +178,9 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     }
 
     private void handleEntMeta(Packet28EntityMetadata packet) {
-    	try{
-    		((MobGameEntity)entityPool.getEntity(packet.getEid())).setData(packet.getData());
-    	} catch(Exception e){
-    		System.out.println("FFFUUUUUUUU");
-    		e.printStackTrace();
-    	}
+    	MobGameEntity ent = ((MobGameEntity)entityPool.getEntity(packet.getEid()));
+    	if(ent != null)
+    		ent.setData(packet.getData());
     }
 
     private void handleItemSpawn(Packet15ItemSpawned packet) {
