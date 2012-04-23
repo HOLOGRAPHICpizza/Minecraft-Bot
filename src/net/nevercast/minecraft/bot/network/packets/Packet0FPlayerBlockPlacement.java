@@ -85,7 +85,7 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
     }
     
     public String log(){
-    	return "@ 0x0F X="+blockPosition.X+" Y="+blockPosition.Y+" Z="+blockPosition.Z+" Face="+direction+" ID="+id;
+    	return "@ 0x0F X="+blockPosition.x+" Y="+blockPosition.y+" Z="+blockPosition.z+" Face="+direction+" ID="+id;
     }    
     
     public boolean enchantable(short id){

@@ -54,7 +54,7 @@ public class Location {
     }
 
     public static Location fromAbsoluteInteger(Vector vector){
-        return fromAbsoluteInteger(vector.X,  vector.Y, vector.Z);
+        return fromAbsoluteInteger(vector.x,  vector.y, vector.z);
     }
 
     public static Location fromAbsoluteInteger(int x, int y, int z){

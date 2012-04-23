@@ -9,7 +9,7 @@ import net.nevercast.minecraft.bot.network.IPacket;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 /**
- * Spawn a painting;
+ * Spawn a painting.
  * @author Michael Craft <mcraft@peak15.org>
  */
 public class Packet19SpawnPainting implements IPacket {
@@ -65,15 +65,15 @@ public class Packet19SpawnPainting implements IPacket {
 	public void readExternal(DataInputStream objectInput) throws IOException {
 		eid = objectInput.readInt();
 		title = MinecraftClient.readString(objectInput);
-		pos.X = objectInput.readInt();
-		pos.Y = objectInput.readInt();
-		pos.Z = objectInput.readInt();
+		pos.x = objectInput.readInt();
+		pos.y = objectInput.readInt();
+		pos.z = objectInput.readInt();
 		direction = objectInput.readInt();
 	}
 
 	@Override
 	public String log() {
-		return "@ 0x19 eid=" + eid + " title=" + title + " pos=("+pos.X+","+pos.Y+","+pos.Z+") direction=" + direction;
+		return "@ 0x19 eid=" + eid + " title=" + title + " pos=("+pos.x+","+pos.y+","+pos.z+") direction=" + direction;
 	}
 
 }

@@ -51,9 +51,9 @@ public class Metadata {
                     metadata.appendField(stack); break;
                 case 6:
                     Vector vector = new Vector();
-                    vector.X = dataInputStream.readInt();
-                    vector.Y = dataInputStream.readInt();
-                    vector.Z = dataInputStream.readInt();
+                    vector.x = dataInputStream.readInt();
+                    vector.y = dataInputStream.readInt();
+                    vector.z = dataInputStream.readInt();
                     break;
             }
         }

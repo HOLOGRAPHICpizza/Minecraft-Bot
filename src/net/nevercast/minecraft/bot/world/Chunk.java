@@ -53,16 +53,16 @@ public class Chunk {
     public Vector getAbsoluteLocation(Vector offset){
         Vector abs = getAbsoluteLocation();
         return new Vector(
-                abs.X + offset.X,
-                offset.Y,
-                abs.Z + offset.Z);
+                abs.x + offset.x,
+                offset.y,
+                abs.z + offset.z);
     }
 
     private BlockInfo getInfo(Vector location){
-        if(location.X < 1 || location.X > 16) return null;
-        if(location.Z < 1 || location.Z > 16) return null;
-        if(location.Y < 1 || location.Y > 128) return null;
-        int index = (location.Y - 1) + ((location.Z - 1) * 128) + ((location.X - 1) * 128 * 16);
+        if(location.x < 1 || location.x > 16) return null;
+        if(location.z < 1 || location.z > 16) return null;
+        if(location.y < 1 || location.y > 128) return null;
+        int index = (location.y - 1) + ((location.z - 1) * 128) + ((location.x - 1) * 128 * 16);
         return new BlockInfo(blockTypes[index], blockData[index], blockLight[index], skyLight[index]);
     }
 

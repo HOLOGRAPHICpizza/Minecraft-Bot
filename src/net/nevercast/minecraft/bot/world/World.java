@@ -65,11 +65,11 @@ public class World {
     }
 
     public Vector getBlockRelativePosition(Vector location){
-        return new Vector(Math.abs(location.X) % 16, location.Y, Math.abs(location.Z) % 16);
+        return new Vector(Math.abs(location.x) % 16, location.y, Math.abs(location.z) % 16);
     }
 
     public Chunk getChunkAt(Vector location){
-        return getChunk(location.X / 16, location.Z / 16);
+        return getChunk(location.x / 16, location.z / 16);
     }
 
     public Chunk[] getLoadedChunks(){
@@ -77,35 +77,35 @@ public class World {
     }
 
     public void updateChunk(Vector location, Vector size, byte[] data) throws IOException, DataFormatException {
-        byte[] decompressedData = new byte[(int)(size.X * size.Y * size.Z * 2.5)];
+        byte[] decompressedData = new byte[(int)(size.x * size.y * size.z * 2.5)];
         Inflater inflater = new Inflater();
         inflater.setInput(data);
         inflater.inflate(decompressedData);
-        byte[] typeData = new byte[size.X * size.Y * size.Z];
+        byte[] typeData = new byte[size.x * size.y * size.z];
         System.arraycopy(decompressedData, 0, typeData, 0, typeData.length);
-        byte[] metaData = new byte[(size.X * size.Y * size.Z) / 2];
+        byte[] metaData = new byte[(size.x * size.y * size.z) / 2];
         System.arraycopy(decompressedData, typeData.length, metaData, 0, metaData.length);
         byte[] lightData = new byte[metaData.length];
         System.arraycopy(decompressedData, typeData.length + metaData.length, lightData, 0, lightData.length);
         byte[] skyData = new byte[metaData.length];
         System.arraycopy(decompressedData, typeData.length + metaData.length + lightData.length, skyData, 0, skyData.length);
-        int chunkX = location.X / 16;
-        int chunkZ = location.Z / 16;
+        int chunkX = location.x / 16;
+        int chunkZ = location.z / 16;
         if(!isChunkLoaded(chunkX, chunkZ)){
             initChunk(chunkX, chunkZ);
         }
         Chunk chunk = getChunk(chunkX, chunkZ);
 
         Vector rel = getBlockRelativePosition(location);
-        int x1 = rel.X;
-        int z1 = rel.Y;
-        int xs = x1 + size.X;
-        int zs = z1 + size.Z;
+        int x1 = rel.x;
+        int z1 = rel.y;
+        int xs = x1 + size.x;
+        int zs = z1 + size.z;
         for(int x = x1; x < xs; x++){
             for(int z = z1; z < zs; z++){
-                int srcIdx = location.Y + (z * size.Y) + (x * size.Y * size.Z);
-                int dstIdx = location.Y + (z * 128) + (x * 128 * 16);
-                System.arraycopy(typeData, srcIdx, chunk.blockTypes, dstIdx, size.Y);
+                int srcIdx = location.y + (z * size.y) + (x * size.y * size.z);
+                int dstIdx = location.y + (z * 128) + (x * 128 * 16);
+                System.arraycopy(typeData, srcIdx, chunk.blockTypes, dstIdx, size.y);
             }
         }
     }

@@ -43,7 +43,7 @@ public class Packet82UpdateSign implements IPacket{
     public void readExternal(DataInputStream objectInput) throws IOException {
         position = new Vector(objectInput.readInt(), objectInput.readShort(), objectInput.readInt());
         lines = new String[4];
-        report = "X="+position.X+" Y="+position.Y+" Z="+position.Y+" Msg:\n";
+        report = "X="+position.x+" Y="+position.y+" Z="+position.y+" Msg:\n";
         for(int i = 0; i < 4; i++){
             lines[i] = PacketInputStream.readString16(objectInput);
             report+="    "+lines[i]+"\n";

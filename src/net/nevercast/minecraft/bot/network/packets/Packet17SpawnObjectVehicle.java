@@ -73,9 +73,9 @@ public class Packet17SpawnObjectVehicle implements IPacket {
 	public void readExternal(DataInputStream objectInput) throws IOException {
 		eid = objectInput.readInt();
 		type = objectInput.readByte();
-		pos.X = objectInput.readInt();
-		pos.Y = objectInput.readInt();
-		pos.Z = objectInput.readInt();
+		pos.x = objectInput.readInt();
+		pos.y = objectInput.readInt();
+		pos.z = objectInput.readInt();
 		feid = objectInput.readInt();
 		if(feid > 0) {
 			velocity[0] = objectInput.readShort();
@@ -86,7 +86,7 @@ public class Packet17SpawnObjectVehicle implements IPacket {
 
 	@Override
 	public String log() {
-		return "@ 0x17 eid=" + eid + " type=" + type + " pos=("+pos.X+","+pos.Y+","+pos.Z+") feid=" + feid + 
+		return "@ 0x17 eid=" + eid + " type=" + type + " pos=("+pos.x+","+pos.y+","+pos.z+") feid=" + feid + 
 				" velocity=("+velocity[0]+","+velocity[1]+","+velocity[2]+")";
 	}
 

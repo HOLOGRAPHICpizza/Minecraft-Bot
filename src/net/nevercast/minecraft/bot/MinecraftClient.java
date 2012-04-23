@@ -249,11 +249,11 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                 int y = (int)location.Y;
                 Vector blockPosition = location.toVector();
                 for(; y > 0; y--){
-                    blockPosition.Y = y;
+                    blockPosition.y = y;
                     Block block = world.getBlockAt(blockPosition);
                     if(block.getInfo().blockType != 0){
                         Vector surfLoc = block.getLocation();
-                        sendMessage("Surface: " + surfLoc.X + ", " + surfLoc.Y + ", " + surfLoc.Z + " (" + block.getInfo().blockType + ")");
+                        sendMessage("Surface: " + surfLoc.x + ", " + surfLoc.y + ", " + surfLoc.z + " (" + block.getInfo().blockType + ")");
                         return;
                     }
                 }
@@ -325,9 +325,9 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 
     private void handleSpawn(Packet06SpawnLocation packet) {
         spawn = new Vector();
-        spawn.X = packet.getX();
-        spawn.Y = packet.getY();
-        spawn.Z = packet.getZ();
+        spawn.x = packet.getX();
+        spawn.y = packet.getY();
+        spawn.z = packet.getZ();
     }
 
     private void handlePositionAndLook(Packet0DPlayerPositionAndLook packet) throws IOException {

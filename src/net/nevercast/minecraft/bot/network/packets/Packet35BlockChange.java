@@ -52,6 +52,6 @@ public class Packet35BlockChange implements IPacket {
     }
     
     public String log(){
-    	return "@ 0x35 X="+position.X+" Y="+position.Y+" Z="+position.Z+" BlockType="+blockInfo.blockType;
+    	return "@ 0x35 X="+position.x+" Y="+position.y+" Z="+position.z+" BlockType="+blockInfo.blockType;
     }
 }
