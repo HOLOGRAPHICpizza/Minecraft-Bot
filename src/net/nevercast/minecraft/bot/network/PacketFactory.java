@@ -67,7 +67,7 @@ public class PacketFactory {
         unsupportedPackets.put((byte)0x3D, 17); 									// Effect
         supportedPackets.put((byte)0x46, Packet46StateInfo.class);
         unsupportedPackets.put((byte)0x47, 17); 									// Thunderbolt
-        //supportedPackets.put((byte)0x64, Packet64OpenWindow.class);
+        supportedPackets.put((byte)0x64, Packet64OpenWindow.class);
         unsupportedPackets.put((byte)0x65, 1); 										// Close window
         supportedPackets.put((byte)0x66, Packet66ClickWindow.class);
         supportedPackets.put((byte)0x67, Packet67SetSlot.class);
