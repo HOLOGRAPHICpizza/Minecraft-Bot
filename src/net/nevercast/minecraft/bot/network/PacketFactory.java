@@ -63,7 +63,7 @@ public class PacketFactory {
         supportedPackets.put((byte)0x34, Packet34MultiBlockChange.class);
         supportedPackets.put((byte)0x35, Packet35BlockChange.class);
         unsupportedPackets.put((byte)0x36, 12); 									// Block Action
-        //supportedPackets.put((byte)0x3C, Packet3CExplosion.class);
+        supportedPackets.put((byte)0x3C, Packet3CExplosion.class);
         unsupportedPackets.put((byte)0x3D, 17); 									// Effect
         supportedPackets.put((byte)0x46, Packet46StateInfo.class);
         unsupportedPackets.put((byte)0x47, 17); 									// Thunderbolt
