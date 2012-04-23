@@ -14,7 +14,7 @@ import net.nevercast.minecraft.bot.structs.Vector;
 public class Packet17SpawnObjectVehicle implements IPacket {
 	private int eid;							// Entity ID
 	private byte type;							// Type
-	private Vector pos;							// Position
+	private Vector pos = new Vector();			// Position
 	private int feid;							// Fireball thrower's entity ID
 	private short[] velocity = {0,0,0};			// Velocity
 	
