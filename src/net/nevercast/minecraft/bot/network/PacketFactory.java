@@ -74,10 +74,10 @@ public class PacketFactory {
         supportedPackets.put((byte)0x68, Packet68WindowItems.class);
         unsupportedPackets.put((byte)0x69, 5); 										// Update Window Property
         unsupportedPackets.put((byte)0x6A, 4); 										// Confirm Transaction
-        //supportedPackets.put((byte)0x6B, Packet6BCreativeInventoryAction.class);
+        supportedPackets.put((byte)0x6B, Packet6BCreativeInventoryAction.class);
         unsupportedPackets.put((byte)0x6C, 2); 										// Enchant Item
         supportedPackets.put((byte)0x82, Packet82UpdateSign.class);
-        //supportedPackets.put((byte)0x83, Packet83ItemData.class);
+        supportedPackets.put((byte)0x83, Packet83ItemData.class);
         unsupportedPackets.put((byte)0x84, 23); 									// Update Tile Entity
         unsupportedPackets.put((byte)0xC8, 5); 										// Increment Statistic
         supportedPackets.put((byte)0xC9, PacketC9PlayerListItem.class);
