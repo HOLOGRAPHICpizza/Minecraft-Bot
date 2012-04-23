@@ -40,7 +40,7 @@ public class PacketFactory {
         supportedPackets.put((byte)0x14, Packet14NamedEntitySpawn.class);
         supportedPackets.put((byte)0x15, Packet15ItemSpawned.class);
         unsupportedPackets.put((byte)0x16, 8); 										// Collect item
-        //supportedPackets.put((byte)0x17, Packet17SpawnObjectVehicle.class);
+        supportedPackets.put((byte)0x17, Packet17SpawnObjectVehicle.class);
         supportedPackets.put((byte)0x18, Packet18MobSpawned.class);
         //supportedPackets.put((byte)0x19, Packet19SpawnPainting.class);
         unsupportedPackets.put((byte)0x1A, 18);										// Spawn Experience Orb
