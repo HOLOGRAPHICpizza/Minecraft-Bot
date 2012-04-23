@@ -15,7 +15,7 @@ import net.nevercast.minecraft.bot.structs.Vector;
 public class Packet19SpawnPainting implements IPacket {
 	private int eid;					// Entity ID
 	private String title;				// Painting Title
-	private Vector pos = new Vector();	// Center Position
+	private Vector<Integer> pos = new Vector<Integer>();	// Center Position
 	private int direction;				// Direction Painting Faces
 	
 	/**
@@ -38,7 +38,7 @@ public class Packet19SpawnPainting implements IPacket {
 	 * Get the center position.
 	 * @return center position.
 	 */
-	public Vector getPos() {
+	public Vector<Integer> getPos() {
 		return pos;
 	}
 	

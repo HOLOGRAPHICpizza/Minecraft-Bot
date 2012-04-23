@@ -25,10 +25,10 @@ public class Packet35BlockChange implements IPacket {
         return 0x35;
     }
 
-    private Vector position;
+    private Vector<Integer> position;
     private BlockInfo blockInfo;
 
-    public Vector getPosition(){
+    public Vector<Integer> getPosition(){
         return position;
     }
 
@@ -41,9 +41,9 @@ public class Packet35BlockChange implements IPacket {
     }
 
     public void readExternal(DataInputStream objectInput) throws IOException {
-        position = new Vector(
+        position = new Vector<Integer>(
                 objectInput.readInt(),
-                objectInput.readByte(),
+                (int)objectInput.readByte(),
                 objectInput.readInt()
         );
         blockInfo = new BlockInfo();

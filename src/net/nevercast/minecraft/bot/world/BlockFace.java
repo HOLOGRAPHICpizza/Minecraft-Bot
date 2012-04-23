@@ -15,20 +15,20 @@ import net.nevercast.minecraft.bot.structs.Vector;
  * To change this template use File | Settings | File Templates.
  */
 public enum BlockFace {
-    DOWN(new Vector(0,-1,0)),
-    UP(new Vector(0,1,0)),
-    NORTH(new Vector(0,0,-1)),
-    SOUTH(new Vector(0,0,1)),
-    EAST(new Vector(-1,0,0)),
-    WEST(new Vector(1,0,0));
+    DOWN(new Vector<Integer>(0,-1,0)),
+    UP(new Vector<Integer>(0,1,0)),
+    NORTH(new Vector<Integer>(0,0,-1)),
+    SOUTH(new Vector<Integer>(0,0,1)),
+    EAST(new Vector<Integer>(-1,0,0)),
+    WEST(new Vector<Integer>(1,0,0));
 
 
-    private final Vector direction;
-    private BlockFace(Vector v){
+    private final Vector<Integer> direction;
+    private BlockFace(Vector<Integer> v){
         direction = v;
     }
 
-    public Vector getDirection(){
+    public Vector<Integer> getDirection(){
         return direction;
     }
 }

@@ -46,19 +46,19 @@ public class Chunk {
         return (this.x == x && this.z == z);
     }
 
-    public Vector getAbsoluteLocation(){
-        return new Vector(x * 16, 0 , z * 16);
+    public Vector<Integer> getAbsoluteLocation(){
+        return new Vector<Integer>(x * 16, 0 , z * 16);
     }
 
-    public Vector getAbsoluteLocation(Vector offset){
-        Vector abs = getAbsoluteLocation();
-        return new Vector(
+    public Vector<Integer> getAbsoluteLocation(Vector<Integer> offset){
+        Vector<Integer> abs = getAbsoluteLocation();
+        return new Vector<Integer>(
                 abs.x + offset.x,
                 offset.y,
                 abs.z + offset.z);
     }
 
-    private BlockInfo getInfo(Vector location){
+    private BlockInfo getInfo(Vector<Integer> location){
         if(location.x < 1 || location.x > 16) return null;
         if(location.z < 1 || location.z > 16) return null;
         if(location.y < 1 || location.y > 128) return null;
@@ -66,7 +66,7 @@ public class Chunk {
         return new BlockInfo(blockTypes[index], blockData[index], blockLight[index], skyLight[index]);
     }
 
-    public Block getBlock(Vector location) {
+    public Block getBlock(Vector<Integer> location) {
         return new Block(this.world, this, getAbsoluteLocation(location), getInfo(location));
     }
 }

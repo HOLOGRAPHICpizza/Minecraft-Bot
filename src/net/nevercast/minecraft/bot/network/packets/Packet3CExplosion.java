@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.nevercast.minecraft.bot.network.IPacket;
-import net.nevercast.minecraft.bot.structs.VectorD;
+import net.nevercast.minecraft.bot.structs.Vector;
 
 /**
  * Create an explosion.
@@ -13,7 +13,7 @@ import net.nevercast.minecraft.bot.structs.VectorD;
  */
 public class Packet3CExplosion implements IPacket {
 	@SuppressWarnings("unused")
-	private VectorD pos;
+	private Vector<Double> pos = new Vector<Double>();
 	
 	@Override
 	public byte getPacketId() {

@@ -20,7 +20,7 @@ public class MobGameEntity extends MovingEntity {
     }
 
     private byte type;
-    private Vector position;
+    private Vector<Integer> position;
     private byte yaw;
     private byte pitch;
     private byte headYaw;
@@ -34,11 +34,11 @@ public class MobGameEntity extends MovingEntity {
         this.type = type;
     }
 
-    public Vector getPosition() {
+    public Vector<Integer> getPosition() {
         return position;
     }
 
-    public void setPosition(Vector position) {
+    public void setPosition(Vector<Integer> position) {
         this.position = position;
     }
 

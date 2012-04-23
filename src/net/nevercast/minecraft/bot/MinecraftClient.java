@@ -39,7 +39,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     private PacketInputStream packetInputStream;
     private PacketOutputStream packetOutputStream;
     private Location location = null;
-    private Vector spawn = null;
+    private Vector<Integer> spawn = null;
     @SuppressWarnings("unused")
 	private long gameTicks;
     private ItemStack[] inventory;
@@ -247,12 +247,12 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                 sendMessage("Chunk not loaded");
             }else{
                 int y = (int)location.Y;
-                Vector blockPosition = location.toVector();
+                Vector<Integer> blockPosition = location.toVector();
                 for(; y > 0; y--){
                     blockPosition.y = y;
                     Block block = world.getBlockAt(blockPosition);
                     if(block.getInfo().blockType != 0){
-                        Vector surfLoc = block.getLocation();
+                        Vector<Integer> surfLoc = block.getLocation();
                         sendMessage("Surface: " + surfLoc.x + ", " + surfLoc.y + ", " + surfLoc.z + " (" + block.getInfo().blockType + ")");
                         return;
                     }
@@ -324,7 +324,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     }
 
     private void handleSpawn(Packet06SpawnLocation packet) {
-        spawn = new Vector();
+        spawn = new Vector<Integer>();
         spawn.x = packet.getX();
         spawn.y = packet.getY();
         spawn.z = packet.getZ();

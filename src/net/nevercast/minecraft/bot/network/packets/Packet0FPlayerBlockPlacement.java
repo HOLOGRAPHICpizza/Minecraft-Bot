@@ -26,15 +26,15 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
         return 0x0F;
     }
 
-    private Vector blockPosition;
+    private Vector<Integer> blockPosition;
     private BlockFace direction;
     private ItemStack item;
     
-    public Vector getBlockPosition() {
+    public Vector<Integer> getBlockPosition() {
         return blockPosition;
     }
 
-    public void setBlockPosition(Vector blockPosition) {
+    public void setBlockPosition(Vector<Integer> blockPosition) {
         this.blockPosition = blockPosition;
     }
 
@@ -61,9 +61,9 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
     short id;
     
     public void readExternal(DataInputStream objectInput) throws IOException {
-        blockPosition = new Vector(
+        blockPosition = new Vector<Integer>(
                 objectInput.readInt(),
-                objectInput.readByte(),
+                (int)objectInput.readByte(),
                 objectInput.readInt()
         );
         direction = BlockFace.values()[objectInput.readByte()];

@@ -5,7 +5,7 @@
  */
 package net.nevercast.minecraft.bot.entities;
 
-import net.nevercast.minecraft.bot.structs.VectorD;
+import net.nevercast.minecraft.bot.structs.Vector;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,15 +17,15 @@ import net.nevercast.minecraft.bot.structs.VectorD;
 public class MovingEntity extends GameEntity {
     private int vehicleId;
 
-    public VectorD getVelocity() {
+    public Vector<Double> getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(VectorD velocity) {
+    public void setVelocity(Vector<Double> velocity) {
         this.velocity = velocity;
     }
 
-    private VectorD velocity;
+    private Vector<Double> velocity;
 
     public MovingEntity(int eid) {
         super(eid);

@@ -12,11 +12,11 @@ import net.nevercast.minecraft.bot.structs.Vector;
  * @author Michael Craft <mcraft@peak15.org>
  */
 public class Packet17SpawnObjectVehicle implements IPacket {
-	private int eid;							// Entity ID
-	private byte type;							// Type
-	private Vector pos = new Vector();			// Position
-	private int feid;							// Fireball thrower's entity ID
-	private short[] velocity = {0,0,0};			// Velocity
+	private int eid;										// Entity ID
+	private byte type;										// Type
+	private Vector<Integer> pos = new Vector<Integer>();	// Position
+	private int feid;										// Fireball thrower's entity ID
+	private Vector<Short> velocity = new Vector<Short>();	// Velocity
 	
 	/**
 	 * Get the entity ID.
@@ -38,7 +38,7 @@ public class Packet17SpawnObjectVehicle implements IPacket {
 	 * Get the entity position.
 	 * @return entity position.
 	 */
-	public Vector getPos() {
+	public Vector<Integer> getPos() {
 		return pos;
 	}
 	
@@ -54,7 +54,7 @@ public class Packet17SpawnObjectVehicle implements IPacket {
 	 * Get the entity velocity.
 	 * @return entity velocity.
 	 */
-	public short[] getVelocity() {
+	public Vector<Short> getVelocity() {
 		return velocity;
 	}
 	
@@ -78,16 +78,16 @@ public class Packet17SpawnObjectVehicle implements IPacket {
 		pos.z = objectInput.readInt();
 		feid = objectInput.readInt();
 		if(feid > 0) {
-			velocity[0] = objectInput.readShort();
-			velocity[1] = objectInput.readShort();
-			velocity[2] = objectInput.readShort();
+			velocity.x = objectInput.readShort();
+			velocity.y = objectInput.readShort();
+			velocity.z = objectInput.readShort();
 		}
 	}
 
 	@Override
 	public String log() {
 		return "@ 0x17 eid=" + eid + " type=" + type + " pos=("+pos.x+","+pos.y+","+pos.z+") feid=" + feid + 
-				" velocity=("+velocity[0]+","+velocity[1]+","+velocity[2]+")";
+				" velocity=("+velocity.x+","+velocity.y+","+velocity.z+")";
 	}
 
 }

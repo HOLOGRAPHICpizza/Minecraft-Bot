@@ -39,7 +39,7 @@ public class Packet18MobSpawned implements IPacket{
         entity = new MobGameEntity(objectInput.readInt());
         entity.setType(objectInput.readByte());
         entity.setPosition(
-                new Vector(
+                new Vector<Integer>(
                         objectInput.readInt(),
                         objectInput.readInt(),
                         objectInput.readInt()

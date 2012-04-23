@@ -50,7 +50,7 @@ public class Metadata {
                     stack.damage = dataInputStream.readShort();
                     metadata.appendField(stack); break;
                 case 6:
-                    Vector vector = new Vector();
+                    Vector<Integer> vector = new Vector<Integer>();
                     vector.x = dataInputStream.readInt();
                     vector.y = dataInputStream.readInt();
                     vector.z = dataInputStream.readInt();
@@ -106,7 +106,8 @@ public class Metadata {
         return (ItemStack)getField(index);
     }
 
-    public Vector getVector(int index){
-        return (Vector)getField(index);
+    @SuppressWarnings("unchecked")
+	public Vector<Integer> getVector(int index){
+    	return (Vector<Integer>) Vector.class.cast(getField(index));
     }
 }

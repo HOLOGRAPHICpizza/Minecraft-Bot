@@ -45,7 +45,7 @@ public class Packet14NamedEntitySpawn implements IPacket {
         entity = new NamedGameEntity(id, PacketInputStream.readString16(objectInput));
         entity.setLocation(
                 Location.fromAbsoluteInteger(
-                        new Vector(objectInput.readInt(), objectInput.readInt(), objectInput.readInt())
+                        new Vector<Integer>(objectInput.readInt(), objectInput.readInt(), objectInput.readInt())
                 )
         );
         entity.getLocation().setRotationPacked(objectInput.readByte(), objectInput.readByte());

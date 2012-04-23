@@ -25,15 +25,15 @@ public class Packet34MultiBlockChange implements IPacket{
         return 0x34;
     }
 
-    private Vector chunkPosition;
-    private Vector[] positions;
+    private Vector<Integer> chunkPosition;
+    private Vector<Integer>[] positions;
     private BlockInfo[] blockInfos;
 
-    public Vector getChunkPosition(){
+    public Vector<Integer> getChunkPosition(){
         return chunkPosition;
     }
 
-    public Vector[] getPositions(){
+    public Vector<Integer>[] getPositions(){
         return positions;
     }
 

@@ -25,14 +25,14 @@ public class Packet82UpdateSign implements IPacket{
         return (byte)0x82;
     }
 
-    private Vector position;
+    private Vector<Integer> position;
     private String[] lines;
 
     public String[] getLines(){
         return lines;
     }
 
-    public Vector getPosition(){
+    public Vector<Integer> getPosition(){
         return position;
     }
 
@@ -41,7 +41,7 @@ public class Packet82UpdateSign implements IPacket{
 
     String report;
     public void readExternal(DataInputStream objectInput) throws IOException {
-        position = new Vector(objectInput.readInt(), objectInput.readShort(), objectInput.readInt());
+        position = new Vector<Integer>(objectInput.readInt(), (int)objectInput.readShort(), objectInput.readInt());
         lines = new String[4];
         report = "X="+position.x+" Y="+position.y+" Z="+position.y+" Msg:\n";
         for(int i = 0; i < 4; i++){

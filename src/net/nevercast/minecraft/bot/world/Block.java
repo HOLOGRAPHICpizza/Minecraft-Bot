@@ -17,7 +17,7 @@ import net.nevercast.minecraft.bot.structs.Vector;
  */
 public class Block {
 
-    public Block(World world, Chunk chunk, Vector location, BlockInfo info){
+    public Block(World world, Chunk chunk, Vector<Integer> location, BlockInfo info){
         this.world = world;
         this.chunk = chunk;
         this.location = location;
@@ -32,11 +32,11 @@ public class Block {
         this.info = info;
     }
 
-    public Vector getLocation() {
+    public Vector<Integer> getLocation() {
         return location;
     }
 
-    public void setLocation(Vector location) {
+    public void setLocation(Vector<Integer> location) {
         this.location = location;
     }
 
@@ -49,7 +49,7 @@ public class Block {
     }
 
     private BlockInfo info;
-    private Vector location;
+    private Vector<Integer> location;
     private Chunk chunk;
     private World world;
 }

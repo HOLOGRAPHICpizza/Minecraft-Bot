@@ -34,8 +34,8 @@ public class Packet33MapChunk implements IPacket{
 //    private int Size_X, Size_Y, Size_Z;
     private byte[] compressedData;
 
-    public Vector getLocation(){
-        return new Vector(X,0,Z);
+    public Vector<Integer> getLocation(){
+        return new Vector<Integer>(X,0,Z);
     }
 
     public int getSize(){

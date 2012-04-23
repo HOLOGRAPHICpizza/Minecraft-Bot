@@ -53,7 +53,7 @@ public class Location {
         this.Roll = (float)(roll*2*Math.PI/256);
     }
 
-    public static Location fromAbsoluteInteger(Vector vector){
+    public static Location fromAbsoluteInteger(Vector<Integer> vector){
         return fromAbsoluteInteger(vector.x,  vector.y, vector.z);
     }
 
@@ -65,10 +65,10 @@ public class Location {
         );
     }
 
-    public Vector toVector(){
+    public Vector<Integer> toVector(){
         /* Truncating is no good, we gotta round this data */
         /* Data needs to be rounded down for block positions, which is what I use this for */
-        return new Vector((int)Math.floor(X), (int)Math.floor(Y), (int)Math.floor(Z));
+        return new Vector<Integer>((int)Math.floor(X), (int)Math.floor(Y), (int)Math.floor(Z));
     }
     
     /**

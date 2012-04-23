@@ -59,16 +59,16 @@ public class World {
         return loadedChunks.size();
     }
 
-    public Block getBlockAt(Vector location){
+    public Block getBlockAt(Vector<Integer> location){
         Chunk c = getChunkAt(location);
         return c.getBlock(getBlockRelativePosition(location));
     }
 
-    public Vector getBlockRelativePosition(Vector location){
-        return new Vector(Math.abs(location.x) % 16, location.y, Math.abs(location.z) % 16);
+    public Vector<Integer> getBlockRelativePosition(Vector<Integer> location){
+        return new Vector<Integer>(Math.abs(location.x) % 16, location.y, Math.abs(location.z) % 16);
     }
 
-    public Chunk getChunkAt(Vector location){
+    public Chunk getChunkAt(Vector<Integer> location){
         return getChunk(location.x / 16, location.z / 16);
     }
 
@@ -76,7 +76,7 @@ public class World {
         return loadedChunks.toArray(new Chunk[0]);
     }
 
-    public void updateChunk(Vector location, Vector size, byte[] data) throws IOException, DataFormatException {
+    public void updateChunk(Vector<Integer> location, Vector<Integer> size, byte[] data) throws IOException, DataFormatException {
         byte[] decompressedData = new byte[(int)(size.x * size.y * size.z * 2.5)];
         Inflater inflater = new Inflater();
         inflater.setInput(data);
@@ -96,7 +96,7 @@ public class World {
         }
         Chunk chunk = getChunk(chunkX, chunkZ);
 
-        Vector rel = getBlockRelativePosition(location);
+        Vector<Integer> rel = getBlockRelativePosition(location);
         int x1 = rel.x;
         int z1 = rel.y;
         int xs = x1 + size.x;
