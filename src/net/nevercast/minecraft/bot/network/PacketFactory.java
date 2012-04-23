@@ -82,7 +82,7 @@ public class PacketFactory {
         unsupportedPackets.put((byte)0xC8, 5); 										// Increment Statistic
         supportedPackets.put((byte)0xC9, PacketC9PlayerListItem.class);
         unsupportedPackets.put((byte)0xCA, 4);										// Player Abilities
-        //supportedPackets.put((byte)0xFA, PacketFAPluginMessage.class);
+        supportedPackets.put((byte)0xFA, PacketFAPluginMessage.class);
         supportedPackets.put((byte)0xFF, PacketFFDisconnect.class);
     }
 
