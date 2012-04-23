@@ -7,7 +7,7 @@ package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.entities.ItemEntity;
 import net.nevercast.minecraft.bot.network.IPacket;
-import net.nevercast.minecraft.bot.structs.ItemStack;
+import net.nevercast.minecraft.bot.structs.SlotData;
 import net.nevercast.minecraft.bot.structs.Location;
 
 import java.io.DataInputStream;
@@ -45,7 +45,7 @@ public class Packet15ItemSpawned implements IPacket{
         count = objectInput.readByte();
         data = objectInput.readShort();
         entity.setItem(
-                new ItemStack(id,count,data)
+                new SlotData(id,count,data)
         );
         int x, y, z;
         x = objectInput.readInt();

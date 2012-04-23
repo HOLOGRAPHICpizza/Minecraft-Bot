@@ -3,7 +3,7 @@ package net.nevercast.minecraft.bot;
 import net.nevercast.minecraft.bot.entities.EntityPool;
 import net.nevercast.minecraft.bot.entities.GameEntity;
 import net.nevercast.minecraft.bot.entities.MobGameEntity;
-import net.nevercast.minecraft.bot.structs.ItemStack;
+import net.nevercast.minecraft.bot.structs.SlotData;
 import net.nevercast.minecraft.bot.structs.Location;
 import net.nevercast.minecraft.bot.structs.Vector;
 import net.nevercast.minecraft.bot.network.IPacket;
@@ -42,7 +42,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     private Vector<Integer> spawn = null;
     @SuppressWarnings("unused")
 	private long gameTicks;
-    private ItemStack[] inventory;
+    private SlotData[] inventory;
     private GamePulser tickSource;
     private short health;
     private int dimension;
@@ -78,18 +78,18 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         world = new World();
     }
 
-    private void setInventoryItem(int slot, ItemStack itemStack){
-        inventory[slot] = itemStack;
+    private void setInventoryItem(int slot, SlotData slotData){
+        inventory[slot] = slotData;
     }
 
-    /*private ItemStack getInventoryItem(int slot){
+    /*private SlotData getInventoryItem(int slot){
         return inventory[slot];
     }*/
 
     private void initInventory() {
-        inventory = new ItemStack[45];
+        inventory = new SlotData[45];
         for(int i = 0; i < 45; i++){
-            inventory[i] = ItemStack.EMPTY;
+            inventory[i] = SlotData.EMPTY;
         }
     }
 

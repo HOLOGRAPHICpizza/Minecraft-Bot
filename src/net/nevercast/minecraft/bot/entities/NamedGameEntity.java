@@ -5,7 +5,7 @@
  */
 package net.nevercast.minecraft.bot.entities;
 
-import net.nevercast.minecraft.bot.structs.ItemStack;
+import net.nevercast.minecraft.bot.structs.SlotData;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,33 +16,33 @@ import net.nevercast.minecraft.bot.structs.ItemStack;
  */
 public class NamedGameEntity extends MovingEntity {
 
-	private ItemStack[] equipment;
+	private SlotData[] equipment;
     private String name;
     private short holdingItem;
     
     public NamedGameEntity(int eid, String name) {
         super(eid);
         this.name = name;
-        this.equipment = new ItemStack[5];
+        this.equipment = new SlotData[5];
     }
 
-    public void setEquipment(int slot, ItemStack item){
+    public void setEquipment(int slot, SlotData item){
         equipment[slot] = item;
     }
 
-    public ItemStack[] getEquipment(){
+    public SlotData[] getEquipment(){
         return equipment;
     }
 
-    public ItemStack getEquipment(int slot){
+    public SlotData getEquipment(int slot){
         return equipment[slot];
     }
 
-    public ItemStack getHeldItem(){
+    public SlotData getHeldItem(){
         return getEquipment(0);
     }
 
-    public void setHeldItem(ItemStack item){
+    public void setHeldItem(SlotData item){
         equipment[0] = item;
     }
 

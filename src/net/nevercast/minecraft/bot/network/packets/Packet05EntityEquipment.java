@@ -6,7 +6,7 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
-import net.nevercast.minecraft.bot.structs.ItemStack;
+import net.nevercast.minecraft.bot.structs.SlotData;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -26,7 +26,7 @@ public class Packet05EntityEquipment implements IPacket{
 
     private int eid;
     private short slot;
-    private ItemStack item;
+    private SlotData item;
 
     public int getEntityId(){
         return eid;
@@ -36,7 +36,7 @@ public class Packet05EntityEquipment implements IPacket{
         return slot;
     }
 
-    public ItemStack getItem(){
+    public SlotData getItem(){
         return item;
     }
 
@@ -50,9 +50,9 @@ public class Packet05EntityEquipment implements IPacket{
         short item  = objectInput.readShort();
         short info = objectInput.readShort();
         if(item == -1)
-            this.item = ItemStack.EMPTY;
+            this.item = SlotData.EMPTY;
         else
-            this.item = new ItemStack(item, (byte)1, info);
+            this.item = new SlotData(item, (byte)1, info);
 
     }
     

@@ -1,0 +1,89 @@
+package net.nevercast.minecraft.bot.network.packets;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.structs.SlotData;
+
+/**
+ * Sent to client when item is moved into or out of quick bar in creative mode.
+ * Unknown if client should send.
+ * @author Michael Craft <mcraft@peak15.org>
+ */
+public class Packet6BCreativeInventoryAction implements IPacket {
+	private short slot;		// Slot Number
+	private SlotData data;	// Slot Data
+	
+	/**
+	 * Construct an empty packet.
+	 */
+	public Packet6BCreativeInventoryAction() {}
+	
+	/**
+	 * Construct a packet from a slot number and slot data.
+	 * @param slot Slot number.
+	 * @param item Slot data.
+	 */
+	public Packet6BCreativeInventoryAction(short slot, SlotData data) {
+		this.slot = slot;
+		this.data = data;
+	}
+	
+	@Override
+	public byte getPacketId() {
+		return 0x6B;
+	}
+	
+	@Override
+	public void writeExternal(DataOutputStream objectOutput) throws IOException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void readExternal(DataInputStream objectInput) throws IOException {
+		slot = objectInput.readShort();
+		data = new SlotData(objectInput);
+	}
+	
+	/**
+     * Get the slot number.
+     * @return slot number.
+     */
+    public short getSlot(){
+        return slot;
+    }
+    
+    /**
+     * Get the slot data.
+     * @return slot data.
+     */
+    public SlotData getData(){
+        return data;
+    }
+	
+    /**
+     * Set the slot number.
+     * @param slot Slot number.
+     */
+    public void setSlot(short slot) {
+    	this.slot = slot;
+    }
+    
+    /**
+     * Set the slot data.
+     * @param slot Slot data.
+     */
+    public void setData(SlotData data) {
+    	this.data = data;
+    }
+    
+	@Override
+	public String log() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

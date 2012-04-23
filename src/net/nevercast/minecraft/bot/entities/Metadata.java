@@ -1,7 +1,7 @@
 package net.nevercast.minecraft.bot.entities;
 
 import net.nevercast.minecraft.bot.network.PacketInputStream;
-import net.nevercast.minecraft.bot.structs.ItemStack;
+import net.nevercast.minecraft.bot.structs.SlotData;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 import java.io.DataInputStream;
@@ -44,7 +44,7 @@ public class Metadata {
                 case 3: metadata.appendField(dataInputStream.readFloat()); break;
                 case 4: metadata.appendField(PacketInputStream.readString16(dataInputStream)); break;
                 case 5:
-                    ItemStack stack = new ItemStack();
+                    SlotData stack = new SlotData();
                     stack.id = dataInputStream.readShort();
                     stack.count = dataInputStream.readByte();
                     stack.damage = dataInputStream.readShort();
@@ -102,8 +102,8 @@ public class Metadata {
         return (String)getField(index);
     }
 
-    public ItemStack getItem(int index){
-        return (ItemStack)getField(index);
+    public SlotData getItem(int index){
+        return (SlotData)getField(index);
     }
 
     @SuppressWarnings("unchecked")

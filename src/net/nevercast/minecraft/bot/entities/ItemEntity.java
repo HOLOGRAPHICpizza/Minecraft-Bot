@@ -5,7 +5,7 @@
  */
 package net.nevercast.minecraft.bot.entities;
 
-import net.nevercast.minecraft.bot.structs.ItemStack;
+import net.nevercast.minecraft.bot.structs.SlotData;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,12 +19,12 @@ public class ItemEntity extends GameEntity {
         super(eid);
     }
 
-    private ItemStack item;
-    public ItemStack getItem(){
+    private SlotData item;
+    public SlotData getItem(){
         return item;
     }
 
-    public void setItem(ItemStack item){
+    public void setItem(SlotData item){
         this.item = item;
     }
 }

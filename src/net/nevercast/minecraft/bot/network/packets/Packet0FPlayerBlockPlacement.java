@@ -6,7 +6,7 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.IPacket;
-import net.nevercast.minecraft.bot.structs.ItemStack;
+import net.nevercast.minecraft.bot.structs.SlotData;
 import net.nevercast.minecraft.bot.structs.Vector;
 import net.nevercast.minecraft.bot.world.BlockFace;
 
@@ -28,7 +28,7 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
 
     private Vector<Integer> blockPosition;
     private BlockFace direction;
-    private ItemStack item;
+    private SlotData item;
     
     public Vector<Integer> getBlockPosition() {
         return blockPosition;
@@ -46,11 +46,11 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
         this.direction = direction;
     }
 
-    public ItemStack getItem() {
+    public SlotData getItem() {
         return item;
     }
 
-    public void setItem(ItemStack item) {
+    public void setItem(SlotData item) {
         this.item = item;
     }
 
@@ -69,10 +69,10 @@ public class Packet0FPlayerBlockPlacement implements IPacket {
         direction = BlockFace.values()[objectInput.readByte()];
         id = objectInput.readByte();
         if(id == -1){
-            item = ItemStack.EMPTY;
+            item = SlotData.EMPTY;
         }else{
             byte amount = objectInput.readByte();
-            item = new ItemStack(id, amount, objectInput.readShort());
+            item = new SlotData(id, amount, objectInput.readShort());
         }
         //NEW, For Enchantable Crap.
         if(enchantable(id)){

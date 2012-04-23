@@ -12,10 +12,10 @@ import net.nevercast.minecraft.bot.network.IPacket;
  * @author Michael Craft <mcraft@peak15.org>
  */
 public class Packet64OpenWindow implements IPacket {
-	private byte wid;
-	private byte type;
-	private String title;
-	private byte slots;
+	private byte wid;		// Window ID
+	private byte type;		// Window Type
+	private String title;	// Window Title
+	private byte slots;		// Number of Slots
 	
 	/**
 	 * Get the window ID.
