@@ -5,7 +5,9 @@ import net.nevercast.minecraft.bot.web.MinecraftLogin;
 import java.io.IOException;
 
 /**
+ * Main program for starting client.
  * This is supposedly 1.2.3 compliant.
+ * 
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
  * @author Josh
@@ -13,16 +15,19 @@ import java.io.IOException;
 public class NeverCastsBot {  
     
 	/**
-	 * Runs the bot. Pass server, port, username, and password as arguments.
+	 * Runs the client. Pass server, port, username, and password as arguments.
 	 * If port is missing default port will be used.
 	 * If password is missing offline mode will be used.
+	 * 
 	 * Example: localhost:1337 HOLOGRAPHICpizza tacos27
 	 * Example: 158.56.25.48 UberGreifer9001
+	 * 
 	 * @param args server[:port] username [password]
 	 */
     public static void main(String[] args) {
         if(args.length < 2) {
-        	throw new IllegalArgumentException("You must at least specify a server and username.");
+        	System.err.println("Usage: java NeverCastsBot server[:port] username [password]");
+        	throw new IllegalArgumentException("No server or username specified.");
         }
     	
     	String loginName = "";
@@ -50,13 +55,10 @@ public class NeverCastsBot {
         	login = new MinecraftLogin(loginName);
         }
         else {
-        	login = new MinecraftLogin(loginName,loginPass);
-        	if(!login.getLoggedIn()){
+        	login = new MinecraftLogin(loginName, loginPass);
+        	if(!login.isLoggedIn()){
                 System.err.println("Login failed!");
-                if(login.getErrorMessage() != null){
-                    System.err.println(login.getErrorMessage());
-                }
-                System.exit(1);
+                throw new RuntimeException(login.getErrorMessage());
             }
         }
         
@@ -74,6 +76,5 @@ public class NeverCastsBot {
             client.kill();
             
         } catch (InterruptedException e) {}
-
     }
 }

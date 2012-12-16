@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.SlotData;
 
 /**
@@ -12,7 +12,7 @@ import net.nevercast.minecraft.bot.structs.SlotData;
  * Unknown if client should send.
  * @author Michael Craft <mcraft@peak15.org>
  */
-public class Packet6BCreativeInventoryAction implements IPacket {
+public class Packet6BCreativeInventoryAction implements Packet {
 	private short slot;		// Slot Number
 	private SlotData data;	// Slot Data
 	

@@ -4,13 +4,13 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 
 /**
  * Sent each tick for each player to update a player list.
  * @author Michael Craft <mcraft@peak15.org>
  */
-public class PacketC9PlayerListItem implements IPacket {
+public class PacketC9PlayerListItem implements Packet {
 	private String name;
 	private boolean online;
 	private short ping;

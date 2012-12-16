@@ -5,7 +5,7 @@
  */
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 import java.io.*;
@@ -17,7 +17,7 @@ import java.io.*;
  * Time: 12:20 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Packet33MapChunk implements IPacket{
+public class Packet33MapChunk implements Packet{
     public byte getPacketId() {
         return 0x33;
     }

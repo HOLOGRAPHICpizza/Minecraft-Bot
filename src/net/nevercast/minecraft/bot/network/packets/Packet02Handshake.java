@@ -1,7 +1,7 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.MinecraftClient;
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.io.DataOutputStream;
  * @author mikecyber
  * @author Josh
  */
-public class Packet02Handshake implements IPacket{
+public class Packet02Handshake implements Packet{
 
     public Packet02Handshake(){}
 

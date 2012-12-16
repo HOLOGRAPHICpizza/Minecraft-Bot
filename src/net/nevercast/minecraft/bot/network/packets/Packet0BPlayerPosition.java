@@ -5,7 +5,7 @@
  */
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.Location;
 
 import java.io.DataInputStream;
@@ -19,7 +19,7 @@ import java.io.IOException;
  * Time: 5:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Packet0BPlayerPosition implements IPacket {
+public class Packet0BPlayerPosition implements Packet {
 
     public Packet0BPlayerPosition(){}
     public Packet0BPlayerPosition(Location location){

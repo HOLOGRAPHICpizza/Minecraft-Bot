@@ -1,7 +1,7 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.entities.Metadata;
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,7 +14,7 @@ import java.io.IOException;
  * @author mikecyber
  * @author Josh
  */
-public class Packet28EntityMetadata implements IPacket {
+public class Packet28EntityMetadata implements Packet {
     public byte getPacketId() {
         return 0x28;
     }

@@ -1,14 +1,17 @@
 package net.nevercast.minecraft.bot.network;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 
 /**
- * Template for a packet.
+ * Interface for all packets.
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
  * @author Josh
  */
-public interface IPacket {
+public interface Packet {
 	/**
 	 * Get the packet id.
 	 * @return packet id.

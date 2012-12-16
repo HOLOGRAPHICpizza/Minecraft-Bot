@@ -5,7 +5,7 @@
  */
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.SlotData;
 
 import java.io.DataInputStream;
@@ -19,7 +19,7 @@ import java.io.IOException;
  * Time: 3:43 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Packet68WindowItems implements IPacket{
+public class Packet68WindowItems implements Packet{
     public byte getPacketId() {
         return 0x68;
     }

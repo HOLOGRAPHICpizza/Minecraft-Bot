@@ -1,18 +1,13 @@
-/*
- * Updated March 10, 2012
- * By: mikecyber 
- * For: Protocol 1.2.3 Compliance
- */
 package net.nevercast.minecraft.bot.web;
 
 import java.net.URLEncoder;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Josh
- * Date: 8/14/11
- * Time: 9:21 PM
- * To change this template use File | Settings | File Templates.
+ * Facilitates secure and insecure Minecraft logins.
+ * Used to hold credentials for use by the client.
+ * 
+ * @author Michael Craft <mcraft@peak15.org>
+ * @author Josh
  */
 public class MinecraftLogin {
 
@@ -25,13 +20,25 @@ public class MinecraftLogin {
 
     public static final int CLIENT_VERSION = 29; // 1.2.5
 
-    // Offline mode
+    /**
+     * Hold username for an insecure login.
+     * 
+     * @param username The username to log in as.
+     */
     public MinecraftLogin(String username){
         this.username = username;
         isLoggedIn = false;
     }
 
-    public MinecraftLogin(String username, String password){
+    /**
+     * Execute a secure login and hold the credentials.
+     * 
+     * @param username Username to log in with.
+     * @param password Password for this username.
+     */
+    public MinecraftLogin(String username, String password) {
+    	//TODO: Throw exceptions in exceptional conditions.
+    	
         try {
             String parameters = "user=" + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&version=" + CLIENT_VERSION;
             String result = WebUtil.excutePost("https://login.minecraft.net/", parameters);
@@ -89,7 +96,7 @@ public class MinecraftLogin {
         return username;
     }
 
-    public boolean getLoggedIn(){
+    public boolean isLoggedIn(){
         return isLoggedIn;
     }
 }

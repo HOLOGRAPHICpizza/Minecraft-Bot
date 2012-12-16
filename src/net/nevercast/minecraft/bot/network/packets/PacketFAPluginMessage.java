@@ -5,13 +5,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.nevercast.minecraft.bot.MinecraftClient;
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 
 /**
  * Two-way packet for plugin communication.
  * @author Michael Craft <mcraft@peak15.org>
  */
-public class PacketFAPluginMessage implements IPacket {
+public class PacketFAPluginMessage implements Packet {
 	String channel;		// Plugin Channel
 	byte[] data;		// Data
 	

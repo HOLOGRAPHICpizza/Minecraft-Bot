@@ -4,14 +4,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 /**
  * Spawn an object or vehicle.
  * @author Michael Craft <mcraft@peak15.org>
  */
-public class Packet17SpawnObjectVehicle implements IPacket {
+public class Packet17SpawnObjectVehicle implements Packet {
 	private int eid;										// Entity ID
 	private byte type;										// Type
 	private Vector<Integer> pos = new Vector<Integer>();	// Position

@@ -6,7 +6,7 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.entities.NamedGameEntity;
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.network.PacketInputStream;
 
 import java.io.DataInputStream;
@@ -22,7 +22,7 @@ import net.nevercast.minecraft.bot.structs.Vector;
  * Time: 11:09 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Packet14NamedEntitySpawn implements IPacket {
+public class Packet14NamedEntitySpawn implements Packet {
 
     public byte getPacketId() {
         return 0x14;

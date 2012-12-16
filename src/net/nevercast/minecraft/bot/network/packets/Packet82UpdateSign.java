@@ -5,7 +5,7 @@
  */
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.network.PacketInputStream;
 import net.nevercast.minecraft.bot.structs.Vector;
 
@@ -20,7 +20,7 @@ import java.io.IOException;
  * Time: 4:31 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Packet82UpdateSign implements IPacket{
+public class Packet82UpdateSign implements Packet{
     public byte getPacketId() {
         return (byte)0x82;
     }

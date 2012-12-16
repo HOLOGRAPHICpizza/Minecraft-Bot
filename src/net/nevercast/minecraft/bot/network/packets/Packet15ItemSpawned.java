@@ -6,7 +6,7 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.entities.ItemEntity;
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.SlotData;
 import net.nevercast.minecraft.bot.structs.Location;
 
@@ -21,7 +21,7 @@ import java.io.IOException;
  * Time: 10:08 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Packet15ItemSpawned implements IPacket{
+public class Packet15ItemSpawned implements Packet{
     public byte getPacketId() {
         return 0x15;
     }

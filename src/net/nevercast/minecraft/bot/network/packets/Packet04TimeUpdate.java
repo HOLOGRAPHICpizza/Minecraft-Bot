@@ -5,7 +5,7 @@
  */
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -18,7 +18,7 @@ import java.io.IOException;
  * Time: 1:56 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Packet04TimeUpdate implements IPacket {
+public class Packet04TimeUpdate implements Packet {
 
     public byte getPacketId() {
         return 0x04;

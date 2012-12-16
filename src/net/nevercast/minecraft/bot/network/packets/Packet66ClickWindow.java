@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.SlotData;
 
 /**
@@ -12,7 +12,7 @@ import net.nevercast.minecraft.bot.structs.SlotData;
  * Note: This packet is not fully understood.
  * @author Michael Craft <mcraft@peak15.org>
  */
-public class Packet66ClickWindow implements IPacket {
+public class Packet66ClickWindow implements Packet {
 	private byte windowId;			// Window ID
 	private short slot;				// Slot Number
 	private byte rightClick;		// 1 if right-clicking, 0 otherwise

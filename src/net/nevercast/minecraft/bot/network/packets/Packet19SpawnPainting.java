@@ -5,14 +5,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.nevercast.minecraft.bot.MinecraftClient;
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 /**
  * Spawn a painting.
  * @author Michael Craft <mcraft@peak15.org>
  */
-public class Packet19SpawnPainting implements IPacket {
+public class Packet19SpawnPainting implements Packet {
 	private int eid;					// Entity ID
 	private String title;				// Painting Title
 	private Vector<Integer> pos = new Vector<Integer>();	// Center Position

@@ -7,7 +7,7 @@ package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.entities.Metadata;
 import net.nevercast.minecraft.bot.entities.MobGameEntity;
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 import java.io.DataInputStream;
@@ -21,7 +21,7 @@ import java.io.IOException;
  * Time: 3:28 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Packet18MobSpawned implements IPacket{
+public class Packet18MobSpawned implements Packet{
     public byte getPacketId() {
         return 0x18;
     }

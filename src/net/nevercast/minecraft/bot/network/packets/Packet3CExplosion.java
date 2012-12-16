@@ -6,14 +6,14 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 /**
  * Create an explosion.
  * @author Michael Craft <mcraft@peak15.org>
  */
-public class Packet3CExplosion implements IPacket {
+public class Packet3CExplosion implements Packet {
 	private Vector<Double> pos = new Vector<Double>();					// Position
 	private float radius;												// Radius
 	private Set<Vector<Byte>> blocks = new HashSet<Vector<Byte>>();		// Offsets of destroyed blocks

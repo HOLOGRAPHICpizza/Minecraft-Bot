@@ -5,7 +5,7 @@
  */
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.SlotData;
 import net.nevercast.minecraft.bot.structs.Vector;
 import net.nevercast.minecraft.bot.world.BlockFace;
@@ -21,7 +21,7 @@ import java.io.IOException;
  * Time: 7:44 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Packet0FPlayerBlockPlacement implements IPacket {
+public class Packet0FPlayerBlockPlacement implements Packet {
     public byte getPacketId() {
         return 0x0F;
     }

@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 public class PacketFactory {
 
-    private static HashMap<Byte, Class<? extends IPacket>> supportedPackets = new HashMap<Byte, Class<? extends IPacket>>();
+    private static HashMap<Byte, Class<? extends Packet>> supportedPackets = new HashMap<Byte, Class<? extends Packet>>();
     private static HashMap<Byte, Integer> unsupportedPackets = new HashMap<Byte, Integer>();
 
     static{
@@ -98,15 +98,15 @@ public class PacketFactory {
         return unsupportedPackets.get(id);
     }
 
-    public static IPacket getPacket(byte id){
-        Class<? extends IPacket> clazz = supportedPackets.get(id);
+    public static Packet getPacket(byte id){
+        Class<? extends Packet> clazz = supportedPackets.get(id);
         try{
             Object o = clazz.newInstance();
-            if(!(o instanceof IPacket)){
+            if(!(o instanceof Packet)){
                 System.out.print(o + " Isn't a packet type!");
                 return null;
             }else{
-                IPacket packet = (IPacket)o;
+                Packet packet = (Packet)o;
                 return packet;
             }
         } catch (InstantiationException e) {

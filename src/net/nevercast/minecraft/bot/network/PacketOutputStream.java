@@ -44,7 +44,7 @@ public class PacketOutputStream {
         return rootSocket;
     }
     
-    public void writePacket(IPacket packet) throws IOException {
+    public void writePacket(Packet packet) throws IOException {
     	if(MinecraftClient.PACKET_DEBUG) {
     		String hexed = String.format("%x", packet.getPacketId()).toUpperCase();
     		System.out.println("+++Out: " + hexed);

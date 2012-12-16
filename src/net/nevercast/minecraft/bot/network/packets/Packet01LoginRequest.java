@@ -1,7 +1,7 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.MinecraftClient;
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.web.MinecraftLogin;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ import java.io.DataOutputStream;
  * @author mikecyber
  * @author Josh
  */
-public class Packet01LoginRequest implements IPacket{
+public class Packet01LoginRequest implements Packet{
 	public Packet01LoginRequest(){}
 
     public Packet01LoginRequest(String username){

@@ -1,7 +1,7 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.MinecraftClient;
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,7 +13,7 @@ import java.io.IOException;
  * @author mikecyber
  * @author Josh
  */
-public class Packet09Respawn implements IPacket {
+public class Packet09Respawn implements Packet {
 	private int dimension;
     private byte difficulty;
     private byte mode;

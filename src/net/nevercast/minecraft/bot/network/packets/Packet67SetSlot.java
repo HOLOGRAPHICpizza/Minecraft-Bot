@@ -1,6 +1,6 @@
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.SlotData;
 
 import java.io.DataInputStream;
@@ -14,7 +14,7 @@ import java.io.IOException;
  * @author mikecyber
  * @author Josh
  */
-public class Packet67SetSlot implements IPacket {
+public class Packet67SetSlot implements Packet {
 	private byte wid;
     private short slot;
     private SlotData data;

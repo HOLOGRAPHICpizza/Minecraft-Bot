@@ -5,7 +5,7 @@
  */
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.structs.BlockInfo;
 import net.nevercast.minecraft.bot.structs.Vector;
 
@@ -20,7 +20,7 @@ import java.io.IOException;
  * Time: 10:09 AM
  * To change this template use File | Settings | File Templates.
  */
-public class Packet34MultiBlockChange implements IPacket{
+public class Packet34MultiBlockChange implements Packet{
     public byte getPacketId() {
         return 0x34;
     }

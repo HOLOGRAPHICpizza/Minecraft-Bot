@@ -4,13 +4,13 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 
 /**
  * Sent to client for complex item data, such as maps.
  * @author Michael Craft <mcraft@peak15.org>
  */
-public class Packet83ItemData implements IPacket {
+public class Packet83ItemData implements Packet {
 	short type;			// Item Type
 	short id;			// Item ID
 	byte[] data;		// Item Data

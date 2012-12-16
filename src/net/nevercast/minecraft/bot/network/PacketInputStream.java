@@ -37,7 +37,7 @@ public class PacketInputStream {
      * @return The packet read, or null.
      * @throws IOException if there was a problem reading.
      */
-    public IPacket readPacket() throws IOException {
+    public Packet readPacket() throws IOException {
         try{
         	if(inputStream.available() >= 1) {
 	            byte id = inputStream.readByte();
@@ -49,7 +49,7 @@ public class PacketInputStream {
 	            //    throw new IOException("This shit died!");
 	            //}
 	            if (PacketFactory.getSupportsPacketId(id)) {
-	                IPacket packet = PacketFactory.getPacket(id);
+	                Packet packet = PacketFactory.getPacket(id);
 	                if(packet == null) throw new IOException(String.format("%x", id).toUpperCase() + " was provided as a null packet, Death to input stream!");
 	                packet.readExternal(inputStream);
 	                return packet;
@@ -61,7 +61,7 @@ public class PacketInputStream {
         	}
         	else {
         		//TODO: Compare performance with and without sleeping.
-        		//Thread.sleep(55);
+        		Thread.sleep(55);
         	}
         }catch (IOException ioe){
             throw ioe;

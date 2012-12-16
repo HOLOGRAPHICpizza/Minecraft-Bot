@@ -6,7 +6,7 @@ import net.nevercast.minecraft.bot.entities.MobGameEntity;
 import net.nevercast.minecraft.bot.structs.SlotData;
 import net.nevercast.minecraft.bot.structs.Location;
 import net.nevercast.minecraft.bot.structs.Vector;
-import net.nevercast.minecraft.bot.network.IPacket;
+import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.network.PacketInputStream;
 import net.nevercast.minecraft.bot.network.PacketOutputStream;
 import net.nevercast.minecraft.bot.network.packets.*;
@@ -26,12 +26,14 @@ import java.net.Socket;
  * @author mikecyber
  * @author Josh
  */
-public class MinecraftClient extends Thread implements GamePulser.IGamePulserReceptor{
+public class MinecraftClient extends Thread implements GamePulser.IGamePulserReceptor {
 	
 	/**
 	 * Should we print all inbound and outbound packets?
 	 */
-	public static final boolean PACKET_DEBUG = false;
+	public static final boolean PACKET_DEBUG = true;
+	
+	public static final int DEFAULT_PORT = 25565;
 	
 	private boolean enableLogging = false;
     private MinecraftLogin login;
@@ -60,7 +62,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 	private float foodSaturation;
 	private String levelType;
 	@SuppressWarnings("unused")
-	private IPacket previousPacket;
+	private Packet previousPacket;
 	
 	private String server;
 	private int port;
@@ -94,7 +96,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     }
 
     public void connect(String address) throws IOException {
-        connect(address, 25565);
+        connect(address, DEFAULT_PORT);
     }
 
     public void connect(String address, int port) throws IOException {
@@ -107,8 +109,8 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         packetOutputStream = new PacketOutputStream(socket);
         running = true;
         
-        tickSource = new GamePulser(this, 50);
-        tickSource.start();
+        //tickSource = new GamePulser(this, 50);
+        //tickSource.start();
         
         start(); //Start the thread
     }
@@ -120,10 +122,10 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                     new Packet02Handshake(login.getUsername() + ";" + server + ":" + port)
             );
             while(packetOutputStream.isReady() && !isInterrupted() && running) {
-                IPacket mcPacket = packetInputStream.readPacket();
+                Packet mcPacket = packetInputStream.readPacket();
                 if(mcPacket != null) {
                     handlePacket(mcPacket);
-                    if(enableLogging==true || mcPacket.getPacketId()==0xFF){
+                    if(enableLogging || mcPacket.getPacketId()==0xFF){
                     	System.out.println(mcPacket.log());
                     }
                 }
@@ -142,7 +144,39 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         kill();
     }
 
-    private void handlePacket(IPacket mcPacket) throws Exception{
+    public void tick(long elapsedTime) throws IOException {
+    	//TODO: un-nerf tick
+    	
+        //System.out.println("Tick: " + elapsedTime + "ms");
+    	
+        if(maxPlayers != 0 && running && packetOutputStream.isReady()){
+        	//Packet0APlayer pman = new Packet0APlayer(true);
+//            Packet0DPlayerPositionAndLook position = new Packet0DPlayerPositionAndLook(location);
+            //packetOutputStream.writePacket(pman);
+        }
+        else {
+        	System.out.println("Attempted tick on closed connection.");
+        }
+    }
+    
+    /**
+     * Is the client running?
+     * @return True if client is running, false otherwise.
+     */
+	public boolean isRunning() {
+		return running;
+	}
+
+	/**
+	 * Kills the client and its tick source.
+	 */
+	public void kill() {
+		this.running = false;
+		if(this.tickSource != null)
+			this.tickSource.running = false;
+	}
+    
+    private void handlePacket(Packet mcPacket) throws Exception{
         //System.out.println("Handling packet " + mcPacket.getPacketId());
         switch (mcPacket.getPacketId()){
         	case 0x00: handleAnnoyingKeepAlive((Packet00KeepAlive)mcPacket); 			break;
@@ -372,35 +406,6 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     	//TODO: Maintain a player list.
     	//System.out.println(item);
     }
-
-    public void tick(long elapsedTime) throws Exception{
-        //System.out.println("Tick: " + elapsedTime + "ms");
-        if(maxPlayers != 0 && running && packetOutputStream.isReady()){
-        	Packet0APlayer pman = new Packet0APlayer(true);
-//            Packet0DPlayerPositionAndLook position = new Packet0DPlayerPositionAndLook(location);
-            packetOutputStream.writePacket(pman);
-        }
-        else {
-        	System.out.println("Attempted tick on closed connection.");
-        }
-    }
-    
-    /**
-     * Is the client running?
-     * @return True if client is running, false otherwise.
-     */
-	public boolean isRunning() {
-		return running;
-	}
-
-	/**
-	 * Kills the client and its tick source.
-	 */
-	public void kill() {
-		this.running = false;
-		if(this.tickSource != null)
-			this.tickSource.running = false;
-	}
 	
 	/**
 	 * Reads a minecraft formatted string from a DataInputStream.
