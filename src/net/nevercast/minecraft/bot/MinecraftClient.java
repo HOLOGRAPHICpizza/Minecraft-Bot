@@ -136,9 +136,9 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     }
 
     public void tick(long elapsedTime) throws IOException {
-    	//TODO: un-nerf tick
+    	//TODO: un-nerf tick - What do we do for ticks?
     	
-        //System.out.println("Tick: " + elapsedTime + "ms");
+        Log.trace("Tick: " + elapsedTime + "ms");
     	
         if(maxPlayers != 0 && running && packetOutputStream.isReady()){
         	//Packet0APlayer pman = new Packet0APlayer(true);
@@ -396,7 +396,6 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 
     private void handlePlayerListItem(PacketC9PlayerListItem item) {
     	//TODO: Maintain a player list.
-    	//System.out.println(item);
     }
 	
 	/**

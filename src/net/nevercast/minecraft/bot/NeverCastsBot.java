@@ -2,6 +2,8 @@ package net.nevercast.minecraft.bot;
 
 import com.esotericsoftware.minlog.Log;
 import net.nevercast.minecraft.bot.web.MinecraftLogin;
+import net.nevercast.minecraft.bot.web.MinecraftLoginException;
+
 import java.io.IOException;
 
 /**
@@ -12,7 +14,7 @@ import java.io.IOException;
  * @author mikecyber
  * @author Josh
  */
-public class NeverCastsBot {
+public class NeverCastsBot  {
 	
 	private static final int LOG_LEVEL = Log.LEVEL_TRACE;
     
@@ -26,7 +28,7 @@ public class NeverCastsBot {
 	 * 
 	 * @param args server[:port] username [password]
 	 */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws MinecraftLoginException {
     	Log.set(LOG_LEVEL);
     	
         if(args.length < 2) {
@@ -62,7 +64,7 @@ public class NeverCastsBot {
         	login = new MinecraftLogin(loginName, loginPass);
         	if(!login.isLoggedIn()){
                 Log.error("Login failed!");
-                throw new RuntimeException(login.getErrorMessage());
+                throw new MinecraftLoginException(login.getMessage());
             }
         }
         

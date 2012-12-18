@@ -55,8 +55,7 @@ public class Packet66ClickWindow implements Packet {
 
 	@Override
 	public void writeExternal(DataOutputStream objectOutput) throws IOException {
-		// TODO Auto-generated method stub
-
+		//TODO: Implement writeExternal
 	}
 
 	@Override
@@ -66,12 +65,7 @@ public class Packet66ClickWindow implements Packet {
 
 	@Override
 	public String log() {
-		return "@ 0x66 windowId=" + windowId + " slot=" + slot + " rightClick=" + rightClick + " actionNumber=" + actionNumber + " shiftClick=" + shiftClick
-				+ " data.id=" + data.id;
-	}
-	
-	public String toString() {
-		return "0x66: windowId:" + windowId + " slot:" + slot + " rightClick:" + rightClick + " actionNumber:" + actionNumber + " shiftClick:" + shiftClick
+		return "@ 0x66: windowId:" + windowId + " slot:" + slot + " rightClick:" + rightClick + " actionNumber:" + actionNumber + " shiftClick:" + shiftClick
 				+ " data.id:" + data.id;
 	}
 

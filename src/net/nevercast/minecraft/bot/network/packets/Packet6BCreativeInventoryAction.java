@@ -38,8 +38,7 @@ public class Packet6BCreativeInventoryAction implements Packet {
 	
 	@Override
 	public void writeExternal(DataOutputStream objectOutput) throws IOException {
-		// TODO Auto-generated method stub
-
+		//TODO: Implement writeExternal 
 	}
 
 	@Override
@@ -82,8 +81,8 @@ public class Packet6BCreativeInventoryAction implements Packet {
     
 	@Override
 	public String log() {
-		// TODO Auto-generated method stub
-		return null;
+		//TODO: Implement log
+		return "@ 0x6B CreativeInventoryAction: LOGGING NOT IMPLEMENTED";
 	}
 
 }

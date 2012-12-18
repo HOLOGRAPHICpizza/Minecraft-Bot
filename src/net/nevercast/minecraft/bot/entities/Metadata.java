@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 /**
  * Parses entity metadata.
+ * 
  * @see http://wiki.vg/Entities
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
