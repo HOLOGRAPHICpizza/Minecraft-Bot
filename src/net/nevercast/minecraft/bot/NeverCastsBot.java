@@ -1,7 +1,7 @@
 package net.nevercast.minecraft.bot;
 
+import com.esotericsoftware.minlog.Log;
 import net.nevercast.minecraft.bot.web.MinecraftLogin;
-
 import java.io.IOException;
 
 /**
@@ -12,7 +12,9 @@ import java.io.IOException;
  * @author mikecyber
  * @author Josh
  */
-public class NeverCastsBot {  
+public class NeverCastsBot {
+	
+	private static final int LOG_LEVEL = Log.LEVEL_TRACE;
     
 	/**
 	 * Runs the client. Pass server, port, username, and password as arguments.
@@ -25,8 +27,10 @@ public class NeverCastsBot {
 	 * @param args server[:port] username [password]
 	 */
     public static void main(String[] args) {
+    	Log.set(LOG_LEVEL);
+    	
         if(args.length < 2) {
-        	System.err.println("Usage: java NeverCastsBot server[:port] username [password]");
+        	Log.error("Usage: java NeverCastsBot server[:port] username [password]");
         	throw new IllegalArgumentException("No server or username specified.");
         }
     	
@@ -51,13 +55,13 @@ public class NeverCastsBot {
         
         MinecraftLogin login;
         if(loginPass.equals("")) {
-        	System.out.println("Using offline mode.");
+        	Log.info("Using offline mode.");
         	login = new MinecraftLogin(loginName);
         }
         else {
         	login = new MinecraftLogin(loginName, loginPass);
         	if(!login.isLoggedIn()){
-                System.err.println("Login failed!");
+                Log.error("Login failed!");
                 throw new RuntimeException(login.getErrorMessage());
             }
         }
@@ -72,7 +76,7 @@ public class NeverCastsBot {
                 Thread.sleep(1000);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.error("Fatal IOException:", e);
             client.kill();
             
         } catch (InterruptedException e) {}

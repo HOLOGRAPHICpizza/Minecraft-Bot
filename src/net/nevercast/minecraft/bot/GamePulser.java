@@ -1,5 +1,7 @@
 package net.nevercast.minecraft.bot;
 
+import com.esotericsoftware.minlog.Log;
+
 /**
  * This is supposedly 1.2.3 compliant.
  * @author Michael Craft <mcraft@peak15.org>
@@ -7,7 +9,10 @@ package net.nevercast.minecraft.bot;
  * @author Josh
  */
 public class GamePulser extends Thread {
-    private IGamePulserReceptor receptor;
+	
+	private static final String LOG_PREFIX = GamePulser.class.getSimpleName();
+	
+    private GamePulserReceptor receptor;
     private double delay;
     private double offset = 0;
     
@@ -17,7 +22,7 @@ public class GamePulser extends Thread {
     public boolean running = true;
 
     private int exceptionCounter = 0;
-    public GamePulser(IGamePulserReceptor receptor, long delay){
+    public GamePulser(GamePulserReceptor receptor, long delay){
         this.receptor = receptor;
         this.delay = delay;
     }
@@ -49,12 +54,12 @@ public class GamePulser extends Thread {
                 }
             }catch (Exception e){
                 exceptionCounter++;
-                System.out.println("Pulser exception!");
-                e.printStackTrace();
+                Log.warn(LOG_PREFIX, "Pulser exception:", e);
                 if(exceptionCounter < 3){
                     continue;
                 }else{
-                    System.out.println("Too many errors!");
+                    Log.error(LOG_PREFIX,
+                    		"Too many pulser exceptions, killing receptor: " + receptor.getClass().getSimpleName());
                     receptor.kill();
                     return;
                 }
@@ -62,7 +67,7 @@ public class GamePulser extends Thread {
         }
     }
 
-    public interface IGamePulserReceptor{
+    public interface GamePulserReceptor {
         void tick(long elapsedTime) throws Exception;
         
         /**

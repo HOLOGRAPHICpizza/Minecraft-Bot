@@ -1,16 +1,17 @@
 package net.nevercast.minecraft.bot.test;
 
+import com.esotericsoftware.minlog.Log;
 import net.nevercast.minecraft.bot.GamePulser;
-import net.nevercast.minecraft.bot.GamePulser.IGamePulserReceptor;
+import net.nevercast.minecraft.bot.GamePulser.GamePulserReceptor;
 
-public class Test implements Runnable, IGamePulserReceptor {
+public class Test implements Runnable, GamePulserReceptor {
 	public static void main(String[] args) {
 		new Thread(new Test()).start();
 	}
 
 	@Override
 	public void tick(long elapsedTime) throws Exception {
-		System.out.println("Tick: " + elapsedTime + "ms");
+		Log.debug("Tick: " + elapsedTime + "ms");
 	}
 
 	@Override

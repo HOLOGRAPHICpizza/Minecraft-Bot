@@ -1,8 +1,11 @@
 package net.nevercast.minecraft.bot.network;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import com.esotericsoftware.minlog.Log;
 
-import net.nevercast.minecraft.bot.MinecraftClient;
 
 /**
  * Stream for inbound packets.
@@ -41,13 +44,13 @@ public class PacketInputStream {
         try{
         	if(inputStream.available() >= 1) {
 	            byte id = inputStream.readByte();
-	            if(MinecraftClient.PACKET_DEBUG) {
+	            
+	            // Log packet
+	            if(Log.TRACE) {
 	            	String hexed = String.format("%x", id).toUpperCase();
-	            	System.out.println("---In: "+hexed);
+	            	Log.trace("packet", "---In: " + hexed);
 	            }
-	            //if(id == -1){
-	            //    throw new IOException("This shit died!");
-	            //}
+	            
 	            if (PacketFactory.getSupportsPacketId(id)) {
 	                Packet packet = PacketFactory.getPacket(id);
 	                if(packet == null) throw new IOException(String.format("%x", id).toUpperCase() + " was provided as a null packet, Death to input stream!");

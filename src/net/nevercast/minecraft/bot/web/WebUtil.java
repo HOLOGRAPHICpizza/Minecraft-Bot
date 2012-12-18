@@ -8,12 +8,15 @@ package net.nevercast.minecraft.bot.web;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
 import javax.net.ssl.HttpsURLConnection;
+
+import com.esotericsoftware.minlog.Log;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,6 +26,8 @@ import javax.net.ssl.HttpsURLConnection;
  * To change this template use File | Settings | File Templates.
  */
 public class WebUtil {
+	
+	private static final String LOG_PREFIX = WebUtil.class.getSimpleName();
 	
 	public static String executeGet(String targetURL, String Params){
 		
@@ -36,8 +41,8 @@ public class WebUtil {
 
 	         connection.setRequestProperty("Content-Length", Integer.toString(Params.getBytes().length));
 	         connection.setRequestProperty("Content-Language", "en-US");
-	       } catch (Exception e) {
-	           e.printStackTrace();
+	       } catch (IOException e) {
+	           Log.warn(LOG_PREFIX, "IOException during GET request:", e);
 	           return null;
            } finally {
 	           if (connection != null)
@@ -104,9 +109,9 @@ public class WebUtil {
          String str1 = response.toString();
          return str1;
        }
-       catch (Exception e)
+       catch (IOException e)
        {
-         e.printStackTrace();
+         Log.warn(LOG_PREFIX, "IOException during POST request:", e);
          return null;
        }
        finally

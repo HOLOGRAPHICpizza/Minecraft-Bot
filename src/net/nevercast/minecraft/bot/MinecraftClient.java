@@ -20,22 +20,20 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import com.esotericsoftware.minlog.Log;
+
 /**
  * Main client.
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
  * @author Josh
  */
-public class MinecraftClient extends Thread implements GamePulser.IGamePulserReceptor {
+public class MinecraftClient extends Thread implements GamePulser.GamePulserReceptor {
 	
-	/**
-	 * Should we print all inbound and outbound packets?
-	 */
-	public static final boolean PACKET_DEBUG = true;
+	public static final int CLIENT_VERSION = 29; // 1.2.5
 	
-	public static final int DEFAULT_PORT = 25565;
+	private static final int DEFAULT_PORT = 25565;
 	
-	private boolean enableLogging = false;
     private MinecraftLogin login;
     private Socket socket = null;
     private PacketInputStream packetInputStream;
@@ -109,8 +107,8 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         packetOutputStream = new PacketOutputStream(socket);
         running = true;
         
-        //tickSource = new GamePulser(this, 50);
-        //tickSource.start();
+        tickSource = new GamePulser(this, 50);
+        tickSource.start();
         
         start(); //Start the thread
     }
@@ -125,23 +123,16 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                 Packet mcPacket = packetInputStream.readPacket();
                 if(mcPacket != null) {
                     handlePacket(mcPacket);
-                    if(enableLogging || mcPacket.getPacketId()==0xFF){
-                    	System.out.println(mcPacket.log());
-                    }
                 }
             }
             tickSource.running = false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            try { socket.shutdownInput(); } catch (Exception ex){}
-            try { socket.close(); } catch(Exception ex){}
-            kill();
-        } catch (Exception e) {
-			e.printStackTrace();
-			try { socket.shutdownInput(); } catch (Exception ex){}
-            try { socket.close(); } catch(Exception ex){}
-		}
-        kill();
+        } catch(IOException e) {
+        	Log.error("Fatal IOException: ", e);
+        } finally {
+        	try { socket.shutdownInput(); } catch(IOException e) {}
+        	try { socket.close(); } catch(IOException e) {}
+        	kill();
+        }
     }
 
     public void tick(long elapsedTime) throws IOException {
@@ -155,7 +146,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
             //packetOutputStream.writePacket(pman);
         }
         else {
-        	System.out.println("Attempted tick on closed connection.");
+        	Log.warn("Attempted tick on closed connection.");
         }
     }
     
@@ -176,11 +167,11 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 			this.tickSource.running = false;
 	}
     
-    private void handlePacket(Packet mcPacket) throws Exception{
+    private void handlePacket(Packet mcPacket) throws IOException {
         //System.out.println("Handling packet " + mcPacket.getPacketId());
         switch (mcPacket.getPacketId()){
         	case 0x00: handleAnnoyingKeepAlive((Packet00KeepAlive)mcPacket); 			break;
-        	case 0x01: handlerFinishLogin((Packet01LoginRequest)mcPacket); 				break;
+        	case 0x01: handleFinishLogin((Packet01LoginRequest)mcPacket); 				break;
         	case 0x02: handlerBeginLogin((Packet02Handshake)mcPacket); 					break;
             case 0x03: handleChatMessage((Packet03ChatMessage)mcPacket); 				break;
             case 0x04: handleTime((Packet04TimeUpdate)mcPacket); 						break;
@@ -249,8 +240,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                 issueCommand(messageContent.substring(1));
             }
         }
-        System.out.println("Chat: "+packet.getMessage());
-//        sendMessage("It's Alive!");
+        Log.info("chat", packet.getMessage());
     }
 
     private void issueCommand(String message) {
@@ -301,7 +291,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         try {
             packetOutputStream.writePacket(m);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.warn("Error sending message:", e);
         }
     }
 
@@ -310,7 +300,8 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         food = packet.getFood();
         foodSaturation = packet.getFoodSaturation();
         if(health < 1){
-            System.out.println("have died, attempting Respawn");
+            Log.info("Died! Attempting respawn.");
+            
             try{
                 Packet09Respawn respawn = new Packet09Respawn();
                 respawn.setDimension(dimension);
@@ -320,10 +311,10 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
                 respawn.setLevelType(levelType);
                 packetOutputStream.writePacket(respawn);
             }catch(IOException e){
-                e.printStackTrace();
+            	Log.warn("IOException during respawn:", e);
             }
         }else{
-            System.out.println("Health: " + health);
+            Log.info("Health: " + health);
         }
     }
 
@@ -337,16 +328,16 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
 
     private void handleDisconnect(PacketFFDisconnect packet) {
         interrupt();
-        System.out.println("Disconnected: Reason: " + packet.getReason());
-        System.exit(-1);
+        Log.error("Disconnected: Reason: " + packet.getReason());
+        kill();
     }
 
     private void handleWindowItems(Packet68WindowItems packet) {
         if(packet.getWid() != 0){
-            System.out.println("Window update for " + packet.getWid());
+            Log.debug("Window update, ID: " + packet.getWid());
             return;
         }else{
-            System.out.println("Receiving inventory!");
+            Log.debug("Receiving inventory!");
         }
         for(int i = 0; i < packet.getCount(); i++){
             setInventoryItem(i, packet.getItemStack()[i]);
@@ -378,7 +369,7 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
         //System.out.println("Marco-Polo!");
     }
 
-    private void handlerFinishLogin(Packet01LoginRequest packet) throws Exception {
+    private void handleFinishLogin(Packet01LoginRequest packet) {
         myEntId = packet.getEntId();
         levelType = packet.getLevelType();
         mode = packet.getMode();
@@ -388,16 +379,17 @@ public class MinecraftClient extends Thread implements GamePulser.IGamePulserRec
     }
 
     private void handlerBeginLogin(Packet02Handshake packet) throws IOException {
-        System.out.println("Handling handshake!");
         String hash = packet.getHash();
-        System.out.println("Handshake hash: "+hash);
+        
+        Log.debug("Handshake received. Hash: " + hash);
+        
         if(hash.equalsIgnoreCase("-")){
             // Open server, login without check
             Packet01LoginRequest loginRequest = new Packet01LoginRequest(login.getUsername());
             packetOutputStream.writePacket(loginRequest);
         }else if(hash.length() > 1){
             // We have to confirm with hash, I don't support that yet. I'm lazy
-            throw new IOException("Unsupported authentication scheme: Authentication.");
+            throw new UnsupportedOperationException("Unsupported authentication scheme: Authentication.");
         }
 
     }

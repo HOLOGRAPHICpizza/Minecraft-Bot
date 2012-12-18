@@ -3,6 +3,8 @@ package net.nevercast.minecraft.bot.network;
 import net.nevercast.minecraft.bot.network.packets.*;
 import java.util.HashMap;
 
+import com.esotericsoftware.minlog.Log;
+
 /**
  * Handles supported and unsupported packets.
  * @author Michael Craft <mcraft@peak15.org>
@@ -10,6 +12,8 @@ import java.util.HashMap;
  * @author Josh
  */
 public class PacketFactory {
+	
+	private static final String LOG_PREFIX = PacketFactory.class.getSimpleName();
 
     private static HashMap<Byte, Class<? extends Packet>> supportedPackets = new HashMap<Byte, Class<? extends Packet>>();
     private static HashMap<Byte, Integer> unsupportedPackets = new HashMap<Byte, Integer>();
@@ -103,17 +107,14 @@ public class PacketFactory {
         try{
             Object o = clazz.newInstance();
             if(!(o instanceof Packet)){
-                System.out.print(o + " Isn't a packet type!");
+                Log.warn(LOG_PREFIX, "Invalid packet type: " + o);
                 return null;
             }else{
                 Packet packet = (Packet)o;
                 return packet;
             }
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (InstantiationException | IllegalAccessException e) {
+            Log.warn(LOG_PREFIX, "Error handling packet:", e);
             return null;
         }
     }

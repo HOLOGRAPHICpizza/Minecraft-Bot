@@ -4,11 +4,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-
-import net.nevercast.minecraft.bot.MinecraftClient;
+import com.esotericsoftware.minlog.Log;
 
 /**
  * Stream for outbound packets.
+ * 
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
  * @author Josh
@@ -45,10 +45,9 @@ public class PacketOutputStream {
     }
     
     public void writePacket(Packet packet) throws IOException {
-    	if(MinecraftClient.PACKET_DEBUG) {
-    		String hexed = String.format("%x", packet.getPacketId()).toUpperCase();
-    		System.out.println("+++Out: " + hexed);
-    	}
+    	// Log packet
+    	Log.trace("packet", "+++Out: " + packet.log());
+    	
         this.outputStream.writeByte(packet.getPacketId());
         packet.writeExternal(outputStream);
         outputStream.flush();

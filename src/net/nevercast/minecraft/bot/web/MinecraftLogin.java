@@ -1,6 +1,9 @@
 package net.nevercast.minecraft.bot.web;
 
+import java.io.IOException;
 import java.net.URLEncoder;
+import net.nevercast.minecraft.bot.MinecraftClient;
+import com.esotericsoftware.minlog.Log;
 
 /**
  * Facilitates secure and insecure Minecraft logins.
@@ -17,8 +20,8 @@ public class MinecraftLogin {
     private String sessionId;
     private boolean isLoggedIn;
     private String errorMessage = null;
-
-    public static final int CLIENT_VERSION = 29; // 1.2.5
+    
+    private static final String LOG_PREFIX = MinecraftLogin.class.getSimpleName();
 
     /**
      * Hold username for an insecure login.
@@ -40,9 +43,13 @@ public class MinecraftLogin {
     	//TODO: Throw exceptions in exceptional conditions.
     	
         try {
-            String parameters = "user=" + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&version=" + CLIENT_VERSION;
+            String parameters = "user=" + URLEncoder.encode(username, "UTF-8")
+            		+ "&password=" + URLEncoder.encode(password, "UTF-8")
+            		+ "&version=" + MinecraftClient.CLIENT_VERSION;
             String result = WebUtil.excutePost("https://login.minecraft.net/", parameters);
-            System.out.println("AUTH: "+result);
+            
+            Log.debug(LOG_PREFIX, "Authorization result: " + result);
+            
             if (result == null) {
                 setErrorMessage("Can't connect to minecraft.net");
                 return;
@@ -64,8 +71,8 @@ public class MinecraftLogin {
             this.downloadTicket = values[1].trim();
             this.sessionId = values[3].trim();
             isLoggedIn = true;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch(IOException e) {
+            Log.warn("Error logging in:", e);
             setErrorMessage(e.toString());
         }
     }

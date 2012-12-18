@@ -42,11 +42,7 @@ public class Packet06SpawnLocation implements Packet{
         z = objectInput.readInt();
     }
     
-    public String log(){
-    	return "@ 0x06 X="+x+" Y="+y+" Z="+z;
-    }
-    
-    public String toString() {
-    	return "0x06: (" + x + "," + y + "," + z + ")";
+    public String log() {
+    	return "@ 0x06: (" + x + "," + y + "," + z + ")";
     }
 }

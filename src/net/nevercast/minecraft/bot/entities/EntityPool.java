@@ -10,6 +10,8 @@ import net.nevercast.minecraft.bot.structs.Location;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.esotericsoftware.minlog.Log;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Josh
@@ -31,7 +33,7 @@ public class EntityPool {
     public void removeEntity(GameEntity entity){
         if(entities.containsKey(entity.getEid())){
             entities.remove(entity.getEid());
-            System.out.println("Removed ent " + entity);
+            Log.debug("Removed ent " + entity);
         }
     }
 
@@ -40,7 +42,7 @@ public class EntityPool {
             entities.remove(entity.getEid());
         }
         entities.put(entity.getEid(), entity);
-        System.out.println("Reset ent " + entity);
+        Log.debug("Reset ent " + entity);
     }
 
     public void removeEntity(int id){

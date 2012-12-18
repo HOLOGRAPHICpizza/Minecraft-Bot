@@ -2,7 +2,6 @@ package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.Packet;
-import net.nevercast.minecraft.bot.web.MinecraftLogin;
 
 import java.io.IOException;
 import java.io.DataInputStream;
@@ -18,7 +17,7 @@ public class Packet01LoginRequest implements Packet{
 	public Packet01LoginRequest(){}
 
     public Packet01LoginRequest(String username){
-        this.version = MinecraftLogin.CLIENT_VERSION;
+        this.version = MinecraftClient.CLIENT_VERSION;
         this.username = username;
     }
 
