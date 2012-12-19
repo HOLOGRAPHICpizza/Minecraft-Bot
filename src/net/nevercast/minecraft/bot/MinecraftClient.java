@@ -14,9 +14,7 @@ import net.nevercast.minecraft.bot.web.MinecraftLogin;
 import net.nevercast.minecraft.bot.world.Block;
 import net.nevercast.minecraft.bot.world.Chunk;
 import net.nevercast.minecraft.bot.world.World;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -24,6 +22,7 @@ import com.esotericsoftware.minlog.Log;
 
 /**
  * Main client.
+ * 
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
  * @author Josh
@@ -81,7 +80,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     	
         socket = new Socket(address, port);
         socket.setTcpNoDelay(true);
-        packetInputStream = new PacketInputStream(socket.getInputStream());
+        packetInputStream = new PacketInputStream(new BufferedInputStream(socket.getInputStream()));
         packetOutputStream = new PacketOutputStream(socket);
         running = true;
         
@@ -98,7 +97,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
             packetOutputStream.writePacket(
                     new Packet02Handshake(login.getUsername(), server, port)
             );
-            while(packetOutputStream.isReady() && !isInterrupted() && running) {
+            while(packetOutputStream.isSocketReady() && !isInterrupted() && running) {
                 Packet mcPacket = packetInputStream.readPacket();
                 if(mcPacket != null) {
                     handlePacket(mcPacket);
@@ -119,7 +118,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     	
         Log.trace("Tick: " + elapsedTime + "ms");
     	
-        if(maxPlayers != 0 && running && packetOutputStream.isReady()){
+        if(maxPlayers != 0 && running && packetOutputStream.isSocketReady()){
         	//Packet0APlayer pman = new Packet0APlayer(true);
 //            Packet0DPlayerPositionAndLook position = new Packet0DPlayerPositionAndLook(location);
             //packetOutputStream.writePacket(pman);
@@ -388,27 +387,4 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     private void handlePlayerListItem(PacketC9PlayerListItem item) {
     	//TODO: Maintain a player list.
     }
-	
-	/**
-	 * Reads a minecraft formatted string from a DataInputStream.
-	 * @param objectInput Stream to read from.
-	 * @return String read from input.
-	 * @throws IOException if string could not be read.
-	 */
-	public static String readString(DataInputStream objectInput) throws IOException {
-		byte[] bytes = new byte[objectInput.readShort() * 2];
-        objectInput.read(bytes);
-        return new String(bytes, "UTF-16BE");
-	}
-	
-	/**
-	 * Writes a minecraft formatted string to a DataOutputStream.
-	 * @param objectOutput Stream to write to.
-	 * @param string String to write.
-	 * @throws IOException if string could not be written.
-	 */
-	public static void writeString(DataOutputStream objectOutput, String string) throws IOException {
-		objectOutput.writeShort(string.length());
-        objectOutput.write(string.getBytes("UTF-16BE"));
-	}
 }

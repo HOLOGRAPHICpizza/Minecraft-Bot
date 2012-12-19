@@ -6,9 +6,9 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
@@ -29,11 +29,11 @@ public class Packet04TimeUpdate implements Packet {
         return time;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
         objectOutput.writeLong(time);
     }
 
-    public void readExternal(DataInputStream objectInput) throws IOException {
+    public void readExternal(PacketInputStream objectInput) throws IOException {
         time = objectInput.readLong();
 //        System.out.println("Packet04-ReadExternal | TickTime: "+time);
     }

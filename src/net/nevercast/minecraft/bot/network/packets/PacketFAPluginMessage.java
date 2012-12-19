@@ -1,19 +1,18 @@
 package net.nevercast.minecraft.bot.network.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-
-import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 
 /**
  * Two-way packet for plugin communication.
+ * 
  * @author Michael Craft <mcraft@peak15.org>
  */
 public class PacketFAPluginMessage implements Packet {
-	String channel;		// Plugin Channel
-	byte[] data;		// Data
+	private String channel;		// Plugin Channel
+	private byte[] data;		// Data
 	
 	/**
      * Get the plugin channel.
@@ -53,15 +52,15 @@ public class PacketFAPluginMessage implements Packet {
 	}
 
 	@Override
-	public void writeExternal(DataOutputStream objectOutput) throws IOException {
-		MinecraftClient.writeString(objectOutput, channel);
+	public void writeExternal(PacketOutputStream objectOutput) throws IOException {
+		objectOutput.writeMinecraftString(channel);
 		objectOutput.writeShort(data.length);
 		objectOutput.write(data);
 	}
 
 	@Override
-	public void readExternal(DataInputStream objectInput) throws IOException {
-		channel = MinecraftClient.readString(objectInput);
+	public void readExternal(PacketInputStream objectInput) throws IOException {
+		channel = objectInput.readMinecraftString();
 		
 		short length = objectInput.readShort();
 		data = new byte[length];

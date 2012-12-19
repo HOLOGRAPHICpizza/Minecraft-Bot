@@ -13,51 +13,60 @@ import com.esotericsoftware.minlog.Log;
  * @author mikecyber
  * @author Josh
  */
-public class PacketOutputStream {
-    private DataOutputStream outputStream;
-    private Socket rootSocket;
-
-    public PacketOutputStream(Socket rootSocket) throws IOException {
-    	this.rootSocket = rootSocket;
-    	OutputStream rootStream = rootSocket.getOutputStream();
-    	
-        if(!(outputStream instanceof DataOutputStream)){
-            this.outputStream = new DataOutputStream(rootStream);
-        }else{
-            this.outputStream = (DataOutputStream) rootStream;
-        }
+public class PacketOutputStream extends DataOutputStream {
+	private Socket socket = null;
+	
+	public PacketOutputStream(OutputStream out) {
+		super(out);
+	}
+    
+    public PacketOutputStream(Socket socket) throws IOException {
+    	super(socket.getOutputStream());
+    	this.socket = socket;
     }
     
     /**
-     * Get the DataOutputStream used by this PacketOutputStream.
-     * @return DataOutputStream used by this PacketOutputStream.
+     * Get the Socket used to create this PacketOutputStream, if any.
+     * 
+     * @return Socket used to create this PacketOutputStream, or null if none.
      */
-    public DataOutputStream getUnderlayingStream(){
-        return outputStream;
-    }
-    
-    /**
-     * Get the Socket used to create this PacketOutputStream.
-     * @return Socket used to create this PacketOutputStream.
-     */
-    public Socket getRootSocket(){
-        return rootSocket;
+    public Socket getSocket(){
+        return socket;
     }
     
     public void writePacket(Packet packet) throws IOException {
     	// Log packet
     	Log.trace("packet", "+++Out: " + packet.log());
     	
-        this.outputStream.writeByte(packet.getPacketId());
-        packet.writeExternal(outputStream);
-        outputStream.flush();
+        this.writeByte(packet.getPacketId());
+        packet.writeExternal(this);
+        this.flush();
     }
     
     /**
-     * Is the stream ready to send data?
-     * @return True is stream is ready, false otherwise.
+     * Is the socket ready to send data?
+     * 
+     * This is meaningless if the stream was not constructed from a socket.
+     * 
+     * @return True is socket exists and is ready, false otherwise.
      */
-    public boolean isReady() {
-    	return rootSocket.isConnected() && !rootSocket.isClosed() && !rootSocket.isOutputShutdown();
+    public boolean isSocketReady() {
+    	if(socket != null) {
+    		return socket.isConnected() && !socket.isClosed() && !socket.isOutputShutdown();
+    	}
+    	else {
+    		return false;
+    	}
     }
+	
+	/**
+	 * Writes a Minecraft formatted string to the stream.
+	 * 
+	 * @param string String to write.
+	 * @throws IOException if string could not be written.
+	 */
+	public void writeMinecraftString(String string) throws IOException {
+		this.writeShort(string.length());
+        this.write(string.getBytes("UTF-16BE"));
+	}
 }

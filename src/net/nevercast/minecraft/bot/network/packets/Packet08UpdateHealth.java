@@ -6,9 +6,9 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
@@ -39,11 +39,11 @@ public class Packet08UpdateHealth implements Packet{
         return health;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
 
     }
 
-    public void readExternal(DataInputStream objectInput) throws IOException {
+    public void readExternal(PacketInputStream objectInput) throws IOException {
         health = objectInput.readShort();
         food = objectInput.readShort();
         foodSaturation = objectInput.readFloat();

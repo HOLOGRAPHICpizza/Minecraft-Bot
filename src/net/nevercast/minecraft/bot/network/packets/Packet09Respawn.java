@@ -1,14 +1,14 @@
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
  * Sent both ways when the user clicks respawn.
+ * 
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
  * @author Josh
@@ -51,12 +51,12 @@ public class Packet09Respawn implements Packet {
         this.dimension = dimension;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
         objectOutput.writeInt(dimension);
         objectOutput.writeByte(difficulty);
         objectOutput.writeByte(mode);
         objectOutput.writeShort(worldHeight);
-        MinecraftClient.writeString(objectOutput, levelType);
+        objectOutput.writeMinecraftString(levelType);
     }
 
     public byte getDifficulty() {
@@ -87,12 +87,12 @@ public class Packet09Respawn implements Packet {
     	this.levelType = levelType;
     }
 
-    public void readExternal(DataInputStream objectInput) throws IOException {
+    public void readExternal(PacketInputStream objectInput) throws IOException {
         this.dimension = objectInput.readInt();
         difficulty = objectInput.readByte();
         mode = objectInput.readByte();
         worldHeight = objectInput.readShort();
-        levelType = MinecraftClient.readString(objectInput);
+        levelType = objectInput.readMinecraftString();
     }
     
     public String log(){

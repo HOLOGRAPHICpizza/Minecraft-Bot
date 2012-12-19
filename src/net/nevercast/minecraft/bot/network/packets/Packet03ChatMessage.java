@@ -1,23 +1,16 @@
-/*
- * Updated March 10, 2012
- * By: mikecyber 
- * For: Protocol 1.2.3 Compliance
- */
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.Packet;
-
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Josh
- * Date: 8/14/11
- * Time: 10:52 PM
- * To change this template use File | Settings | File Templates.
+ * Chat message.
+ * 
+ * @author Michael Craft <mcraft@peak15.org>
+ * @author Josh
+ * @author mikecyber
  */
 public class Packet03ChatMessage implements Packet{
 
@@ -36,13 +29,13 @@ public class Packet03ChatMessage implements Packet{
         return message;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
         objectOutput.writeShort(message.length());
         objectOutput.write(message.getBytes("UTF-16BE"));
     }
 
-    public void readExternal(DataInputStream objectInput) throws IOException {
-        message = MinecraftClient.readString(objectInput);
+    public void readExternal(PacketInputStream objectInput) throws IOException {
+        message = objectInput.readMinecraftString();
     }
     
     public String log(){

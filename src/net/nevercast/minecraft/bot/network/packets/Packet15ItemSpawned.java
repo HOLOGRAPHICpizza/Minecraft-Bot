@@ -7,11 +7,11 @@ package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.entities.ItemEntity;
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 import net.nevercast.minecraft.bot.structs.SlotData;
 import net.nevercast.minecraft.bot.structs.Location;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
@@ -32,11 +32,11 @@ public class Packet15ItemSpawned implements Packet{
         return entity;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
 
     }
 
-    public void readExternal(DataInputStream objectInput) throws IOException {
+    public void readExternal(PacketInputStream objectInput) throws IOException {
         entity = new ItemEntity(objectInput.readInt());
         short id;
         byte count;

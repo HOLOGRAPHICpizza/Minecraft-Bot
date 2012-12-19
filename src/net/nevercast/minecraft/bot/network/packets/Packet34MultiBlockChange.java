@@ -6,11 +6,11 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 import net.nevercast.minecraft.bot.structs.BlockInfo;
 import net.nevercast.minecraft.bot.structs.Vector;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
@@ -41,7 +41,7 @@ public class Packet34MultiBlockChange implements Packet{
         return blockInfos;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -51,7 +51,7 @@ public class Packet34MultiBlockChange implements Packet{
 	private short count;
 	private byte[] data;
 	  
-    public void readExternal(DataInputStream objectInput) throws IOException {
+    public void readExternal(PacketInputStream objectInput) throws IOException {
 //        chunkPosition = new Vector(objectInput.readInt(), 0, objectInput.readInt());
 //        short size = objectInput.readShort();
 //        positions = new Vector[size];

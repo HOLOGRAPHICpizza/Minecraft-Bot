@@ -1,10 +1,10 @@
 package net.nevercast.minecraft.bot.network.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 
 /**
  * Sent each tick for each player to update a player list.
@@ -21,12 +21,12 @@ public class PacketC9PlayerListItem implements Packet {
 	}
 
 	@Override
-	public void writeExternal(DataOutputStream objectOutput) throws IOException {
+	public void writeExternal(PacketOutputStream objectOutput) throws IOException {
 		// Do nothing, clients should never send this.
 	}
 
 	@Override
-	public void readExternal(DataInputStream objectInput) throws IOException {
+	public void readExternal(PacketInputStream objectInput) throws IOException {
 		byte[] bytes = new byte[objectInput.readShort() * 2];
         objectInput.read(bytes);
         name = new String(bytes, "UTF-16BE");

@@ -1,9 +1,9 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
@@ -28,12 +28,12 @@ public class PacketFFDisconnect implements Packet{
         return reason;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
         objectOutput.writeShort(reason.length());
         objectOutput.write(reason.getBytes("UTF16-BE"));
     }
 
-    public void readExternal(DataInputStream objectInput) throws IOException {
+    public void readExternal(PacketInputStream objectInput) throws IOException {
         short length = objectInput.readShort();
         byte[] data = new byte[length*2];
         objectInput.readFully(data);

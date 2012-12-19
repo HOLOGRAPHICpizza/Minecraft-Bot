@@ -7,10 +7,10 @@ package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.structs.Location;
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 
 import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,7 +44,7 @@ public class Packet0DPlayerPositionAndLook implements Packet {
 
 
     //Send to server
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
         objectOutput.writeDouble(location.X);
         objectOutput.writeDouble(location.Y);
         objectOutput.writeDouble(location.getStance());
@@ -57,7 +57,7 @@ public class Packet0DPlayerPositionAndLook implements Packet {
     }
 
     //Received from Server
-    public void readExternal(DataInputStream objectInput) throws IOException {
+    public void readExternal(PacketInputStream objectInput) throws IOException {
         if(location == null){
             location = new Location();
         }

@@ -1,8 +1,9 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.Packet;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
+
 import java.io.IOException;
 
 /**
@@ -30,11 +31,11 @@ public class Packet0APlayer implements Packet {
         this.onGround = onGround;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
         objectOutput.writeBoolean(onGround);
     }
 
-    public void readExternal(DataInputStream objectInput) throws IOException {}
+    public void readExternal(PacketInputStream objectInput) throws IOException {}
     
     public String log(){
     	return "@ 0x0A onGround=" + onGround;

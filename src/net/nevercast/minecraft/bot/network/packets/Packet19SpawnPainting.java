@@ -1,15 +1,15 @@
 package net.nevercast.minecraft.bot.network.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 /**
  * Spawn a painting.
+ * 
  * @author Michael Craft <mcraft@peak15.org>
  */
 public class Packet19SpawnPainting implements Packet {
@@ -56,15 +56,15 @@ public class Packet19SpawnPainting implements Packet {
 	}
 
 	@Override
-	public void writeExternal(DataOutputStream objectOutput) throws IOException {
+	public void writeExternal(PacketOutputStream objectOutput) throws IOException {
 		// Client does not send.
 
 	}
 
 	@Override
-	public void readExternal(DataInputStream objectInput) throws IOException {
+	public void readExternal(PacketInputStream objectInput) throws IOException {
 		eid = objectInput.readInt();
-		title = MinecraftClient.readString(objectInput);
+		title = objectInput.readMinecraftString();
 		pos.x = objectInput.readInt();
 		pos.y = objectInput.readInt();
 		pos.z = objectInput.readInt();

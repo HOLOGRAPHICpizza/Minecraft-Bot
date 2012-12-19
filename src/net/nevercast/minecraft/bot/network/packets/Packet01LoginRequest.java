@@ -1,11 +1,9 @@
 package net.nevercast.minecraft.bot.network.packets;
 
-import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.Packet;
-
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 import java.io.IOException;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 
 /**
  * Login request.
@@ -53,10 +51,10 @@ public class Packet01LoginRequest implements Packet{
         this.username = username;
     }
 	
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
         objectOutput.writeInt(version);							// Protocol Version
-        MinecraftClient.writeString(objectOutput, username);	// Username
-        MinecraftClient.writeString(objectOutput, "");			// Empty String
+        objectOutput.writeMinecraftString(username);			// Username
+        objectOutput.writeMinecraftString("");					// Empty String
         objectOutput.writeInt(0);								// 0 int
         objectOutput.writeInt(0);								// 0 int
         objectOutput.writeByte(0);								// 0 byte
@@ -106,10 +104,10 @@ public class Packet01LoginRequest implements Packet{
         return maxPlayers;
     }
     
-    public void readExternal(DataInputStream objectInput) throws IOException {
+    public void readExternal(PacketInputStream objectInput) throws IOException {
         entId = objectInput.readInt();							// Entity ID
-        MinecraftClient.readString(objectInput);				// Empty String
-        levelType = MinecraftClient.readString(objectInput);	// Level Type
+        objectInput.readMinecraftString();						// Empty String
+        levelType = objectInput.readMinecraftString();			// Level Type
         mode = objectInput.readInt();							// Server Mode
         dimension = objectInput.readInt();						// Dimension
         difficulty = objectInput.readByte();					// Difficulty

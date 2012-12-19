@@ -6,6 +6,8 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 import java.io.*;
@@ -47,10 +49,10 @@ public class Packet33MapChunk implements Packet{
         return compressedData;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
     }
 
-    public void readExternal(DataInputStream objectInput) throws IOException {
+    public void readExternal(PacketInputStream objectInput) throws IOException {
     	X = objectInput.readInt();
     	Z = objectInput.readInt();
     	groundUp = objectInput.readBoolean();

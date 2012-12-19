@@ -1,12 +1,16 @@
 package net.nevercast.minecraft.bot.network.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 
+/**
+ * Sent to the client to initiate encryption.
+ * 
+ * @author Michael Craft <mcraft@peak15.org>
+ */
 public final class PacketFDEncryptionKeyRequest implements Packet {
 	
 	private String serverID;
@@ -18,13 +22,13 @@ public final class PacketFDEncryptionKeyRequest implements Packet {
 	}
 
 	@Override
-	public void writeExternal(DataOutputStream objectOutput) throws IOException {
+	public void writeExternal(PacketOutputStream objectOutput) throws IOException {
 		// Client does not send
 	}
 
 	@Override
-	public void readExternal(DataInputStream objectInput) throws IOException {
-		serverID = MinecraftClient.readString(objectInput);
+	public void readExternal(PacketInputStream objectInput) throws IOException {
+		serverID = objectInput.readMinecraftString();
 
 	}
 

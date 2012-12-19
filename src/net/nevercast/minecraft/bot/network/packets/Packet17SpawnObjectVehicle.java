@@ -1,10 +1,10 @@
 package net.nevercast.minecraft.bot.network.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 /**
@@ -64,13 +64,13 @@ public class Packet17SpawnObjectVehicle implements Packet {
 	}
 
 	@Override
-	public void writeExternal(DataOutputStream objectOutput) throws IOException {
+	public void writeExternal(PacketOutputStream objectOutput) throws IOException {
 		// Client does not send.
 
 	}
 
 	@Override
-	public void readExternal(DataInputStream objectInput) throws IOException {
+	public void readExternal(PacketInputStream objectInput) throws IOException {
 		eid = objectInput.readInt();
 		type = objectInput.readByte();
 		pos.x = objectInput.readInt();

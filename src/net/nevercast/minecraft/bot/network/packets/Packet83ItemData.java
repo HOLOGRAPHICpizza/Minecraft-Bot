@@ -1,10 +1,10 @@
 package net.nevercast.minecraft.bot.network.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 
 /**
  * Sent to client for complex item data, such as maps.
@@ -45,13 +45,13 @@ public class Packet83ItemData implements Packet {
 	}
 
 	@Override
-	public void writeExternal(DataOutputStream objectOutput) throws IOException {
+	public void writeExternal(PacketOutputStream objectOutput) throws IOException {
 		// Client does not send.
 
 	}
 
 	@Override
-	public void readExternal(DataInputStream objectInput) throws IOException {
+	public void readExternal(PacketInputStream objectInput) throws IOException {
 		type = objectInput.readShort();
 		id = objectInput.readShort();
 		

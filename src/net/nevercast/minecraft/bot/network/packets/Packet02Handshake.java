@@ -2,10 +2,10 @@ package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.MinecraftClient;
 import net.nevercast.minecraft.bot.network.Packet;
+import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.DataOutputStream;
 
 /**
  * Handles handshaking.
@@ -29,14 +29,14 @@ public final class Packet02Handshake implements Packet {
         return 0x02;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
     	objectOutput.writeByte(MinecraftClient.CLIENT_VERSION);
-    	MinecraftClient.writeString(objectOutput, user);
-    	MinecraftClient.writeString(objectOutput, host);
+    	objectOutput.writeMinecraftString(user);
+    	objectOutput.writeMinecraftString(host);
     	objectOutput.writeInt(port);
     }
     
-    public void readExternal(DataInputStream objectInput) throws IOException {
+    public void readExternal(PacketInputStream objectInput) throws IOException {
         // Server does not send
     }
     

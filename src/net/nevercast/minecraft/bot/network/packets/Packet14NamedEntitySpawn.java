@@ -1,26 +1,20 @@
-/*
- * Updated March 10, 2012
- * By: mikecyber 
- * For: Protocol 1.2.3 Compliance
- */
 package net.nevercast.minecraft.bot.network.packets;
 
 import net.nevercast.minecraft.bot.entities.NamedGameEntity;
 import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.network.PacketInputStream;
+import net.nevercast.minecraft.bot.network.PacketOutputStream;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import net.nevercast.minecraft.bot.structs.Location;
 import net.nevercast.minecraft.bot.structs.Vector;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Josh
- * Date: 8/15/11
- * Time: 11:09 AM
- * To change this template use File | Settings | File Templates.
+ * Tells the client a named entity has come in range. (I think.)
+ * 
+ * @author Michael Craft <mcraft@peak15.org>
+ * @author mikecyber
+ * @author Josh
  */
 public class Packet14NamedEntitySpawn implements Packet {
 
@@ -34,15 +28,15 @@ public class Packet14NamedEntitySpawn implements Packet {
         return entity;
     }
 
-    public void writeExternal(DataOutputStream objectOutput) throws IOException {
+    public void writeExternal(PacketOutputStream objectOutput) throws IOException {
 
     }
 
     int id;
     
-    public void readExternal(DataInputStream objectInput) throws IOException {
+    public void readExternal(PacketInputStream objectInput) throws IOException {
         id = objectInput.readInt();
-        entity = new NamedGameEntity(id, PacketInputStream.readString16(objectInput));
+        entity = new NamedGameEntity(id, objectInput.readMinecraftString());
         entity.setLocation(
                 Location.fromAbsoluteInteger(
                         new Vector<Integer>(objectInput.readInt(), objectInput.readInt(), objectInput.readInt())

@@ -3,8 +3,6 @@ package net.nevercast.minecraft.bot.entities;
 import net.nevercast.minecraft.bot.network.PacketInputStream;
 import net.nevercast.minecraft.bot.structs.SlotData;
 import net.nevercast.minecraft.bot.structs.Vector;
-
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -19,12 +17,12 @@ import java.util.ArrayList;
 public class Metadata {
 	//TODO: I'm pretty sure this should be a map, not a list.
 	
-    public static Metadata createFromStream(DataInputStream dataInputStream) throws IOException {
+    public static Metadata createFromStream(PacketInputStream packetInputStream) throws IOException {
         Metadata metadata = new Metadata();
         byte x = 0;
         // 1) Read an unsigned byte.
         // 2) If this byte == 127, stop reading.
-        while ((x = (byte) dataInputStream.readUnsignedByte()) != 127){
+        while ((x = (byte) packetInputStream.readUnsignedByte()) != 127) {
 			/* 3) Decompose the byte. 
 			 * 		The bottom 5 bits (0x1F) serve as an identifier (key) for the data to follow. 
 			 * 		The top 3 bits (0xE0) serve as a type:
@@ -39,22 +37,22 @@ public class Metadata {
         	
     		int type  = x >>> 5;
     		switch (type){
-                case 0: metadata.appendField(dataInputStream.readByte()); break;
-                case 1: metadata.appendField(dataInputStream.readShort()); break;
-                case 2: metadata.appendField(dataInputStream.readInt()); break;
-                case 3: metadata.appendField(dataInputStream.readFloat()); break;
-                case 4: metadata.appendField(PacketInputStream.readString16(dataInputStream)); break;
+                case 0: metadata.appendField(packetInputStream.readByte()); break;
+                case 1: metadata.appendField(packetInputStream.readShort()); break;
+                case 2: metadata.appendField(packetInputStream.readInt()); break;
+                case 3: metadata.appendField(packetInputStream.readFloat()); break;
+                case 4: metadata.appendField(packetInputStream.readMinecraftString()); break;
                 case 5:
                     SlotData stack = new SlotData();
-                    stack.id = dataInputStream.readShort();
-                    stack.count = dataInputStream.readByte();
-                    stack.damage = dataInputStream.readShort();
+                    stack.id = packetInputStream.readShort();
+                    stack.count = packetInputStream.readByte();
+                    stack.damage = packetInputStream.readShort();
                     metadata.appendField(stack); break;
                 case 6:
                     Vector<Integer> vector = new Vector<Integer>();
-                    vector.x = dataInputStream.readInt();
-                    vector.y = dataInputStream.readInt();
-                    vector.z = dataInputStream.readInt();
+                    vector.x = packetInputStream.readInt();
+                    vector.y = packetInputStream.readInt();
+                    vector.z = packetInputStream.readInt();
                     break;
             }
         }

@@ -1,7 +1,5 @@
 package net.nevercast.minecraft.bot.network;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 
@@ -24,14 +22,14 @@ public interface Packet {
      * @param objectOutput The data output stream to write to.
      * @throws IOException if the object could not be written.
      */
-    void writeExternal(DataOutputStream objectOutput) throws IOException;
+    void writeExternal(PacketOutputStream objectOutput) throws IOException;
     
     /**
      * Inbound deserialization.
      * @param objectOutput The data output stream to read from.
      * @throws IOException if the object could not be read.
      */
-    void readExternal(DataInputStream objectInput) throws IOException;
+    void readExternal(PacketInputStream objectInput) throws IOException;
     
     /**
      * I assume this is like toString() for logging.
