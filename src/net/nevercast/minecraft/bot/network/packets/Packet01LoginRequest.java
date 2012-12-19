@@ -17,7 +17,7 @@ public class Packet01LoginRequest implements Packet{
 	public Packet01LoginRequest(){}
 
     public Packet01LoginRequest(String username){
-        this.version = MinecraftClient.CLIENT_VERSION;
+        //this.version = MinecraftClient.CLIENT_VERSION;
         this.username = username;
     }
 

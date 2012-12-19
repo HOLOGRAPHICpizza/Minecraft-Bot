@@ -30,7 +30,7 @@ import com.esotericsoftware.minlog.Log;
  */
 public class MinecraftClient extends Thread implements GamePulser.GamePulserReceptor {
 	
-	public static final int CLIENT_VERSION = 29; // 1.2.5
+	public static final byte CLIENT_VERSION = 49; // 1.4.4
 	
 	private static final int DEFAULT_PORT = 25565;
 	
@@ -40,57 +40,35 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     private PacketOutputStream packetOutputStream;
     private Location location = null;
     private Vector<Integer> spawn = null;
-    @SuppressWarnings("unused")
-	private long gameTicks;
+	//private long gameTicks;
     private SlotData[] inventory;
-    private GamePulser tickSource;
+    //private GamePulser tickSource;
     private short health;
     private int dimension;
     private EntityPool entityPool;
     private World world;
-
     private int myEntId;
 	private short worldHeight;
     private int mode;//0 for survival, 1 for creative
     private byte difficulty;
     private int maxPlayers = 0;
-    @SuppressWarnings("unused")
-	private short food;
-    @SuppressWarnings("unused")
-	private float foodSaturation;
+    //private short food;
+	//private float foodSaturation;
 	private String levelType;
-	@SuppressWarnings("unused")
-	private Packet previousPacket;
-	
 	private String server;
 	private int port;
+	private boolean first0DPacket = true;
 	
 	/**
 	 * Set to false to kill the client.
 	 */
 	private boolean running = false;
-    public boolean first0Dpacket = true;
     
     public MinecraftClient(MinecraftLogin loginInformation){
         this.login = loginInformation;
         initInventory();
         entityPool = new EntityPool();
         world = new World();
-    }
-
-    private void setInventoryItem(int slot, SlotData slotData){
-        inventory[slot] = slotData;
-    }
-
-    /*private SlotData getInventoryItem(int slot){
-        return inventory[slot];
-    }*/
-
-    private void initInventory() {
-        inventory = new SlotData[45];
-        for(int i = 0; i < 45; i++){
-            inventory[i] = SlotData.EMPTY;
-        }
     }
 
     public void connect(String address) throws IOException {
@@ -107,8 +85,8 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
         packetOutputStream = new PacketOutputStream(socket);
         running = true;
         
-        tickSource = new GamePulser(this, 50);
-        tickSource.start();
+        //tickSource = new GamePulser(this, 50);
+        //tickSource.start();
         
         start(); //Start the thread
     }
@@ -116,8 +94,9 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     // Receiver
     public void run(){
         try {
+        	Log.debug("Sending handshake...");
             packetOutputStream.writePacket(
-                    new Packet02Handshake(login.getUsername() + ";" + server + ":" + port)
+                    new Packet02Handshake(login.getUsername(), server, port)
             );
             while(packetOutputStream.isReady() && !isInterrupted() && running) {
                 Packet mcPacket = packetInputStream.readPacket();
@@ -125,7 +104,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
                     handlePacket(mcPacket);
                 }
             }
-            tickSource.running = false;
+            //tickSource.running = false;
         } catch(IOException e) {
         	Log.error("Fatal IOException: ", e);
         } finally {
@@ -163,16 +142,82 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 	 */
 	public void kill() {
 		this.running = false;
-		if(this.tickSource != null)
-			this.tickSource.running = false;
+		//if(this.tickSource != null)
+			//this.tickSource.running = false;
 	}
     
-    private void handlePacket(Packet mcPacket) throws IOException {
-        //System.out.println("Handling packet " + mcPacket.getPacketId());
+    private void setInventoryItem(int slot, SlotData slotData){
+	    inventory[slot] = slotData;
+	}
+
+	/*private SlotData getInventoryItem(int slot){
+	    return inventory[slot];
+	}*/
+	
+	private void initInventory() {
+	    inventory = new SlotData[45];
+	    for(int i = 0; i < 45; i++){
+	        inventory[i] = SlotData.EMPTY;
+	    }
+	}
+
+	private void issueCommand(String message) {
+	    if(message.equalsIgnoreCase("echo eid")){
+	        sendMessage("EID: " + this.myEntId);
+	    }else if(message.startsWith("lookat")){
+	        if(!message.contains(" "))
+	            return;
+	        //String who = message.split(" ")[1];
+	    }else if(message.equalsIgnoreCase("echo mob count")){
+	        sendMessage("Mobs: " + entityPool.getMobs().length);
+	    }else if(message.equalsIgnoreCase("echo player count")){
+	        sendMessage("Players: " + entityPool.getPlayers().length);
+	    }else if(message.equalsIgnoreCase("echo loaded chunks")){
+	        sendMessage("Loaded chunks: " + world.getChunkCount());
+	    }else if(message.equalsIgnoreCase("echo location")){
+	        sendMessage("Location: " + location.X + ", " + location.Y + ", " + location.Z);
+	    }else if(message.equalsIgnoreCase("echo current chunk")){
+	        Chunk c = world.getChunkAt(location.toVector());
+	        if(c == null){
+	            sendMessage("Chunk not loaded");
+	        }else{
+	            sendMessage("Chunk: " + c.getX() + ", " + c.getZ());
+	        }
+	    }else if(message.equalsIgnoreCase("echo surface position")){
+	        Chunk c = world.getChunkAt(location.toVector());
+	        if(c == null){
+	            sendMessage("Chunk not loaded");
+	        }else{
+	            int y = (int)location.Y;
+	            Vector<Integer> blockPosition = location.toVector();
+	            for(; y > 0; y--){
+	                blockPosition.y = y;
+	                Block block = world.getBlockAt(blockPosition);
+	                if(block.getInfo().blockType != 0){
+	                    Vector<Integer> surfLoc = block.getLocation();
+	                    sendMessage("Surface: " + surfLoc.x + ", " + surfLoc.y + ", " + surfLoc.z + " (" + block.getInfo().blockType + ")");
+	                    return;
+	                }
+	            }
+	            sendMessage("Failed to find surface!");
+	        }
+	    }
+	}
+
+	private void sendMessage(String message){
+	    Packet03ChatMessage m = new Packet03ChatMessage(message);
+	    try {
+	        packetOutputStream.writePacket(m);
+	    } catch (IOException e) {
+	        Log.warn("Error sending message:", e);
+	    }
+	}
+
+	private void handlePacket(Packet mcPacket) throws IOException {
         switch (mcPacket.getPacketId()){
         	case 0x00: handleAnnoyingKeepAlive((Packet00KeepAlive)mcPacket); 			break;
         	case 0x01: handleFinishLogin((Packet01LoginRequest)mcPacket); 				break;
-        	case 0x02: handlerBeginLogin((Packet02Handshake)mcPacket); 					break;
+        	//case 0x02: handlerBeginLogin((Packet02Handshake)mcPacket); 					break;
             case 0x03: handleChatMessage((Packet03ChatMessage)mcPacket); 				break;
             case 0x04: handleTime((Packet04TimeUpdate)mcPacket); 						break;
             case 0x06: handleSpawn((Packet06SpawnLocation)mcPacket); 					break;
@@ -197,7 +242,6 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 //                System.out.println("Unknown Packet | Prev: 0x"+foP+" | Cur: 0x" + fcP);
                 break;
         }
-        previousPacket = mcPacket;
     }
 //Unsupported packet
     private void handleMapChunk(Packet33MapChunk packet) throws IOException{
@@ -243,62 +287,10 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
         Log.info("chat", packet.getMessage());
     }
 
-    private void issueCommand(String message) {
-        if(message.equalsIgnoreCase("echo eid")){
-            sendMessage("EID: " + this.myEntId);
-        }else if(message.startsWith("lookat")){
-            if(!message.contains(" "))
-                return;
-            //String who = message.split(" ")[1];
-        }else if(message.equalsIgnoreCase("echo mob count")){
-            sendMessage("Mobs: " + entityPool.getMobs().length);
-        }else if(message.equalsIgnoreCase("echo player count")){
-            sendMessage("Players: " + entityPool.getPlayers().length);
-        }else if(message.equalsIgnoreCase("echo loaded chunks")){
-            sendMessage("Loaded chunks: " + world.getChunkCount());
-        }else if(message.equalsIgnoreCase("echo location")){
-            sendMessage("Location: " + location.X + ", " + location.Y + ", " + location.Z);
-        }else if(message.equalsIgnoreCase("echo current chunk")){
-            Chunk c = world.getChunkAt(location.toVector());
-            if(c == null){
-                sendMessage("Chunk not loaded");
-            }else{
-                sendMessage("Chunk: " + c.getX() + ", " + c.getZ());
-            }
-        }else if(message.equalsIgnoreCase("echo surface position")){
-            Chunk c = world.getChunkAt(location.toVector());
-            if(c == null){
-                sendMessage("Chunk not loaded");
-            }else{
-                int y = (int)location.Y;
-                Vector<Integer> blockPosition = location.toVector();
-                for(; y > 0; y--){
-                    blockPosition.y = y;
-                    Block block = world.getBlockAt(blockPosition);
-                    if(block.getInfo().blockType != 0){
-                        Vector<Integer> surfLoc = block.getLocation();
-                        sendMessage("Surface: " + surfLoc.x + ", " + surfLoc.y + ", " + surfLoc.z + " (" + block.getInfo().blockType + ")");
-                        return;
-                    }
-                }
-                sendMessage("Failed to find surface!");
-            }
-        }
-    }
-
-    private void sendMessage(String message){
-        Packet03ChatMessage m = new Packet03ChatMessage(message);
-        try {
-            packetOutputStream.writePacket(m);
-        } catch (IOException e) {
-            Log.warn("Error sending message:", e);
-        }
-    }
-
     private void handleHealthUpdate(Packet08UpdateHealth packet) {
         health = packet.getHealth();
-        food = packet.getFood();
-        foodSaturation = packet.getFoodSaturation();
+        //food = packet.getFood();
+        //foodSaturation = packet.getFoodSaturation();
         if(health < 1){
             Log.info("Died! Attempting respawn.");
             
@@ -345,7 +337,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     }
 
     private void handleTime(Packet04TimeUpdate packet) {
-        gameTicks = packet.getTicks();
+        //gameTicks = packet.getTicks();
     }
 
     private void handleSpawn(Packet06SpawnLocation packet) {
@@ -357,9 +349,9 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 
     private void handlePositionAndLook(Packet0DPlayerPositionAndLook packet) throws IOException {
         location = packet.getLocation();
-        if(first0Dpacket==true){
+        if(first0DPacket){
         	packetOutputStream.writePacket(packet);
-        	first0Dpacket = false;
+        	first0DPacket = false;
         }
     }
 
@@ -378,7 +370,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
         maxPlayers = packet.getMaxPlayers();
     }
 
-    private void handlerBeginLogin(Packet02Handshake packet) throws IOException {
+    /*private void handlerBeginLogin(Packet02Handshake packet) throws IOException {
         String hash = packet.getHash();
         
         Log.debug("Handshake received. Hash: " + hash);
@@ -391,8 +383,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
             // We have to confirm with hash, I don't support that yet. I'm lazy
             throw new UnsupportedOperationException("Unsupported authentication scheme: Authentication.");
         }
-
-    }
+    }*/
 
     private void handlePlayerListItem(PacketC9PlayerListItem item) {
     	//TODO: Maintain a player list.

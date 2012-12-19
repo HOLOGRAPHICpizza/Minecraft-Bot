@@ -7,6 +7,7 @@ import java.io.IOException;
 
 /**
  * Interface for all packets.
+ * 
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
  * @author Josh
