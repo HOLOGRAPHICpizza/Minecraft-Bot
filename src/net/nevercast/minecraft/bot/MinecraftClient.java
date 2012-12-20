@@ -90,7 +90,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
         socket = new Socket(address, port);
         socket.setTcpNoDelay(true);
         packetInputStream = new PacketInputStream(new BufferedInputStream(socket.getInputStream()));
-        packetOutputStream = new PacketOutputStream(socket);
+        packetOutputStream = new PacketOutputStream(socket.getOutputStream());
         running = true;
         
         //tickSource = new GamePulser(this, 50);
@@ -106,7 +106,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
             packetOutputStream.writePacket(
                     new Packet02Handshake(login.getUsername(), server, port)
             );
-            while(packetOutputStream.isSocketReady() && !isInterrupted() && running) {
+            while(socketIsReady(socket) && !isInterrupted() && running) {
                 Packet mcPacket = packetInputStream.readPacket();
                 if(mcPacket != null) {
                     handlePacket(mcPacket);
@@ -127,7 +127,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     	
         Log.trace("Tick: " + elapsedTime + "ms");
     	
-        if(maxPlayers != 0 && running && packetOutputStream.isSocketReady()){
+        if(maxPlayers != 0 && running && socketIsReady(socket)){
         	//Packet0APlayer pman = new Packet0APlayer(true);
 //            Packet0DPlayerPositionAndLook position = new Packet0DPlayerPositionAndLook(location);
             //packetOutputStream.writePacket(pman);
@@ -220,6 +220,20 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 	        Log.warn("Error sending message:", e);
 	    }
 	}
+	
+	/**
+	 * Makes sure our socket is well and truly ready to do IO.
+	 * 
+	 * @return socket is ready to do IO
+	 */
+	private static boolean socketIsReady(Socket socket) {
+		if(socket != null) {
+    		return socket.isConnected() && !socket.isClosed() && !socket.isOutputShutdown() && !socket.isInputShutdown();
+    	}
+    	else {
+    		return false;
+    	}
+	}
 
 	private void handlePacket(Packet mcPacket) throws IOException {
         switch (mcPacket.getPacketId()){
@@ -241,8 +255,8 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
             case 0x33: handleMapChunk((Packet33MapChunk)mcPacket); 						break;
             case 0x68: handleWindowItems((Packet68WindowItems)mcPacket);				break;
             case (byte) 0xC9: handlePlayerListItem((PacketC9PlayerListItem)mcPacket);	break;
-            case (byte) 0xFD: handleEncryptionKeyResponse((PacketFCEncryptionKeyResponse) mcPacket); break;
-            case (byte) 0xFC: handleEncryptionKeyRequest((PacketFDEncryptionKeyRequest) mcPacket); break;
+            case (byte) 0xFC: handleEncryptionKeyResponse((PacketFCEncryptionKeyResponse) mcPacket); break;
+            case (byte) 0xFD: handleEncryptionKeyRequest((PacketFDEncryptionKeyRequest) mcPacket); break;
             case (byte) 0xFF: handleDisconnect((PacketFFDisconnect)mcPacket); 			break;
             default:
 //                byte oP = previousPacket.getPacketId();

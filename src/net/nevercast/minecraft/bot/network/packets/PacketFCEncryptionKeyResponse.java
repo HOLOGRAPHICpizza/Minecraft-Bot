@@ -1,7 +1,6 @@
 package net.nevercast.minecraft.bot.network.packets;
 
 import java.io.IOException;
-import java.math.BigInteger;
 
 import net.nevercast.minecraft.bot.network.Packet;
 import net.nevercast.minecraft.bot.network.PacketInputStream;
