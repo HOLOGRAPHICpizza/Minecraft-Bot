@@ -6,26 +6,22 @@ import net.nevercast.minecraft.bot.entities.MobGameEntity;
 import net.nevercast.minecraft.bot.structs.SlotData;
 import net.nevercast.minecraft.bot.structs.Location;
 import net.nevercast.minecraft.bot.structs.Vector;
+import net.nevercast.minecraft.bot.network.NetworkTransport;
 import net.nevercast.minecraft.bot.network.Packet;
-import net.nevercast.minecraft.bot.network.PacketInputStream;
-import net.nevercast.minecraft.bot.network.PacketOutputStream;
 import net.nevercast.minecraft.bot.network.packets.*;
 import net.nevercast.minecraft.bot.web.MinecraftLogin;
 import net.nevercast.minecraft.bot.world.Block;
 import net.nevercast.minecraft.bot.world.Chunk;
 import net.nevercast.minecraft.bot.world.World;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-
 import com.esotericsoftware.minlog.Log;
 
 /**
@@ -43,9 +39,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 	private static final int SHARED_SECRET_LENGTH = 16; // value used by Notchian client
 	
     private MinecraftLogin login;
-    private Socket socket = null;
-    private PacketInputStream packetInputStream;
-    private PacketOutputStream packetOutputStream;
+    private NetworkTransport network;
     private Location location = null;
     private Vector<Integer> spawn = null;
 	//private long gameTicks;
@@ -66,6 +60,8 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 	private String server;
 	private int port;
 	private boolean first0DPacket = true;
+	private byte[] sharedSecret;
+	private SecureRandom random;
 	
 	/**
 	 * Set to false to kill the client.
@@ -87,10 +83,8 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     	this.server = address;
     	this.port = port;
     	
-        socket = new Socket(address, port);
-        socket.setTcpNoDelay(true);
-        packetInputStream = new PacketInputStream(new BufferedInputStream(socket.getInputStream()));
-        packetOutputStream = new PacketOutputStream(socket.getOutputStream());
+    	this.network = new NetworkTransport(new Socket(address, port));
+    	
         running = true;
         
         //tickSource = new GamePulser(this, 50);
@@ -103,11 +97,11 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     public void run() {
         try {
         	Log.debug("Sending handshake...");
-            packetOutputStream.writePacket(
+            network.getOutputStream().writePacket(
                     new Packet02Handshake(login.getUsername(), server, port)
             );
-            while(socketIsReady(socket) && !isInterrupted() && running) {
-                Packet mcPacket = packetInputStream.readPacket();
+            while(network.socketIsReady() && !isInterrupted() && running) {
+                Packet mcPacket = network.getInputStream().readPacket();
                 if(mcPacket != null) {
                     handlePacket(mcPacket);
                 }
@@ -116,8 +110,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
         } catch(IOException | MinecraftException e) {
         	Log.error("Fatal Exception: ", e);
         } finally {
-        	try { socket.shutdownInput(); } catch(IOException e) {}
-        	try { socket.close(); } catch(IOException e) {}
+        	network.close();
         	kill();
         }
     }
@@ -127,7 +120,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     	
         Log.trace("Tick: " + elapsedTime + "ms");
     	
-        if(maxPlayers != 0 && running && socketIsReady(socket)){
+        if(maxPlayers != 0 && running && network.socketIsReady()){
         	//Packet0APlayer pman = new Packet0APlayer(true);
 //            Packet0DPlayerPositionAndLook position = new Packet0DPlayerPositionAndLook(location);
             //packetOutputStream.writePacket(pman);
@@ -215,24 +208,10 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 	private void sendMessage(String message){
 	    Packet03ChatMessage m = new Packet03ChatMessage(message);
 	    try {
-	        packetOutputStream.writePacket(m);
+	        network.getOutputStream().writePacket(m);
 	    } catch (IOException e) {
 	        Log.warn("Error sending message:", e);
 	    }
-	}
-	
-	/**
-	 * Makes sure our socket is well and truly ready to do IO.
-	 * 
-	 * @return socket is ready to do IO
-	 */
-	private static boolean socketIsReady(Socket socket) {
-		if(socket != null) {
-    		return socket.isConnected() && !socket.isClosed() && !socket.isOutputShutdown() && !socket.isInputShutdown();
-    	}
-    	else {
-    		return false;
-    	}
 	}
 
 	private void handlePacket(Packet mcPacket) throws IOException {
@@ -326,7 +305,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
                 respawn.setMode((byte) mode);
                 respawn.setWorldHeight(worldHeight);
                 respawn.setLevelType(levelType);
-                packetOutputStream.writePacket(respawn);
+                network.getOutputStream().writePacket(respawn);
             }catch(IOException e){
             	Log.warn("IOException during respawn:", e);
             }
@@ -375,14 +354,14 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     private void handlePositionAndLook(Packet0DPlayerPositionAndLook packet) throws IOException {
         location = packet.getLocation();
         if(first0DPacket){
-        	packetOutputStream.writePacket(packet);
+        	network.getOutputStream().writePacket(packet);
         	first0DPacket = false;
         }
     }
 
     private void handleAnnoyingKeepAlive(Packet00KeepAlive packet) throws IOException {
         // Marco, Polo
-        packetOutputStream.writePacket(packet);
+        network.getOutputStream().writePacket(packet);
         //System.out.println("Marco-Polo!");
     }
 
@@ -406,9 +385,9 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     	Log.debug("Encryption request: " + mcPacket.log());
     	
     	// generate shared secret
-    	byte[] sharedSecret = new byte[SHARED_SECRET_LENGTH];
-    	SecureRandom random = new SecureRandom();
-    	random.nextBytes(sharedSecret);
+    	this.sharedSecret = new byte[SHARED_SECRET_LENGTH];
+    	this.random = new SecureRandom();
+    	this.random.nextBytes(this.sharedSecret);
     	
     	// encrypt shared secret and token
     	Cipher cypher;
@@ -416,19 +395,20 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     	try {
 			cypher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
 			cypher.init(Cipher.ENCRYPT_MODE, mcPacket.getPublicKey(), random);
-			encryptedSecret = cypher.doFinal(sharedSecret);
+			encryptedSecret = cypher.doFinal(this.sharedSecret);
 			encryptedToken = cypher.doFinal(mcPacket.getVerifyToken());
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 			throw new MinecraftException(e);
 		}
     	
     	// send EncryptionKeyResponse
-    	packetOutputStream.writePacket(new PacketFCEncryptionKeyResponse(encryptedSecret, encryptedToken));
+    	network.getOutputStream().writePacket(new PacketFCEncryptionKeyResponse(encryptedSecret, encryptedToken));
 	}
     
-	private void handleEncryptionKeyResponse(PacketFCEncryptionKeyResponse mcPacket) {
+	private void handleEncryptionKeyResponse(PacketFCEncryptionKeyResponse mcPacket) throws IOException {
 		// the server has accepted our shared secret.
 		// it is time to enable symmetric AES encryption.
-		
+		network.enableEncryption(sharedSecret, random);
+		sendMessage("I have a buuuger.");
 	}
 }
