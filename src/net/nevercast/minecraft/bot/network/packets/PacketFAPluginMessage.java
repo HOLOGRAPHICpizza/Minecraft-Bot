@@ -10,9 +10,14 @@ import net.nevercast.minecraft.bot.network.PacketOutputStream;
  * 
  * @author Michael Craft <mcraft@peak15.org>
  */
-public class PacketFAPluginMessage implements Packet {
+public final class PacketFAPluginMessage implements Packet {
 	private String channel;		// Plugin Channel
 	private byte[] data;		// Data
+	
+	public PacketFAPluginMessage(String channel, byte[] data) {
+		this.channel = channel;
+		this.data = data;
+	}
 	
 	/**
      * Get the plugin channel.
@@ -28,22 +33,6 @@ public class PacketFAPluginMessage implements Packet {
      */
     public byte[] getData(){
         return data;
-    }
-	
-    /**
-     * Set the plugin channel.
-     * @param channel Plugin Channel
-     */
-    public void setChannel(String channel) {
-    	this.channel = channel;
-    }
-    
-    /**
-     * Set the data.
-     * @param data Data
-     */
-    public void setData(byte[] data) {
-    	this.data = data;
     }
     
 	@Override

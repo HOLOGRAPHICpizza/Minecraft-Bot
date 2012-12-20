@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import net.nevercast.minecraft.bot.MinecraftClient;
+import net.nevercast.minecraft.bot.MinecraftException;
+
 import com.esotericsoftware.minlog.Log;
 
 /**
@@ -40,7 +42,7 @@ public class MinecraftLogin {
      * @param username Username to log in with.
      * @param password Password for this username.
      */
-    public MinecraftLogin(String username, String password) throws MinecraftLoginException {
+    public MinecraftLogin(String username, String password) {
     	
         String parameters;
 		try {
@@ -48,7 +50,7 @@ public class MinecraftLogin {
 					+ "&password=" + URLEncoder.encode(password, "UTF-8")
 					+ "&version=" + MinecraftClient.CLIENT_VERSION;
 		} catch (UnsupportedEncodingException e) {
-			throw new MinecraftLoginException(e);
+			throw new MinecraftException(e);
 		}
         
         String result = WebUtil.excutePost("https://login.minecraft.net/", parameters);
@@ -56,13 +58,13 @@ public class MinecraftLogin {
         Log.debug(LOG_PREFIX, "Authorization result: " + result);
         
         if (result == null) {
-            throw new MinecraftLoginException(new IOException("Could not contact login.minecraft.net"));
+			throw new MinecraftException(new IOException("Could not contact login.minecraft.net"));
         }
         if (!result.contains(":")) {
             if (result.trim().equals("Bad login")) {
-                throw new MinecraftLoginException("Login failed");
+                throw new MinecraftException("Login failed");
             } else if (result.trim().equals("Old version")) {
-                throw new MinecraftLoginException("Outdated!");
+                throw new MinecraftException("Outdated!");
             } else {
                 this.message = result;
             }

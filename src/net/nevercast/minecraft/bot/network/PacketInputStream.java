@@ -34,7 +34,7 @@ public class PacketInputStream extends DataInputStream {
 	            // Log packet
 	            if(Log.TRACE) {
 	            	String hexed = String.format("%x", id).toUpperCase();
-	            	Log.trace("packet", "---In: " + hexed);
+	            	Log.trace("packet", "---In: 0x" + hexed);
 	            }
 	            
 	            if (PacketFactory.getSupportsPacketId(id)) {

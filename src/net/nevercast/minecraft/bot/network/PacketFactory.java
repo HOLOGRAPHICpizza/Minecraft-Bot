@@ -7,6 +7,7 @@ import com.esotericsoftware.minlog.Log;
 
 /**
  * Handles supported and unsupported packets.
+ * 
  * @author Michael Craft <mcraft@peak15.org>
  * @author mikecyber
  * @author Josh
@@ -87,6 +88,7 @@ public class PacketFactory {
         supportedPackets.put((byte)0xC9, PacketC9PlayerListItem.class);
         unsupportedPackets.put((byte)0xCA, 4);										// Player Abilities
         supportedPackets.put((byte)0xFA, PacketFAPluginMessage.class);
+        supportedPackets.put((byte)0xFD, PacketFDEncryptionKeyRequest.class);
         supportedPackets.put((byte)0xFF, PacketFFDisconnect.class);
     }
 

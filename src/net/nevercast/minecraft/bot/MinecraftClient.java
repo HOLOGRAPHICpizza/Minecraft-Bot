@@ -17,6 +17,14 @@ import net.nevercast.minecraft.bot.world.World;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import com.esotericsoftware.minlog.Log;
 
@@ -32,6 +40,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 	public static final byte CLIENT_VERSION = 49; // 1.4.4
 	
 	private static final int DEFAULT_PORT = 25565;
+	private static final int SHARED_SECRET_LENGTH = 16; // value used by Notchian client
 	
     private MinecraftLogin login;
     private Socket socket = null;
@@ -91,7 +100,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     }
 
     // Receiver
-    public void run(){
+    public void run() {
         try {
         	Log.debug("Sending handshake...");
             packetOutputStream.writePacket(
@@ -104,8 +113,8 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
                 }
             }
             //tickSource.running = false;
-        } catch(IOException e) {
-        	Log.error("Fatal IOException: ", e);
+        } catch(IOException | MinecraftException e) {
+        	Log.error("Fatal Exception: ", e);
         } finally {
         	try { socket.shutdownInput(); } catch(IOException e) {}
         	try { socket.close(); } catch(IOException e) {}
@@ -231,8 +240,9 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
             case 0x28: handleEntMeta((Packet28EntityMetadata)mcPacket); 				break;
             case 0x33: handleMapChunk((Packet33MapChunk)mcPacket); 						break;
             case 0x68: handleWindowItems((Packet68WindowItems)mcPacket);				break;
-            case (byte)0xC9: handlePlayerListItem((PacketC9PlayerListItem)mcPacket);	break;
-            case (byte)0xFF: handleDisconnect((PacketFFDisconnect)mcPacket); 			break;
+            case (byte) 0xC9: handlePlayerListItem((PacketC9PlayerListItem)mcPacket);	break;
+            case (byte) 0xFD: handleEncryptionKeyRequest((PacketFDEncryptionKeyRequest) mcPacket); break;
+            case (byte) 0xFF: handleDisconnect((PacketFFDisconnect)mcPacket); 			break;
             default:
 //                byte oP = previousPacket.getPacketId();
 //                byte cP = mcPacket.getPacketId();
@@ -242,7 +252,8 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
                 break;
         }
     }
-//Unsupported packet
+
+	//Unsupported packet
     private void handleMapChunk(Packet33MapChunk packet) throws IOException{
 //        try {
 //            world.updateChunk(packet.getLocation(), packet.getSize(), packet.getCompressedData());
@@ -369,22 +380,34 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
         maxPlayers = packet.getMaxPlayers();
     }
 
-    /*private void handlerBeginLogin(Packet02Handshake packet) throws IOException {
-        String hash = packet.getHash();
-        
-        Log.debug("Handshake received. Hash: " + hash);
-        
-        if(hash.equalsIgnoreCase("-")){
-            // Open server, login without check
-            Packet01LoginRequest loginRequest = new Packet01LoginRequest(login.getUsername());
-            packetOutputStream.writePacket(loginRequest);
-        }else if(hash.length() > 1){
-            // We have to confirm with hash, I don't support that yet. I'm lazy
-            throw new UnsupportedOperationException("Unsupported authentication scheme: Authentication.");
-        }
-    }*/
-
     private void handlePlayerListItem(PacketC9PlayerListItem item) {
     	//TODO: Maintain a player list.
     }
+    
+    private void handleEncryptionKeyRequest(PacketFDEncryptionKeyRequest mcPacket) {
+		// server has just sent us its server id, RSA public key, and a verify token
+    	// we must encrypt the token and send it back, along with a shared secret we generate
+		
+    	Log.debug("Encryption request: " + mcPacket.log());
+    	
+    	// generate shared secret
+    	byte[] sharedSecret = new byte[SHARED_SECRET_LENGTH];
+    	SecureRandom random = new SecureRandom();
+    	random.nextBytes(sharedSecret);
+    	
+    	// encrypt shared secret and token
+    	Cipher cypher;
+    	byte[] encryptedSecret, encryptedToken;
+    	try {
+			cypher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+			cypher.init(Cipher.ENCRYPT_MODE, mcPacket.getPublicKey(), random);
+			encryptedSecret = cypher.doFinal(sharedSecret);
+			encryptedToken = cypher.doFinal(mcPacket.getVerifyToken());
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+			throw new MinecraftException(e);
+		}
+    	
+    	// send EncryptionKeyResponse
+    	
+	}
 }
