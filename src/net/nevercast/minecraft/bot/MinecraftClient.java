@@ -46,14 +46,14 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     private SlotData[] inventory;
     //private GamePulser tickSource;
     private short health;
-    private int dimension;
+    private byte dimension;
     private EntityPool entityPool;
     private World world;
     private int myEntId;
 	private short worldHeight;
-    private int mode;//0 for survival, 1 for creative
+    private byte mode; // 0 for survival, 1 for creative, bit 3 is hardcore flag
     private byte difficulty;
-    private int maxPlayers = 0;
+    private byte maxPlayers = 0;
     //private short food;
 	//private float foodSaturation;
 	private String levelType;
@@ -315,7 +315,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     }
 
     private void handleRespawn(Packet09Respawn packet) {
-        dimension = packet.getDimension();
+        dimension = (byte) packet.getDimension();
         difficulty = packet.getDifficulty();
         mode = packet.getMode();
         worldHeight = packet.getWorldHeight();
@@ -366,7 +366,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     }
 
     private void handleFinishLogin(Packet01LoginRequest packet) {
-        myEntId = packet.getEntId();
+        myEntId = packet.getEntID();
         levelType = packet.getLevelType();
         mode = packet.getMode();
         dimension = packet.getDimension();
