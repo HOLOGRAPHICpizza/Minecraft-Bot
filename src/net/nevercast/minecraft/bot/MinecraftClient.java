@@ -33,7 +33,7 @@ import com.esotericsoftware.minlog.Log;
  */
 public class MinecraftClient extends Thread implements GamePulser.GamePulserReceptor {
 	
-	public static final byte CLIENT_VERSION = 49; // 1.4.4
+	public static final byte CLIENT_VERSION = 51; // 1.4.6
 	
 	private static final int DEFAULT_PORT = 25565;
 	private static final int SHARED_SECRET_LENGTH = 16; // value used by Notchian client
@@ -406,6 +406,8 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 	}
     
 	private void handleEncryptionKeyResponse(PacketFCEncryptionKeyResponse mcPacket) throws IOException {
+		Log.debug("Encryption response: " + mcPacket.log());
+		
 		// the server has accepted our shared secret.
 		// it is time to enable symmetric AES encryption.
 		network.enableEncryption(sharedSecret, random);

@@ -35,8 +35,14 @@ public class NetworkTransport {
 	private final Socket socket;
 	private final InputStream rootInStream;
 	private final OutputStream rootOutStream;
-	private PacketInputStream inputStream;
-	private PacketOutputStream outputStream;
+	
+	private PacketInputStream clearInStream;
+	private PacketOutputStream clearOutStream;
+	
+	private PacketInputStream encInStream;
+	private PacketOutputStream encOutStream;
+	
+	private boolean encryptionEnabled = false;
 	
 	public NetworkTransport(Socket socket) throws IOException {
 		this.socket = socket;
@@ -45,8 +51,8 @@ public class NetworkTransport {
 		this.rootInStream = new BufferedInputStream(socket.getInputStream());
 		this.rootOutStream = socket.getOutputStream();
 		
-		this.inputStream = new PacketInputStream(rootInStream);
-        this.outputStream = new PacketOutputStream(rootOutStream);
+		this.clearInStream = new PacketInputStream(rootInStream);
+        this.clearOutStream = new PacketOutputStream(rootOutStream);
 	}
 	
 	public void enableEncryption(byte[] sharedSecret, SecureRandom random) throws IOException {
@@ -62,8 +68,10 @@ public class NetworkTransport {
 			throw new MinecraftException(e);
 		}
 		
-		inputStream = new PacketInputStream(new CipherInputStream(rootInStream, cypher));
-		outputStream = new PacketOutputStream(new CipherOutputStream(rootOutStream, cypher));
+		clearOutStream.flush();
+		
+		encInStream = new PacketInputStream(new CipherInputStream(rootInStream, cypher));
+		encOutStream = new PacketOutputStream(new CipherOutputStream(rootOutStream, cypher));
 		
 		Log.info("Encryption enabled.");
 	}
@@ -87,12 +95,17 @@ public class NetworkTransport {
 	 */
 	public void close() {
 		try {
-			outputStream.close();
-			inputStream.close();
+			clearOutStream.close();
+			clearInStream.close();
 			rootOutStream.close();
 			rootInStream.close();
 			socket.shutdownInput();
 			socket.close();
+			
+			if(encInStream != null)
+				encInStream.close();
+			if(encOutStream != null)
+				encOutStream.close();
 		} catch(IOException e) {}
 	}
 	
@@ -101,10 +114,20 @@ public class NetworkTransport {
 	}
 	
 	public PacketInputStream getInputStream() {
-		return inputStream;
+		if(encryptionEnabled) {
+			return encInStream;
+		}
+		else {
+			return clearInStream;
+		}
 	}
 	
 	public PacketOutputStream getOutputStream() {
-		return outputStream;
+		if(encryptionEnabled) {
+			return encOutStream;
+		}
+		else {
+			return clearOutStream;
+		}
 	}
 }

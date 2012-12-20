@@ -15,7 +15,7 @@ import com.esotericsoftware.minlog.Log;
  */
 public class PacketInputStream extends DataInputStream {
     
-    public  PacketInputStream(InputStream inputStream) throws IOException {
+    public PacketInputStream(InputStream inputStream) throws IOException {
     	super(inputStream);
     }
 
