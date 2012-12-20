@@ -241,7 +241,8 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
             case 0x33: handleMapChunk((Packet33MapChunk)mcPacket); 						break;
             case 0x68: handleWindowItems((Packet68WindowItems)mcPacket);				break;
             case (byte) 0xC9: handlePlayerListItem((PacketC9PlayerListItem)mcPacket);	break;
-            case (byte) 0xFD: handleEncryptionKeyRequest((PacketFDEncryptionKeyRequest) mcPacket); break;
+            case (byte) 0xFD: handleEncryptionKeyResponse((PacketFCEncryptionKeyResponse) mcPacket); break;
+            case (byte) 0xFC: handleEncryptionKeyRequest((PacketFDEncryptionKeyRequest) mcPacket); break;
             case (byte) 0xFF: handleDisconnect((PacketFFDisconnect)mcPacket); 			break;
             default:
 //                byte oP = previousPacket.getPacketId();
@@ -384,7 +385,7 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
     	//TODO: Maintain a player list.
     }
     
-    private void handleEncryptionKeyRequest(PacketFDEncryptionKeyRequest mcPacket) {
+    private void handleEncryptionKeyRequest(PacketFDEncryptionKeyRequest mcPacket) throws IOException {
 		// server has just sent us its server id, RSA public key, and a verify token
     	// we must encrypt the token and send it back, along with a shared secret we generate
 		
@@ -408,6 +409,12 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 		}
     	
     	// send EncryptionKeyResponse
-    	
+    	packetOutputStream.writePacket(new PacketFCEncryptionKeyResponse(encryptedSecret, encryptedToken));
+	}
+    
+	private void handleEncryptionKeyResponse(PacketFCEncryptionKeyResponse mcPacket) {
+		// the server has accepted our shared secret.
+		// it is time to enable symmetric AES encryption.
+		
 	}
 }
