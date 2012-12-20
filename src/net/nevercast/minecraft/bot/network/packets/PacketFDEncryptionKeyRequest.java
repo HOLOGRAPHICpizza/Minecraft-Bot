@@ -25,6 +25,11 @@ public final class PacketFDEncryptionKeyRequest implements Packet {
 	private PublicKey publicKey;
 	private byte[] verifyToken;
 
+	/**
+	 * Default constructor to allow reading inbound packets.
+	 */
+	public PacketFDEncryptionKeyRequest() {}
+	
 	@Override
 	public byte getPacketId() {
 		return (byte) 0xFD;

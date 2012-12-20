@@ -409,6 +409,8 @@ public class MinecraftClient extends Thread implements GamePulser.GamePulserRece
 		// the server has accepted our shared secret.
 		// it is time to enable symmetric AES encryption.
 		network.enableEncryption(sharedSecret, random);
-		sendMessage("I have a buuuger.");
+		
+		// Tell the server we have enabled encryption, and we want to spawn.
+		network.getOutputStream().writePacket(new PacketCDClientStatus((byte) 0));
 	}
 }
