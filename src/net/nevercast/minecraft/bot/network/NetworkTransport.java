@@ -1,6 +1,8 @@
 package net.nevercast.minecraft.bot.network;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,6 +17,9 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.io.output.TeeOutputStream;
+
 import com.esotericsoftware.minlog.Log;
 import net.nevercast.minecraft.bot.MinecraftException;
 
@@ -49,29 +54,33 @@ public class NetworkTransport {
 		this.socket.setTcpNoDelay(true);
 		
 		this.rootInStream = new BufferedInputStream(socket.getInputStream());
-		this.rootOutStream = socket.getOutputStream();
+		this.rootOutStream = new TeeOutputStream(socket.getOutputStream(), new FileOutputStream(new File("output.dump")));
 		
 		this.clearInStream = new PacketInputStream(rootInStream);
         this.clearOutStream = new PacketOutputStream(rootOutStream);
 	}
 	
 	public void enableEncryption(byte[] sharedSecret, SecureRandom random) throws IOException {
-		Cipher cypher;
+		Cipher cypherIn, cypherOut;
 		try {
 			SecretKeySpec key = new SecretKeySpec(sharedSecret, KEY_TYPE);
 			//SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(KEY_TYPE);
 			//SecretKey key = keyFactory.generateSecret(keySpec);
 			
-			cypher = Cipher.getInstance(CIPHER_MODE);
-			cypher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(sharedSecret), random);
+			cypherIn = Cipher.getInstance(CIPHER_MODE);
+			cypherOut = Cipher.getInstance(CIPHER_MODE);
+			cypherIn.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(sharedSecret), random);
+			cypherOut.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(sharedSecret), random);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
 			throw new MinecraftException(e);
 		}
 		
 		clearOutStream.flush();
 		
-		encInStream = new PacketInputStream(new CipherInputStream(rootInStream, cypher));
-		encOutStream = new PacketOutputStream(new CipherOutputStream(rootOutStream, cypher));
+		encInStream = new PacketInputStream(new CipherInputStream(rootInStream, cypherIn));
+		encOutStream = new PacketOutputStream(new CipherOutputStream(rootOutStream, cypherOut));
+		
+		encryptionEnabled = true;
 		
 		Log.info("Encryption enabled.");
 	}
